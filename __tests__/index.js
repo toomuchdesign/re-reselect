@@ -1,30 +1,34 @@
 /* eslint comma-dangle: 0 */
 import createCachedSelector from '../index';
 
+let memoizedFunction;
+
+beforeEach(() => {
+  memoizedFunction = jest.fn();
+});
+
 describe('createCachedSelector', () => {
-  it('Should return the same cached reselect selector when resolver function returns the same string', () => {
+  it('Should use the same cached selector when resolver function returns the same string', () => {
     const cachedSelector = createCachedSelector(
       (arg1, arg2) => arg2,   // Resolver
     )(
-      () => ({}),
+      memoizedFunction,
     );
-    const firstCallResult = cachedSelector('foo', 'bar');
-    const secondCallResult = cachedSelector('foo', 'bar');
+    const firstCall = cachedSelector('foo', 'bar');
+    const secondCallWithSameResolver = cachedSelector('foo', 'bar');
 
-    expect(firstCallResult).toBe(secondCallResult);
-    expect(firstCallResult).toEqual({});
+    expect(memoizedFunction.mock.calls.length).toBe(1);
   });
 
-  it('Should return 2 different reselect selector instances when resolver function returns different strings', () => {
+  it('Should create 2 different selectors when resolver function returns different strings', () => {
     const cachedSelector = createCachedSelector(
       (arg1, arg2) => arg2,   // Resolver
     )(
-      () => ({}),
+      memoizedFunction,
     );
     const firstCallResult = cachedSelector('foo', 'bar');
-    const secondCallResult = cachedSelector('foo', 'moo');
+    const secondCallWithDifferentResolver = cachedSelector('foo', 'moo');
 
-    expect(firstCallResult).not.toBe(secondCallResult);
-    expect(firstCallResult).toEqual({});
+    expect(memoizedFunction.mock.calls.length).toBe(2);
   });
 });

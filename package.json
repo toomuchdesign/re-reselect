@@ -18,6 +18,10 @@
     "reselect",
     "memoize"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toomuchdesign/re-reselect.git"
+  },
   "author": "Andrea Carraro <me@andreacarraro.it>",
   "license": "MIT",
   "peerDependencies": {

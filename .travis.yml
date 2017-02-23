@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "4"
+  - "5"
+  - "6"
+  - "7"
+script:
+  - npm test
+  - npm run compile
+notifications:
+  email:
+    on_success: change

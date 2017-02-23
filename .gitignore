@@ -9,3 +9,4 @@ lib
 !.gitignore
 !.babelrc
 !.npmignore
+!.travis.yml

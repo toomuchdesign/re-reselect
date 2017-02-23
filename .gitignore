@@ -1,0 +1,11 @@
+# OS generated files
+.*
+*.db
+*.log
+node_modules
+lib
+
+# Trailing dotted files
+!.gitignore
+!.babelrc
+!.npmignore

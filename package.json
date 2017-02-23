@@ -1,0 +1,34 @@
+{
+  "name": "re-reselect",
+  "version": "1.0.0",
+  "description": "Memoize and fetch reselect selectors instances in Lodash style",
+  "main": "lib/index.js",
+  "jsnext:main": "index.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "compile": "babel -d lib/ index.js",
+    "prepublish": "npm run compile",
+    "test": "jest"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "reselect",
+    "memoize"
+  ],
+  "author": "Andrea Carraro <me@andreacarraro.it>",
+  "license": "MIT",
+  "peerDependencies": {
+    "reselect": ">1.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
+    "babel-jest": "^19.0.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-register": "^6.23.0",
+    "jest": "^19.0.2"
+  }
+}

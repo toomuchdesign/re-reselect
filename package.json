@@ -1,7 +1,7 @@
 {
   "name": "re-reselect",
   "version": "1.0.0",
-  "description": "Memoize and fetch reselect selectors instances in Lodash style",
+  "description": "Memoize selectors and avoid recalculation between calls with different inputs",
   "main": "lib/index.js",
   "jsnext:main": "index.js",
   "files": [

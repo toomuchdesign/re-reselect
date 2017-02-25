@@ -10,9 +10,9 @@ beforeEach(() => {
 describe('createCachedSelector', () => {
   it('Should use the same cached selector when resolver function returns the same string', () => {
     const cachedSelector = createCachedSelector(
-      (arg1, arg2) => arg2,   // Resolver
+        memoizedFunction,
     )(
-      memoizedFunction,
+        (arg1, arg2) => arg2,   // Resolver
     );
     const firstCall = cachedSelector('foo', 'bar');
     const secondCallWithSameResolver = cachedSelector('foo', 'bar');
@@ -22,9 +22,9 @@ describe('createCachedSelector', () => {
 
   it('Should create 2 different selectors when resolver function returns different strings', () => {
     const cachedSelector = createCachedSelector(
-      (arg1, arg2) => arg2,   // Resolver
+        memoizedFunction,
     )(
-      memoizedFunction,
+        (arg1, arg2) => arg2,   // Resolver
     );
     const firstCallResult = cachedSelector('foo', 'bar');
     const secondCallWithDifferentResolver = cachedSelector('foo', 'moo');

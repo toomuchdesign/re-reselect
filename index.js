@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
 
-export default function createCachedSelector(resolver, createSelectorInstance = createSelector) {
+export default function createCachedSelector(...funcs) {
   const cache = {};
 
-  return (...funcs) => (...args) => {
+  return (resolver, createSelectorInstance = createSelector) => (...args) => {
     // Application receives this function
     const cacheKey = resolver(...args);
 

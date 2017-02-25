@@ -4,6 +4,7 @@
 *.log
 node_modules
 lib
+coverage
 
 # Trailing dotted files
 !.gitignore

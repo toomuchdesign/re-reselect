@@ -31,4 +31,16 @@ describe('createCachedSelector', () => {
 
     expect(memoizedFunction.mock.calls.length).toBe(2);
   });
+
+  it('Should return "undefined" if provided resolver does not return a string', () => {
+    const cachedSelector = createCachedSelector(
+        memoizedFunction,
+    )(
+        () => {},   // Resolver
+    );
+    const firstCallResult = cachedSelector('foo', 'bar');
+
+    expect(memoizedFunction.mock.calls.length).toBe(0);
+    expect(firstCallResult).toBe(undefined);
+  });
 });

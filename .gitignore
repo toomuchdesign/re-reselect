@@ -3,6 +3,7 @@
 *.db
 *.log
 node_modules
+es
 lib
 coverage
 

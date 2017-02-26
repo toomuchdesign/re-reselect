@@ -10,7 +10,8 @@
     "lib"
   ],
   "scripts": {
-    "compile": "npm run compile:es && npm run compile:commonjs",
+    "clean": "rm -rf lib es",
+    "compile": "npm run clean && npm run compile:es && npm run compile:commonjs",
     "compile:es": "babel -d es/ index.js",
     "compile:commonjs": "NODE_ENV=commonjs babel -d lib/ index.js",
     "prepublish": "npm run compile",

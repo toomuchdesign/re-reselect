@@ -8,5 +8,10 @@
         ["es2015", {"modules": "commonjs", "loose": true}],
       ]
     },
+    "test": {
+      "presets": [
+        ["es2015", {"modules": "commonjs", "loose": true}],
+      ]
+    }
   }
 }

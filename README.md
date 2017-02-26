@@ -2,7 +2,7 @@
 
 Enhance **[Reselect](reselect) selectors** by wrapping `createSelector` function and returning a memoized **collection of selectors** indexed with the **cache key** returned by a custom **resolver function**.
 
-Useful to **reduce selectors recalculation** when same selector is repeatedly **called with one/few different arguments**.
+Useful to **reduce selectors recalculation** when the same selector is repeatedly **called with one/few different arguments**.
 
 [reselect]:                     https://github.com/reactjs/reselect
 [ci-img]:                       https://travis-ci.org/toomuchdesign/re-reselect.svg
@@ -76,27 +76,32 @@ const getPieceOfData = createCachedSelector(
   (state, itemId, dataType) => dataType,    // Memoize by dataType
 );
 ```
-The final result is normal selector taking the same arguments as before.
+The final result is a normal selector taking the same arguments as before.
 
 But now, each time a selector is called, the following happens:
-- run `resolver` function and get its result (the cache key)
-- look for a matching key from the cache
-- return a cached selector or create a new one if no matching key is found in cache
+- Run `resolver` function and get its result (the cache key)
+- Look for a matching key from the cache
+- Return a cached selector or create a new one if no matching key is found in cache
+- Call selector with with provided arguments
 
-**Re-reselect** stays completely optional and uses **your installed reselect** library under the hoods (reselect is declared as **peer depenency**).
+**Re-reselect** stays completely optional and uses **your installed reselect** library under the hoods (reselect is declared as a **peer depenency**).
 
-Further more you can wrap any custom selector (see [API](#api)).
-
+Furthermore you can use any custom selector (see [API](#api)).
 
 ### Other viable solutions
-- Declare a different selector for each different call
-- Declare a `makeGetPieceOfData` selector factory as explained in [Reselect docs](https://github.com/reactjs/reselect/tree/v2.5.4#sharing-selectors-with-props-across-multiple-components)
 
-The first solution doesn't scale.
+#### 1- Declare a different selector for each different call
+Easy but doesn't scale.
 
-The second solution, is fine, but has 2 downsides:
-- Exposes both `get` selectors and `makeGet` factories
+#### 2- Declare a `makeGetPieceOfData` selector factory as explained in [Reselect docs](https://github.com/reactjs/reselect/tree/v2.5.4#sharing-selectors-with-props-across-multiple-components)
+
+Fine, but has 2 downsides:
+- Bloat your selectors module by exposing both `get` selectors and `makeGet` selector factories
 - Two different selector instances given the same arguments will individually recompute and store the same result (read [this](https://github.com/reactjs/reselect/pull/213))
+
+#### 3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector
+
+This is what **re-reselect** actually does. It's quite verbose (since should be repeated for each selector), that's why I decided to move it into a separate module.
 
 ### How to wrap my existing selector with re-reselect?
 
@@ -108,8 +113,7 @@ export const getMyData = createSelector(
   selectorB,
   selectorC,
   (A, B, C) => doSomethingWith(A, B, C),
-)
-
+);
 ```
 
 Becomes:
@@ -123,7 +127,7 @@ export const getMyData = createCachedSelector(
   (A, B, C) => doSomethingWith(A, B, C),
 )(
   (state, arg1, arg2) => arg2,   // Use arg2 as cache key
-)
+);
 ```
 Voilà!
 
@@ -146,4 +150,4 @@ import reReselect from 're-reselect';
 
 The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.17.4#memoize) util.
 
-`selectorCreator` is an optional function in case you want to use a custom selectors. By default it uses Reselect's `createSelector`.
+`selectorCreator` is an optional function in case you want to use custom selectors. By default it uses Reselect's `createSelector`.

@@ -43,4 +43,16 @@ describe('createCachedSelector', () => {
     expect(memoizedFunction.mock.calls.length).toBe(0);
     expect(firstCallResult).toBe(undefined);
   });
+
+  it('Should allow resolver function to return keys of type number', () => {
+    const cachedSelector = createCachedSelector(
+        memoizedFunction,
+    )(
+        (arg1, arg2) => arg2,   // Resolver
+    );
+    const firstCall = cachedSelector('foo', 1);
+    const secondCallWithSameResolver = cachedSelector('foo', 1);
+
+    expect(memoizedFunction.mock.calls.length).toBe(1);
+  });
 });

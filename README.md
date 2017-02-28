@@ -61,7 +61,7 @@ What happens, here? `getPieceOfData` **selector cache is invalidated** on each c
 
 `key` is the string output of the `resolver` function declared in selector initialization phase.
 
-`resolver` is a custom function which receives the same arguments of final selector (in the example: `state`, `itemId`, `'dataX'`, `otherArgs`) and returns a `string`.
+`resolver` is a custom function which receives the same arguments of final selector (in the example: `state`, `itemId`, `'dataX'`, `otherArgs`) and returns a `string` or `number`.
 
 That said, I was able to configure `re-reselect` to create a map of selector using the 3rd argument as key:
 
@@ -146,7 +146,9 @@ import reReselect from 're-reselect';
 - `resolverFunction`
 - `selectorCreator` *(optional)*
 
-`resolverFunction` is a function which receives the same arguments of your selectors (and `inputSelectors`) and *must return a string*. The resulting string is used as cache key to store/retrieve selector instances.
+`resolverFunction` is a function which receives the same arguments of your selectors (and `inputSelectors`) and *must return a string or number*. The result is used as cache key to store/retrieve selector instances.
+
+Cache keys of type `number` are treated like strings, since they are assigned to a JS object as arguments.
 
 The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.17.4#memoize) util.
 

@@ -7,7 +7,7 @@ export default function createCachedSelector(...funcs) {
     // Application receives this function
     const cacheKey = resolver(...args);
 
-    if (typeof cacheKey === 'string') {
+    if (typeof cacheKey === 'string' || typeof cacheKey === 'number') {
       if (cache.hasOwnProperty(cacheKey) === false) {
         cache[cacheKey] = createSelectorInstance(...funcs);
       }

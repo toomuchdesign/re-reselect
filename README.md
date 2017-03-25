@@ -2,7 +2,9 @@
 
 Enhance **[Reselect][reselect] selectors** by wrapping `createSelector` function and returning a memoized **collection of selectors** indexed with the **cache key** returned by a custom **resolver function**.
 
-Useful to **reduce selectors recalculation** when the same selector is repeatedly **called with one/few different arguments**.
+Useful to **reduce selectors recalculation** when:
+- the same selector is repeatedly **called with one/few different arguments**
+- the same selector is **imported by different modules** at the same time
 
 [reselect]:                     https://github.com/reactjs/reselect
 [ci-img]:                       https://travis-ci.org/toomuchdesign/re-reselect.svg

@@ -1,4 +1,5 @@
 /* eslint comma-dangle: 0 */
+import { createSelector } from 'reselect';
 import createCachedSelector from '../index';
 
 let memoizedFunction;
@@ -55,4 +56,19 @@ describe('createCachedSelector', () => {
 
     expect(memoizedFunction.mock.calls.length).toBe(1);
   });
+
+  it('should expose underlying reselect selector for a cache key with getMatchingSelector', () => {
+    const cachedSelector = createCachedSelector(
+      memoizedFunction,
+    )(
+      (arg1, arg2) => arg2   // Resolver
+    );
+
+    cachedSelector('foo', 1);
+    const reselectSelector = cachedSelector.getMatchingSelector('foo', 1);
+    const actualKeys = Object.keys(reselectSelector);
+    const expectedKeys = Object.keys(createSelector());
+
+    expect(actualKeys).toEqual(expectedKeys)
+  })
 });

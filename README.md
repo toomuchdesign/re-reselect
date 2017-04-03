@@ -105,7 +105,10 @@ Fine, but has 2 downsides:
 
 This is what **re-reselect** actually does. It's quite verbose (since should be repeated for each selector), that's why I decided to move it into a separate module.
 
-### How to wrap my existing selector with re-reselect?
+## FAQ
+### Q: How do I wrap my existing selector with re-reselect?
+
+A: Given your `reselect` selectors:
 
 ```js
 import { createSelector } from 'reselect';
@@ -118,7 +121,7 @@ export const getMyData = createSelector(
 );
 ```
 
-Becomes:
+...it becomes:
 ```js
 import createCachedSelector from 're-reselect';
 
@@ -133,8 +136,47 @@ export const getMyData = createCachedSelector(
 ```
 Voilà!
 
-## API
+### Q: How do I test a re-reselect selector?
+Just like a normal reselect selector! Read more [here](https://github.com/reactjs/reselect#q-how-do-i-test-a-selector).
 
+Each **re-reselect** cached selector exposes a `getMatchingSelector` method which returns the **underlying matching selector** instance for the given arguments, **instead of the result**.
+
+`getMatchingSelector` expects the same arguments as a normal selector call **BUT returns the instance of the cached selector itself**.
+
+Once you get a selector instance you can call [its public methods](https://github.com/reactjs/reselect/blob/v3.0.0/src/index.js#L81) like:
+
+- `resultFunc`
+- `recomputations`
+- `resetRecomputations`
+
+
+```js
+import createCachedSelector from 're-reselect';
+
+export const getMyData = createCachedSelector(
+  selectorA,
+  selectorB,
+  (A, B) => doSomethingWith(A, B),
+)(
+  (state, arg1) => arg1,   // Use arg2 as cache key
+);
+
+// ...
+// Call the selector to retrieve data
+const myFooData = getMyData(state, 'foo');
+const myBarData = getMyData(state, 'bar');
+
+// Call getMatchingSelector to retrieve the selectors
+// which generated "myFooData" and "myBarData" results
+const myFooDataSelector = getMyData.getMatchingSelector(state, 'foo');
+const myBarDataSelector = getMyData.getMatchingSelector(state, 'bar');
+
+// Call reselect's selectors methods
+myFooDataSelector.recomputations();
+myFooDataSelector.resetRecomputations();
+```
+
+## API
 **Re-reselect** consists in just one method exported as default.
 
 ```js
@@ -148,13 +190,22 @@ import reReselect from 're-reselect';
 - `resolverFunction`
 - `selectorCreator` *(optional)*
 
-`resolverFunction` is a function which receives the same arguments of your selectors (and `inputSelectors`) and *must return a string or number*. The result is used as cache key to store/retrieve selector instances.
+`resolverFunction` is a function which receives the same arguments of your selectors (and `inputSelectors`) and *must return a **string** or **number***. The result is used as cache key to store/retrieve selector instances.
 
 Cache keys of type `number` are treated like strings, since they are assigned to a JS object as arguments.
 
 The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.17.4#memoize) util.
 
 `selectorCreator` is an optional function in case you want to use custom selectors. By default it uses Reselect's `createSelector`.
+
+#### Returns
+(Function): a `reReselectInstance` ready to be called to retrieve data from your store.
+
+### reReselectInstance(selectorArguments)
+Retrieve data for given arguments.
+
+### reReselectInstance.getMatchingSelector(selectorArguments)
+Retrieve the selector object being called and cached for given arguments.
 
 ## Todo's
 - Consider to expose a cache clearing method

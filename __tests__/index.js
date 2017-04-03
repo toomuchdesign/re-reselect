@@ -59,16 +59,31 @@ describe('createCachedSelector', () => {
 
   it('Should expose underlying reselect selector for a cache key with getMatchingSelector', () => {
     const cachedSelector = createCachedSelector(
+      () => {},
+    )(
+      (arg1, arg2) => arg2
+    );
+
+    // Retrieve result from re-reselect cached selector
+    const actualResult = cachedSelector('foo', 1);
+
+    // Retrieve result directly calling underlying reselect selector
+    const reselectSelector = cachedSelector.getMatchingSelector('foo', 1);
+    const expectedResultFromSelector = reselectSelector('foo', 1);
+
+    expect(actualResult).toBe(expectedResultFromSelector)
+  })
+
+  it('Should return "undefined" when getMatchingSelector doesn\'t hit any cache entry', () => {
+    const cachedSelector = createCachedSelector(
       memoizedFunction,
     )(
       (arg1, arg2) => arg2   // Resolver
     );
 
-    cachedSelector('foo', 1);
-    const reselectSelector = cachedSelector.getMatchingSelector('foo', 1);
-    const actualKeys = Object.keys(reselectSelector);
-    const expectedKeys = Object.keys(createSelector());
+    const actual = cachedSelector.getMatchingSelector('foo', 1);
+    const expected = undefined;
 
-    expect(actualKeys).toEqual(expectedKeys)
+    expect(actual).toEqual(expected)
   })
 });

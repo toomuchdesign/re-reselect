@@ -1,6 +1,8 @@
 # Re-reselect [![Build Status][ci-img]][ci]
 
-Enhance **[Reselect][reselect] selectors** by wrapping `createSelector` function and returning a memoized **collection of selectors** indexed with the **cache key** returned by a custom **resolver function**.
+Improve **[Reselect][reselect] performance** on few edge cases, by initializing selectors on the fly, using a **memoized factory**.
+
+The resulting selector acts like a normal one, but It's able to determine when **querying a new selector instance or a cached one** on the fly, depending on the supplied arguments.
 
 Useful to **reduce selectors recalculation** when:
 - the same selector is repeatedly **called with one/few different arguments**

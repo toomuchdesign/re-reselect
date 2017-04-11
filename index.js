@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
 export default function createCachedSelector(...funcs) {
-  const cache = {};
+  let cache = {};
 
   return (resolver, createSelectorInstance = createSelector) => {
     const selector = function(...args) {
@@ -9,7 +9,7 @@ export default function createCachedSelector(...funcs) {
       const cacheKey = resolver(...args);
 
       if (typeof cacheKey === 'string' || typeof cacheKey === 'number') {
-        if (cache.hasOwnProperty(cacheKey) === false) {
+        if (cache[cacheKey] === undefined) {
           cache[cacheKey] = createSelectorInstance(...funcs);
         }
         return cache[cacheKey](...args);
@@ -21,6 +21,16 @@ export default function createCachedSelector(...funcs) {
       const cacheKey = resolver(...args);
       return cache[cacheKey];
     };
+
+    selector.clearCache = () => {
+      cache = {};
+    }
+
+    selector.removeCacheKey = (key) => {
+      if (cache[key]) {
+        cache[key] = undefined;
+      }
+    }
 
     return selector;
   }

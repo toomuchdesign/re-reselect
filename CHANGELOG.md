@@ -1,3 +1,6 @@
+# 0.3.0
+- Add UMD dist
+
 # 0.2.0
 - Expose `getMatchingSelector` method to retrieve the instance of cached selectors
 

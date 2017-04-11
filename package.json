@@ -6,15 +6,17 @@
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "files": [
+    "dist",
     "es",
     "lib"
   ],
   "scripts": {
     "test": "jest",
-    "clean": "rm -rf lib es",
-    "compile": "npm run clean && npm run compile:es && npm run compile:commonjs",
+    "clean": "rm -rf dist es lib",
+    "compile": "npm run clean && npm run compile:es && npm run compile:commonjs && npm run compile:umd",
     "compile:es": "babel -d es/ index.js",
     "compile:commonjs": "NODE_ENV=commonjs babel -d lib/ index.js",
+    "compile:umd": "NODE_ENV=umd babel -d dist/ index.js",
     "preversion": "npm test",
     "version": "git add package.json",
     "postversion": "git push && git push --tags",

@@ -8,6 +8,12 @@
         ["es2015", {"modules": "commonjs", "loose": true}],
       ]
     },
+    "umd": {
+      "presets": [
+        ["es2015", {"modules": "umd", "loose": true}],
+      ],
+      "moduleId": "Re-reselect"
+    },
     "test": {
       "presets": [
         ["es2015", {"modules": "commonjs", "loose": true}],

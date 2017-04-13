@@ -57,7 +57,7 @@ describe('createCachedSelector', () => {
     expect(memoizedFunction.mock.calls.length).toBe(1);
   });
 
-  it('Should expose underlying reselect selector for a cache key with getMatchingSelector', () => {
+  it('Should expose underlying reselect selector for a cache key with "getMatchingSelector"', () => {
     const cachedSelector = createCachedSelector(
       () => {},
     )(
@@ -74,7 +74,7 @@ describe('createCachedSelector', () => {
     expect(actualResult).toBe(expectedResultFromSelector)
   })
 
-  it('Should return "undefined" when getMatchingSelector doesn\'t hit any cache entry', () => {
+  it('Should return "undefined" when "getMatchingSelector" doesn\'t hit any cache entry', () => {
     const cachedSelector = createCachedSelector(
       memoizedFunction,
     )(
@@ -96,29 +96,26 @@ describe('createCachedSelector', () => {
 
     cachedSelector('foo', 1) // add to cache
     cachedSelector.clearCache() // clear cache
+    const actual = cachedSelector.getMatchingSelector('foo', 1);
 
-    const actual = cachedSelector.getMatchingSelector('foo', 1)
-    const expected = undefined
-
-    expect(actual).toEqual(expected)
+    expect(actual).toBe(undefined);
   })
 
-  it('Should set the selected key to "undefined" when calling "removeCacheKey"', () => {
+  it('Should set the selected key to "undefined" when calling "removeMatchingSelector"', () => {
     const cachedSelector = createCachedSelector(
       memoizedFunction,
     )(
       (arg1, arg2) => arg2
     );
 
-    cachedSelector('foo', 1) // add to cache
-    cachedSelector('foo', 2) // add to cache
-    cachedSelector.removeCacheKey(1) // remove key from chache
+    cachedSelector('foo', 1); // add to cache
+    cachedSelector('foo', 2); // add to cache
+    cachedSelector.removeMatchingSelector('foo', 1); // remove key from chache
 
-    const firstSelectorActual = cachedSelector.getMatchingSelector('foo', 1)
-    const secondSelectorActual = cachedSelector.getMatchingSelector('foo', 2)
-    const expected = undefined
+    const firstSelectorActual = cachedSelector.getMatchingSelector('foo', 1);
+    const secondSelectorActual = cachedSelector.getMatchingSelector('foo', 2);
 
-    expect(firstSelectorActual).toEqual(expected)
-    expect(secondSelectorActual).not.toEqual(expected)
+    expect(firstSelectorActual).toBe(undefined);
+    expect(secondSelectorActual).not.toBe(undefined);
   })
 });

@@ -17,19 +17,21 @@ export default function createCachedSelector(...funcs) {
       return undefined;
     };
 
+    // Further selector methods
     selector.getMatchingSelector = (...args) => {
       const cacheKey = resolver(...args);
       return cache[cacheKey];
     };
 
-    selector.clearCache = () => {
-      cache = {};
+    selector.removeMatchingSelector = (...args) => {
+      const cacheKey = resolver(...args);
+      if (cache[cacheKey] !== undefined) {
+        cache[cacheKey] = undefined;
+      }
     }
 
-    selector.removeCacheKey = (key) => {
-      if (cache[key]) {
-        cache[key] = undefined;
-      }
+    selector.clearCache = () => {
+      cache = {};
     }
 
     return selector;

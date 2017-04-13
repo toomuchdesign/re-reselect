@@ -28,11 +28,11 @@ export default function createCachedSelector(...funcs) {
       if (cache[cacheKey] !== undefined) {
         cache[cacheKey] = undefined;
       }
-    }
+    };
 
     selector.clearCache = () => {
       cache = {};
-    }
+    };
 
     return selector;
   }

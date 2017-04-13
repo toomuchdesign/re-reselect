@@ -1,3 +1,7 @@
+# 0.4.0
+- Expose `removeMatchingSelector` method
+- Expose `clearCache` method
+
 # 0.3.0
 - Add UMD dist
 

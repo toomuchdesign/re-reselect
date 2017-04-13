@@ -207,8 +207,13 @@ The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.1
 Retrieve data for given arguments.
 
 ### reReselectInstance.getMatchingSelector(selectorArguments)
-Retrieve the selector object being called and cached for given arguments.
+Retrieve the selector responding to the given arguments.
+
+### reReselectInstance.removeMatchingSelector(selectorArguments)
+Remove the selector responding to the given arguments.
+
+### reReselectInstance.clearCache()
+Clear the whole cache.
 
 ## Todo's
-- Consider to expose a cache clearing method
 - Named exports?

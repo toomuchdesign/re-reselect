@@ -43,6 +43,8 @@ const barSelector = cachedSelector(state, 'bar');
 const fooAgain = cachedSelector(state, 'foo');
 ```
 
+Jump straight to the [API's](#api).
+
 ## Installation
 ```console
 npm install re-reselect
@@ -206,14 +208,14 @@ The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.1
 ### reReselectInstance(selectorArguments)
 Retrieve data for given arguments.
 
-### reReselectInstance.getMatchingSelector(selectorArguments)
+### reReselectInstance`.getMatchingSelector(selectorArguments)`
 Retrieve the selector responding to the given arguments.
 
-### reReselectInstance.removeMatchingSelector(selectorArguments)
-Remove the selector responding to the given arguments.
+### reReselectInstance`.removeMatchingSelector(selectorArguments)`
+Remove the selector responding to the given arguments from the cache.
 
-### reReselectInstance.clearCache()
-Clear the whole cache.
+### reReselectInstance`.clearCache()`
+Clear the whole `reReselectInstance` cache.
 
 ## Todo's
 - Named exports?

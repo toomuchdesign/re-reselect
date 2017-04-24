@@ -27,7 +27,7 @@ const cachedSelector = createCachedSelector(
     (state, someArg) => someArg,
 
     // reselect resultFunc:
-    (A, B, someArg) => expensiveComputation(A, B, someArg}),
+    (A, B, someArg) => expensiveComputation(A, B, someArg),
 )(
     // Resolver function used as map cache key
     // (It takes the same selector arguments and must return a string)

@@ -29,13 +29,13 @@ const cachedSelector = createCachedSelector(
     // reselect resultFunc:
     (A, B, someArg) => expensiveComputation(A, B, someArg),
 )(
-    // Resolver function used as map cache key
+    // Resolver function, used as map cache key
     // (It takes the same selector arguments and must return a string)
-    // In this case it will use the second arguments as cache key
+    // In this case it uses the second argument as cache key
     (state, someArg) => someArg,
 );
 
-// 2 different selector are created and cached
+// 2 different selectors are created and cached
 const fooSelector = cachedSelector(state, 'foo');
 const barSelector = cachedSelector(state, 'bar');
 
@@ -53,7 +53,7 @@ npm install re-reselect
 ## Why? + example
 I found my self wrapping a library of data elaboration (quite heavy stuff) with reselect selectors (`getPieceOfData` in the example).
 
-On each store update, I had to call the selector again again in order to retrieve all the pieces of data needed by my UI. Like this:
+On each store update, I had to repeatedly call the selector in order to retrieve all the pieces of data needed by my UI. Like this:
 
 ```js
 getPieceOfData(state, itemId, 'dataA', otherArg);
@@ -69,7 +69,7 @@ What happens, here? `getPieceOfData` **selector cache is invalidated** on each c
 
 `resolver` is a custom function which receives the same arguments of final selector (in the example: `state`, `itemId`, `'dataX'`, `otherArgs`) and returns a `string` or `number`.
 
-That said, I was able to configure `re-reselect` to create a map of selector using the 3rd argument as key:
+That said, I was able to configure `re-reselect` to create a map of selectors using the 3rd argument as key:
 
 ```js
 const getPieceOfData = createCachedSelector(
@@ -88,7 +88,7 @@ But now, each time a selector is called, the following happens:
 - Run `resolver` function and get its result (the cache key)
 - Look for a matching key from the cache
 - Return a cached selector or create a new one if no matching key is found in cache
-- Call selector with with provided arguments
+- Call selector with provided arguments
 
 **Re-reselect** stays completely optional and uses **your installed reselect** library under the hoods (reselect is declared as a **peer depenency**).
 

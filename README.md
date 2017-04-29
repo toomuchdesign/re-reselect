@@ -1,8 +1,8 @@
 # Re-reselect [![Build Status][ci-img]][ci]
 
-Improve **[Reselect][reselect] performance** on few edge cases, by initializing selectors on the fly, using a **memoized factory**.
+Improve **[Reselect][reselect] selectors performance** on a few edge cases, by initializing selectors on the fly, using a **memoized factory**.
 
-The resulting selector acts like a normal one, but It's able to determine when **querying a new selector instance or a cached one** on the fly, depending on the supplied arguments.
+**Re-reselect returns a reselect-like selector**, which is able to determine internally when **querying a new selector instance or a cached one** on the fly, depending on the supplied arguments.
 
 Useful to **reduce selectors recalculation** when:
 - the same selector is sequentially **called with one/few different arguments**
@@ -303,7 +303,7 @@ The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.1
 `selectorCreator` is an optional function in case you want to use custom selectors. By default it uses Reselect's `createSelector`.
 
 #### Returns
-(Function): a `reReselectInstance` ready to be called to retrieve data from your store.
+(Function): a `reReselectInstance` selector ready to be used **like a normal reselect selector**.
 
 ### reReselectInstance(selectorArguments)
 Retrieve data for given arguments.

@@ -177,7 +177,11 @@ export const getMyData = createCachedSelector(
   (state, arg1, arg2) => arg2,   // Use arg2 as cache key
 );
 ```
-Voilà!
+Voilà, `getMyData` is ready for use!
+```js
+let myData = getMyData(state, 'foo', 'bar');
+
+```
 
 ### Q: How to share a selector across multiple components while passing in props and retaining memoization?
 This example is how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components).

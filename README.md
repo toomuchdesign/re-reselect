@@ -304,6 +304,8 @@ The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.1
 ### reReselectInstance(selectorArguments)
 Retrieve data for given arguments.
 
+>The followings are advanced methods and you won't need them for basic usage!
+
 ### reReselectInstance`.getMatchingSelector(selectorArguments)`
 Retrieve the selector responding to the given arguments.
 

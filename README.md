@@ -5,12 +5,14 @@ Improve **[Reselect][reselect] performance** on few edge cases, by initializing 
 The resulting selector acts like a normal one, but It's able to determine when **querying a new selector instance or a cached one** on the fly, depending on the supplied arguments.
 
 Useful to **reduce selectors recalculation** when:
-- the same selector is repeatedly **called with one/few different arguments**
+- the same selector is sequentially **called with one/few different arguments**
 - the same selector is **imported by different modules** at the same time
+- a selector needs to be instantiated on runtime
+- sharing selectors with props across multiple components ([see the scenario described in reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components))
 
-[reselect]:                     https://github.com/reactjs/reselect
-[ci-img]:                       https://travis-ci.org/toomuchdesign/re-reselect.svg
-[ci]:                           https://travis-ci.org/toomuchdesign/re-reselect
+[reselect]:    https://github.com/reactjs/reselect
+[ci-img]:      https://travis-ci.org/toomuchdesign/re-reselect.svg
+[ci]:          https://travis-ci.org/toomuchdesign/re-reselect
 
 ```js
 import createCachedSelector from 're-reselect';
@@ -69,6 +71,7 @@ Jump straight to the [API's](#api).
 
 ## Installation
 ```console
+npm install re-reselect
 npm install re-reselect
 ```
 
@@ -161,6 +164,63 @@ export const getMyData = createCachedSelector(
 );
 ```
 Voilà!
+
+### Q: How to share a selector across multiple components while passing in props and retaining memoization?
+This example is how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components).
+
+We can directly declare `getVisibleTodos` selector. Since `re-reselect` handles selectors instantiation transparently, there is no need to declare a `makeGetVisibleTodos` factory.
+
+#### `selectors/todoSelectors.js`
+
+```js
+import createCachedSelector from 're-reselect';
+
+const getVisibilityFilter = (state, props) =>
+  state.todoLists[props.listId].visibilityFilter
+
+const getTodos = (state, props) =>
+  state.todoLists[props.listId].todos
+
+const getVisibleTodos = createCachedSelector(
+  [ getVisibilityFilter, getTodos ],
+  (visibilityFilter, todos) => {
+    switch (visibilityFilter) {
+      case 'SHOW_COMPLETED':
+        return todos.filter(todo => todo.completed)
+      case 'SHOW_ACTIVE':
+        return todos.filter(todo => !todo.completed)
+      default:
+        return todos
+    }
+  }
+)(
+  /*
+   * Re-reselect resolver function.
+   * Cache/call a new selector for each different "listId"
+   */
+  (state, props) => props.listId,
+);
+
+export default getVisibleTodos;
+```
+
+#### `containers/VisibleTodoList.js`
+```js
+import { connect } from 'react-redux'
+import { toggleTodo } from '../actions'
+import TodoList from '../components/TodoList'
+import { getVisibleTodos } from '../selectors'
+
+// No need of makeMapStateToProps function:
+// use getVisibleTodos as a normal selector
+const mapStateToProps = (state, props) => {
+  return {
+    todos: getVisibleTodos(state, props)
+  }
+}
+
+// ...
+```
 
 ### Q: How do I test a re-reselect selector?
 Just like a normal reselect selector! Read more [here](https://github.com/reactjs/reselect#q-how-do-i-test-a-selector).

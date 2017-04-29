@@ -74,7 +74,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
   - [Other viable solutions](#other-viable-solutions)
 - [FAQ](#faq)
   - [How do I wrap my existing selector with re-reselect?](#q-how-do-i-wrap-my-existing-selector-with-re-reselect)
-  - [How to share a selector across multiple components while passing in props and retaining memoization?](q-how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
+  - [How to share a selector across multiple components while passing in props and retaining memoization?](#q-how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
   - [How do I test a re-reselect selector?](#q-how-do-i-test-a-re-reselect-selector)
 - [API](#api)
   - [`reReselect`](#rereselectreselects-createselector-argumentsresolverfunction-selectorcreator--selectorcreator)

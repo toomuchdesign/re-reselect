@@ -85,7 +85,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
 
 ## Installation
 ```console
-npm install re-reselect
+npm install reselect
 npm install re-reselect
 ```
 

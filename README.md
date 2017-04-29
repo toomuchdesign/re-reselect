@@ -19,7 +19,7 @@ const selectorA = state => state.a;
 const selectorB = state => state.b;
 
 const cachedSelector = createCachedSelector(
-    // Set up your Reselect selector as normal
+    // Set up your Reselect selector as normal:
 
     // reselect inputSelectors:
     selectorA,
@@ -29,18 +29,40 @@ const cachedSelector = createCachedSelector(
     // reselect resultFunc:
     (A, B, someArg) => expensiveComputation(A, B, someArg),
 )(
-    // Resolver function, used as map cache key
-    // (It takes the same selector arguments and must return a string)
-    // In this case it uses the second argument as cache key
+    /*
+     * Now it comes the re-reselect caching part:
+     * declare a resolver function, used as mapping cache key.
+     * It takes the same arguments as the generated selector
+     * and must return a string or number (the cache key).
+     *
+     * A new selector will be cached for each different returning key
+     *
+     * In this example the second argument of the selector is used as cache key
+     */
     (state, someArg) => someArg,
 );
 
-// 2 different selectors are created and cached
-const fooSelector = cachedSelector(state, 'foo');
-const barSelector = cachedSelector(state, 'bar');
+// Now you are ready to call/expose the cached selector like a normal selector:
 
-// "foo" hits the cache: "foo" selector is retrieved and called again
-const fooAgain = cachedSelector(state, 'foo');
+/*
+ * Call selector with "foo" and with "bar":
+ * 2 different selectors are created, called and cached behind the scenes.
+ * The selectors return their computed result.
+ */
+const fooResult = cachedSelector(state, 'foo');
+const barResult = cachedSelector(state, 'bar');
+
+/*
+ * Call selector with "foo" again:
+ * "foo" hits the cache, now: the selector cached under "foo" key
+ * is retrieved, called again and the result is returned.
+ */
+const fooResultAgain = cachedSelector(state, 'foo');
+
+/*
+ * Note that fooResult === fooResultAgain.
+ * Because the cache was not invalidated by "cachedSelector(state, 'bar')" call
+ */
 ```
 
 Jump straight to the [API's](#api).

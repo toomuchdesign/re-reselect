@@ -5,10 +5,10 @@ Improve **[Reselect][reselect] selectors performance** on a few edge cases, by i
 **Re-reselect returns a reselect-like selector**, which is able to determine internally when **querying a new selector instance or a cached one** on the fly, depending on the supplied arguments.
 
 Useful to **reduce selectors recalculation** when:
-- the same selector is sequentially **called with one/few different arguments**
-- the same selector is **imported by different modules** at the same time
-- a selector needs to be instantiated on runtime
-- sharing selectors with props across multiple components ([see the scenario described in reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components))
+- a selector is sequentially **called with one/few different arguments**
+- a selector is **imported by different modules** at the same time
+- **sharing selectors** with props across multiple components ([see the scenario described in reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components))
+- selectors need to be **instantiated on runtime**
 
 [reselect]:    https://github.com/reactjs/reselect
 [ci-img]:      https://travis-ci.org/toomuchdesign/re-reselect.svg
@@ -37,7 +37,7 @@ const cachedSelector = createCachedSelector(
      * It takes the same arguments as the generated selector
      * and must return a string or number (the cache key).
      *
-     * A new selector will be cached for each different returning key
+     * A new selector will be cached for each different returned key
      *
      * In this example the second argument of the selector is used as cache key
      */
@@ -63,7 +63,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
 
 /*
  * Note that fooResult === fooResultAgain.
- * Because the cache was not invalidated by "cachedSelector(state, 'bar')" call
+ * The cache was not invalidated by "cachedSelector(state, 'bar')" call
  */
 ```
 
@@ -73,9 +73,9 @@ const fooResultAgain = cachedSelector(state, 'foo');
   - [Re-reselect solution](#re-reselect-solution)
   - [Other viable solutions](#other-viable-solutions)
 - [FAQ](#faq)
-  - [How do I wrap my existing selector with re-reselect?](#q-how-do-i-wrap-my-existing-selector-with-re-reselect)
-  - [How to share a selector across multiple components while passing in props and retaining memoization?](#q-how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
-  - [How do I test a re-reselect selector?](#q-how-do-i-test-a-re-reselect-selector)
+  - [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
+  - [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
+  - [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
 - [API](#api)
   - [`reReselect`](#rereselectreselects-createselector-argumentsresolverfunction-selectorcreator--selectorcreator)
   - [reReselectInstance`()`](#rereselectinstanceselectorarguments)
@@ -104,11 +104,11 @@ What happens, here? `getPieceOfData` **selector cache is invalidated** on each c
 ### Re-reselect solution
 `createCachedSelector` keeps a private collection of selectors and store them by `key`.
 
-`key` is the string output of the `resolver` function declared in selector initialization phase.
+`key` is the output of the `resolver` function, declared at selector initialization.
 
-`resolver` is a custom function which receives the same arguments of final selector (in the example: `state`, `itemId`, `'dataX'`, `otherArgs`) and returns a `string` or `number`.
+`resolver` is a custom function which receives the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`, `otherArgs`) and returns a `string` or `number`.
 
-That said, I was able to configure `re-reselect` to create a map of selectors using the 3rd argument as key:
+That said, I was able to configure `re-reselect` to retrieve my data by querying a set of cached selectors using the 3rd argument as cache key:
 
 ```js
 const getPieceOfData = createCachedSelector(
@@ -123,13 +123,13 @@ const getPieceOfData = createCachedSelector(
 ```
 The final result is a normal selector taking the same arguments as before.
 
-But now, each time a selector is called, the following happens:
+But now, **each time the selector is called**, the following happens behind the scenes:
 - Run `resolver` function and get its result (the cache key)
 - Look for a matching key from the cache
 - Return a cached selector or create a new one if no matching key is found in cache
 - Call selector with provided arguments
 
-**Re-reselect** stays completely optional and uses **your installed reselect** library under the hoods (reselect is declared as a **peer depenency**).
+**Re-reselect** stays completely optional and uses **your installed reselect** library under the hoods (reselect is declared as a **peer dependency**).
 
 Furthermore you can use any custom selector (see [API](#api)).
 
@@ -146,12 +146,11 @@ Fine, but has 2 downsides:
 
 #### 3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector
 
-This is what **re-reselect** actually does. It's quite verbose (since should be repeated for each selector), that's why I decided to move it into a separate module.
+This is what **re-reselect** actually does. It's quite verbose (since should be repeated for each selector), that's why re-reselect is here.
 
 ## FAQ
-### Q: How do I wrap my existing selector with re-reselect?
-
-A: Given your `reselect` selectors:
+### How do I wrap my existing selector with re-reselect?
+Given your `reselect` selectors:
 
 ```js
 import { createSelector } from 'reselect';
@@ -183,7 +182,7 @@ let myData = getMyData(state, 'foo', 'bar');
 
 ```
 
-### Q: How to share a selector across multiple components while passing in props and retaining memoization?
+### How to share a selector across multiple components while passing in props and retaining memoization?
 This example is how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components).
 
 We can directly declare `getVisibleTodos` selector. Since `re-reselect` handles selectors instantiation transparently, there is no need to declare a `makeGetVisibleTodos` factory.
@@ -240,7 +239,7 @@ const mapStateToProps = (state, props) => {
 // ...
 ```
 
-### Q: How do I test a re-reselect selector?
+### How do I test a re-reselect selector?
 Just like a normal reselect selector! Read more [here](https://github.com/reactjs/reselect#q-how-do-i-test-a-selector).
 
 Each **re-reselect** cached selector exposes a `getMatchingSelector` method which returns the **underlying matching selector** instance for the given arguments, **instead of the result**.

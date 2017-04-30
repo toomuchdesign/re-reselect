@@ -1,6 +1,6 @@
 # Re-reselect [![Build Status][ci-img]][ci]
 
-Improve **[Reselect][reselect] selectors performance** on a few edge cases, by initializing selectors on the fly, using a **memoized factory**.
+Improve **[Reselect][reselect] selectors performance** on a few edge cases, by initializing selectors on runtime, using a **memoized factory**.
 
 **Re-reselect returns a reselect-like selector**, which is able to determine internally when **querying a new selector instance or a cached one** on the fly, depending on the supplied arguments.
 

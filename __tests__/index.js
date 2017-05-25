@@ -118,4 +118,14 @@ describe('createCachedSelector', () => {
     expect(firstSelectorActual).toBe(undefined);
     expect(secondSelectorActual).not.toBe(undefined);
   })
+
+  it('resultFunc', () => {
+    const cachedSelector = createCachedSelector(
+      jest.fn(),
+      memoizedFunction
+    )(
+      (arg1, arg2) => arg2
+    );
+    expect(cachedSelector.resultFunc).toBe(memoizedFunction);
+  })
 });

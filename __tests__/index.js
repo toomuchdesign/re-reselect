@@ -119,9 +119,9 @@ describe('createCachedSelector', () => {
     expect(secondSelectorActual).not.toBe(undefined);
   })
 
-  it('resultFunc', () => {
+  it('resultFunc attribute should reference provided result function', () => {
     const cachedSelector = createCachedSelector(
-      jest.fn(),
+      () => {},
       memoizedFunction
     )(
       (arg1, arg2) => arg2

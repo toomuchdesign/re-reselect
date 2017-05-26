@@ -7,7 +7,7 @@ Improve **[Reselect][reselect] selectors performance** on a few edge cases, by i
 Useful to **reduce selectors recalculation** when:
 - a selector is sequentially **called with one/few different arguments**
 - a selector is **imported by different modules** at the same time
-- **sharing selectors** with props across multiple components ([see the scenario described in reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components))
+- **sharing selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components) and [re-reselect solution](https://github.com/toomuchdesign/re-reselect#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization))
 - selectors need to be **instantiated on runtime**
 
 [reselect]:    https://github.com/reactjs/reselect
@@ -82,6 +82,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
   - [reReselectInstance`.getMatchingSelector`](#rereselectinstancegetmatchingselectorselectorarguments)
   - [reReselectInstance`.removeMatchingSelector`](#rereselectinstanceremovematchingselectorselectorarguments)
   - [reReselectInstance`.clearCache`](#rereselectinstanceclearcache)
+  - [reReselectInstance`.resultFunc`](#rereselectinstanceresultfunc)
 
 ## Installation
 ```console
@@ -317,6 +318,9 @@ Remove the selector responding to the given arguments from the cache.
 
 ### reReselectInstance`.clearCache()`
 Clear the whole `reReselectInstance` cache.
+
+### reReselectInstance`.resultFunc`
+Get `resultFunc` for easily [test composed selectors](https://github.com/reactjs/reselect#q-how-do-i-test-a-selector).
 
 ## Todo's
 - Named exports?

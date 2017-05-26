@@ -34,6 +34,8 @@ export default function createCachedSelector(...funcs) {
       cache = {};
     };
 
+    selector.resultFunc = funcs[funcs.length -1];
+
     return selector;
   }
 }

@@ -324,3 +324,4 @@ Get `resultFunc` for easily [test composed selectors](https://github.com/reactjs
 
 ## Todo's
 - Named exports?
+- TypeScript/Flux type definitions?

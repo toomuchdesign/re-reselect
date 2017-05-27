@@ -1,3 +1,6 @@
+# 0.5.0
+- Expose `resultFunc` attribute
+
 # 0.4.0
 - Expose `removeMatchingSelector` method
 - Expose `clearCache` method

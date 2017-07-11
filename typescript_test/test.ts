@@ -280,3 +280,18 @@ function testArrayArgument() {
     ret.foo9;
   }
 }
+
+function testResolver() {
+  type State = {foo: string};
+
+  const selector = createCachedSelector(
+    (state: State) => state.foo,
+    (state: never, arg1: number) => arg1,
+    (state: never, arg1: number, arg2: number) => arg1 + arg2,
+    (foo, arg1, sum) => ({foo, arg1, sum}),
+  )(
+    (state: never, arg1: number, arg2: number) => arg1 + arg2,
+  );
+
+  selector({foo: 'fizz'}, 1, 2);
+}

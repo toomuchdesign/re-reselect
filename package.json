@@ -13,7 +13,9 @@
     "index.d.ts"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "npm run test:js && npm run test:typescript",
+    "test:js": "jest",
+    "test:typescript": "typings-tester --dir typescript_test",
     "clean": "rm -rf dist es lib",
     "compile": "npm run clean && npm run compile:es && npm run compile:commonjs && npm run compile:umd",
     "compile:es": "babel -d es/ index.js",
@@ -46,6 +48,8 @@
     "babel-preset-es2015": "^6.22.0",
     "babel-register": "^6.23.0",
     "jest": "^19.0.2",
-    "reselect": ">1.0.0"
+    "reselect": ">1.0.0",
+    "typescript": "^2.4.1",
+    "typings-tester": "^0.2.2"
   }
 }

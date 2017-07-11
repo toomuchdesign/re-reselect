@@ -8,7 +8,12 @@ export type OutputSelector<S, R, C> = Selector<S, R> & {
     resetRecomputations: () => number;
 };
 
-export type OutputCachedSelector<S, R, C> = (resolver: Resolver<S>) => OutputSelector<S, R, C>;
+export type OutputCachedSelector<S, R, C> = (resolver: Resolver<S>) => OutputSelector<S, R, C> & {
+  getMatchingSelector: (state: S, ...args: any[]) => Selector<S, R>;
+  removeMatchingSelector: (state: S, ...args: any[]) => void;
+  clearCache: () => void;
+  resultFunc: C;
+};
 
 export type ParametricSelector<S, P, R> = (state: S, props: P, ...args: any[]) => R;
 
@@ -20,7 +25,12 @@ export type OutputParametricSelector<S, P, R, C> = ParametricSelector<S, P, R> &
     resetRecomputations: () => number;
 };
 
-export type OutputParametricCachedSelector<S, P, R, C> = (resolver: ParametricResolver<S, P>) => OutputParametricSelector<S, P, R, C>;
+export type OutputParametricCachedSelector<S, P, R, C> = (resolver: ParametricResolver<S, P>) => OutputParametricSelector<S, P, R, C> & {
+  getMatchingSelector: (state: S, ...args: any[]) => ParametricSelector<S, P, R>;
+  removeMatchingSelector: (state: S, ...args: any[]) => void;
+  clearCache: () => void;
+  resultFunc: C;
+};
 
 /* one selector */
 export default function createCachedSelector<S, R1, T> (

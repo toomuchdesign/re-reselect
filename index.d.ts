@@ -17,13 +17,15 @@ export type OutputCachedSelector<S, R, C> = (resolver: Resolver<S>) => OutputSel
 
 export type ParametricSelector<S, P, R> = (state: S, props: P, ...args: any[]) => R;
 
+export type ParametricResolver<S, P> = (state: S, props: P, ...args: any[]) => number | string;
+
 export type OutputParametricSelector<S, P, R, C> = ParametricSelector<S, P, R> & {
   resultFunc: C;
   recomputations: () => number;
   resetRecomputations: () => number;
 };
 
-export type OutputParametricCachedSelector<S, P, R, C> = (resolver: Resolver<S>) => OutputParametricSelector<S, P, R, C> & {
+export type OutputParametricCachedSelector<S, P, R, C> = (resolver: ParametricResolver<S, P>) => OutputParametricSelector<S, P, R, C> & {
   getMatchingSelector: (state: S, ...args: any[]) => ParametricSelector<S, P, R>;
   removeMatchingSelector: (state: S, ...args: any[]) => void;
   clearCache: () => void;

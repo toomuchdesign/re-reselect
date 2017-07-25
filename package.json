@@ -21,6 +21,8 @@
     "compile:es": "babel -d es/ index.js",
     "compile:commonjs": "NODE_ENV=commonjs babel -d lib/ index.js",
     "compile:umd": "NODE_ENV=umd babel -d dist/ index.js",
+    "contrib:add": "all-contributors add",
+    "contrib:generate": "all-contributors generate",
     "preversion": "npm test",
     "version": "git add package.json",
     "postversion": "git push && git push --tags",
@@ -42,6 +44,7 @@
     "reselect": ">1.0.0"
   },
   "devDependencies": {
+    "all-contributors-cli": "^4.3.0",
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
     "babel-jest": "^19.0.0",

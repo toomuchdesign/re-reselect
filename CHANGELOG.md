@@ -1,3 +1,6 @@
+# 0.6.0
+- Add TypeScript type definitions
+
 # 0.5.0
 - Expose `resultFunc` attribute
 

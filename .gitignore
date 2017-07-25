@@ -9,6 +9,7 @@ lib
 coverage
 
 # Trailing dotted files
+!.all-contributorsrc
 !.babelrc
 !.editorconfig
 !.gitignore

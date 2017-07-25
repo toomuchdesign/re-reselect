@@ -1,0 +1,118 @@
+{
+  "projectName": "re-reselect",
+  "projectOwner": "toomuchdesign",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "toomuchdesign",
+      "name": "Andrea Carraro",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/4573549?v=4",
+      "profile": "http://www.andreacarraro.it",
+      "contributions": [
+        "code",
+        "doc",
+        "infra",
+        "test",
+        "review"
+      ]
+    },
+    {
+      "login": "olslash",
+      "name": "Mitch Robb",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/693493?v=4",
+      "profile": "https://olslash.github.io/",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "rufman",
+      "name": "Stephane Rufer",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1128559?v=4",
+      "profile": "https://github.com/rufman",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "spiffysparrow",
+      "name": "Tracy Mullen",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2788860?v=4",
+      "profile": "https://github.com/spiffysparrow",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "xsburg",
+      "name": "Stepan Burguchev",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/830824?v=4",
+      "profile": "https://github.com/xsburg",
+      "contributions": [
+        "code",
+        "review"
+      ]
+    },
+    {
+      "login": "sushain97",
+      "name": "Sushain Cherivirala",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/4211838?v=4",
+      "profile": "https://www.skc.name",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "stevemao",
+      "name": "Steve Mao",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6316590?v=4",
+      "profile": "https://twitter.com/MaoStevemao",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "gamtiq",
+      "name": "Denis Sikuler",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1177323?v=4",
+      "profile": "https://github.com/gamtiq",
+      "contributions": [
+        "question"
+      ]
+    },
+    {
+      "login": "Sigfried",
+      "name": "Sigfried Gold",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1586931?v=4",
+      "profile": "http://sigfried.org",
+      "contributions": [
+        "question"
+      ]
+    },
+    {
+      "login": "karptonite",
+      "name": "Daniel Karp",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/132278?v=4",
+      "profile": "https://twitter.com/karptonite",
+      "contributions": [
+        "question"
+      ]
+    },
+    {
+      "login": "maartenschumacher",
+      "name": "Maarten Schumacher",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/10407025?v=4",
+      "profile": "https://github.com/maartenschumacher",
+      "contributions": [
+        "question"
+      ]
+    }
+  ]
+}

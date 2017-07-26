@@ -1,6 +1,6 @@
 {
   "name": "re-reselect",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Memoize selectors and avoid recalculation between calls with different inputs",
   "main": "lib/index.js",
   "module": "es/index.js",

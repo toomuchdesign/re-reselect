@@ -26,7 +26,7 @@
     "preversion": "npm test",
     "version": "git add package.json",
     "postversion": "git push && git push --tags",
-    "prepublish": "npm run compile"
+    "prepublish": "npm test && npm run compile"
   },
   "keywords": [
     "react",

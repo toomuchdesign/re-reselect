@@ -10,7 +10,18 @@ function testSelector() {
     (state: State) => state.foo,
   );
 
-  selector.getMatchingSelector({foo: 'bar'});
+  const parametricSelector = createCachedSelector(
+    (state: State, arg1: number) => state.foo,
+    (foo) => foo,
+  )(
+    (state: State, arg1: number) => state.foo,
+  );
+
+  const matchingSelectors = selector.getMatchingSelector({foo: 'bar'});
+  const resultFunc: (foo: string) => string = matchingSelectors.resultFunc;
+  const matchingParametricSelectors = selector.getMatchingSelector({foo: 'bar'});
+  const parametricResultFunc: (foo: string) => string = matchingParametricSelectors.resultFunc;
+
   selector.removeMatchingSelector({foo: 'bar'});
   selector.clearCache();
   const res = selector.resultFunc('test');

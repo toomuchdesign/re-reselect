@@ -10,7 +10,15 @@
     },
     "umd": {
       "presets": [
-        ["es2015", {"modules": "umd", "loose": true}],
+        ["es2015", {"modules": false}],
+      ],
+      "plugins": [
+        ["transform-es2015-modules-umd", {
+          "globals": {
+            "reselect": "Reselect"
+          },
+          "loose": true
+        }]
       ],
       "moduleId": "Re-reselect"
     },

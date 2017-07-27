@@ -21,6 +21,17 @@
       ]
     },
     {
+      "login": "xsburg",
+      "name": "Stepan Burguchev",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/830824?v=4",
+      "profile": "https://github.com/xsburg",
+      "contributions": [
+        "code",
+        "review",
+        "test"
+      ]
+    },
+    {
       "login": "olslash",
       "name": "Mitch Robb",
       "avatar_url": "https://avatars3.githubusercontent.com/u/693493?v=4",
@@ -48,16 +59,6 @@
       "contributions": [
         "code",
         "test"
-      ]
-    },
-    {
-      "login": "xsburg",
-      "name": "Stepan Burguchev",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/830824?v=4",
-      "profile": "https://github.com/xsburg",
-      "contributions": [
-        "code",
-        "review"
       ]
     },
     {
@@ -112,6 +113,15 @@
       "profile": "https://github.com/maartenschumacher",
       "contributions": [
         "question"
+      ]
+    },
+    {
+      "login": "Dante-101",
+      "name": "Gaurav Lahoti",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1428826?v=4",
+      "profile": "https://github.com/Dante-101",
+      "contributions": [
+        "bug"
       ]
     }
   ]

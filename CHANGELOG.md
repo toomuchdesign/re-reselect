@@ -1,3 +1,6 @@
+# 0.6.1
+- Fix TypeScript `OutputCachedSelector` and `OutputParametricCachedSelector` type definitions
+
 # 0.6.0
 - Add TypeScript type definitions
 

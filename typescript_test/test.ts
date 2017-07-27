@@ -10,29 +10,24 @@ function testSelector() {
     (state: State) => state.foo,
   );
 
-  const parametricSelector = createCachedSelector(
-    (state: State, arg1: number) => state.foo,
-    (foo) => foo,
-  )(
-    (state: State, arg1: number) => state.foo,
-  );
+  const result: string = selector({foo: 'bar'});
+  // typings:expect-error
+  const num: number = selector({foo: 'bar'});
 
   const matchingSelectors = selector.getMatchingSelector({foo: 'bar'});
   const resultFunc: (foo: string) => string = matchingSelectors.resultFunc;
-  const matchingParametricSelectors = selector.getMatchingSelector({foo: 'bar'});
-  const parametricResultFunc: (foo: string) => string = matchingParametricSelectors.resultFunc;
+
+  // typings:expect-error
+  selector.getMatchingSelector('foo');
 
   selector.removeMatchingSelector({foo: 'bar'});
-  selector.clearCache();
-  const res = selector.resultFunc('test');
+  // typings:expect-error
+  selector.removeMatchingSelector('foo');
 
-  const foo: string = selector({foo: 'bar'});
+  selector.clearCache();
 
   // typings:expect-error
   selector({foo: 'bar'}, {prop: 'value'});
-
-  // typings:expect-error
-  const num: number = selector({foo: 'bar'});
 
   // typings:expect-error
   createCachedSelector(
@@ -97,7 +92,7 @@ function testInvalidTypeInCombinator() {
 }
 
 function testParametricSelector() {
-  type State = {foo: string;};
+  type State = {foo: string};
   type Props = {bar: number};
 
   const selector = createCachedSelector(
@@ -108,14 +103,24 @@ function testParametricSelector() {
     (state: never, props: Props) => props.bar,
   );
 
+  const result = selector({foo: 'fizz'}, {bar: 42});
+  const foo: string = result.foo;
+  const bar: number = result.bar;
+
   // typings:expect-error
   selector({foo: 'fizz'});
   // typings:expect-error
   selector({foo: 'fizz'}, {bar: 'baz'});
 
-  const ret = selector({foo: 'fizz'}, {bar: 42});
-  const foo: string = ret.foo;
-  const bar: number = ret.bar;
+  const matchingSelectors = selector.getMatchingSelector({foo: 'fizz'}, {bar: 42});
+  const resultFunc: (foo: string, bar: number) => object = matchingSelectors.resultFunc;
+
+  selector.getMatchingSelector({foo: 'fizz'});
+
+  selector.removeMatchingSelector({foo: 'fizz'}, {bar: 42});
+  selector.removeMatchingSelector({foo: 'fizz'});
+
+  selector.clearCache();
 
   const selector2 = createCachedSelector(
     (state) => state.foo,

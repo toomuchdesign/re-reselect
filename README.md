@@ -325,6 +325,7 @@ Get `resultFunc` for easily [test composed selectors](https://github.com/reactjs
 ## Todo's
 - Named exports?
 - Flow type definitions?
+- Improve TS tests readability
 
 ## Contributors
 Thanks to you all ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):

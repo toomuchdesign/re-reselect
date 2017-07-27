@@ -26,7 +26,7 @@ export type OutputParametricSelector<S, P, R, C> = ParametricSelector<S, P, R> &
 };
 
 export type OutputParametricCachedSelector<S, P, R, C> = (resolver: ParametricResolver<S, P>) => OutputParametricSelector<S, P, R, C> & {
-  getMatchingSelector: (state: S, ...args: any[]) => ParametricSelector<S, P, R>;
+  getMatchingSelector: (state: S, ...args: any[]) => OutputParametricCachedSelector<S, P, R, any>;
   removeMatchingSelector: (state: S, ...args: any[]) => void;
   clearCache: () => void;
   resultFunc: C;

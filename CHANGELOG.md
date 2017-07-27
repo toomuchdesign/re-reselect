@@ -1,3 +1,6 @@
+# 0.6.2
+- Fix wrong UMD reselect global import
+
 # 0.6.1
 - Fix TypeScript `OutputCachedSelector` and `OutputParametricCachedSelector` type definitions
 

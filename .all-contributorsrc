@@ -123,6 +123,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "cnlon",
+      "name": "Lon",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/13602053?v=4",
+      "profile": "http://lon.im",
+      "contributions": [
+        "bug"
+      ]
     }
   ]
 }

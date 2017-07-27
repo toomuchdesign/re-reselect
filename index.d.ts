@@ -9,7 +9,7 @@ export type OutputSelector<S, R, C> = Selector<S, R> & {
 };
 
 export type OutputCachedSelector<S, R, C> = (resolver: Resolver<S>) => OutputSelector<S, R, C> & {
-  getMatchingSelector: (state: S, ...args: any[]) => Selector<S, R>;
+  getMatchingSelector: (state: S, ...args: any[]) => OutputSelector<S, R, C>;
   removeMatchingSelector: (state: S, ...args: any[]) => void;
   clearCache: () => void;
   resultFunc: C;
@@ -26,7 +26,7 @@ export type OutputParametricSelector<S, P, R, C> = ParametricSelector<S, P, R> &
 };
 
 export type OutputParametricCachedSelector<S, P, R, C> = (resolver: ParametricResolver<S, P>) => OutputParametricSelector<S, P, R, C> & {
-  getMatchingSelector: (state: S, ...args: any[]) => OutputParametricCachedSelector<S, P, R, any>;
+  getMatchingSelector: (state: S, ...args: any[]) => OutputParametricSelector<S, P, R, C>;
   removeMatchingSelector: (state: S, ...args: any[]) => void;
   clearCache: () => void;
   resultFunc: C;

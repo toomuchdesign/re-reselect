@@ -115,9 +115,11 @@ function testParametricSelector() {
   const matchingSelectors = selector.getMatchingSelector({foo: 'fizz'}, {bar: 42});
   const resultFunc: (foo: string, bar: number) => object = matchingSelectors.resultFunc;
 
-  selector.getMatchingSelector({foo: 'fizz'});
+  // typings:expect-error
+  selector.getMatchingSelector({foo: 'fizz'}, {bar: 'fuzz'});
 
   selector.removeMatchingSelector({foo: 'fizz'}, {bar: 42});
+  // typings:expect-error
   selector.removeMatchingSelector({foo: 'fizz'});
 
   selector.clearCache();

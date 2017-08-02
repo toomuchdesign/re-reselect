@@ -74,6 +74,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
   - [Other viable solutions](#other-viable-solutions)
 - [FAQ](#faq)
   - [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
+  - [How do I use multiple inputs to set the cache key?](#how-do-i-use-multiple-inputs-to-set-the-cache-key)
   - [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
   - [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
 - [API](#api)
@@ -183,6 +184,30 @@ let myData = getMyData(state, 'foo', 'bar');
 
 ```
 
+### How do I use multiple inputs to set the cache key?
+The **cache key** is defined by the output of the `resolverFunction`.
+
+`resolverFunction` is a function which receives the same arguments of your `inputSelectors` and *must return a **string** or **number***.
+
+A few good examples and [a bonus](https://github.com/toomuchdesign/re-reselect/issues/3):
+
+```js
+// Basic usage: use a single argument as cache key
+createCachedSelector(
+  ...
+)((state, arg1, arg2, arg3) => arg3)
+
+// Use multiple arguments and chain them into a string
+createCachedSelector(
+  ...
+)((state, arg1, arg2, arg3) => `${arg1}:${arg3}`)
+
+// Extract properties from an object
+createCachedSelector(
+  ...
+)((state, props) => `${props.a}:${props.b}`)
+```
+
 ### How to share a selector across multiple components while passing in props and retaining memoization?
 This example is how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components).
 
@@ -262,7 +287,7 @@ export const getMyData = createCachedSelector(
   selectorB,
   (A, B) => doSomethingWith(A, B),
 )(
-  (state, arg1) => arg1,   // Use arg2 as cache key
+  (state, arg1) => arg1,   // Use arg1 as cache key
 );
 
 // ...
@@ -294,12 +319,14 @@ import reReselect from 're-reselect';
 - `resolverFunction`
 - `selectorCreator` *(optional)*
 
+#### resolverFunction
 `resolverFunction` is a function which receives the same arguments of your selectors (and `inputSelectors`) and *must return a **string** or **number***. The result is used as cache key to store/retrieve selector instances.
 
 Cache keys of type `number` are treated like strings, since they are assigned to a JS object as arguments.
 
 The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.17.4#memoize) util.
 
+#### selectorCreator
 `selectorCreator` is an optional function in case you want to use custom selectors. By default it uses Reselect's `createSelector`.
 
 #### Returns

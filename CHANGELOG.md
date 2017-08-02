@@ -1,3 +1,6 @@
+# 0.6.3
+- Add TS type definition for optional `selectorCreator`
+
 # 0.6.2
 - Fix wrong UMD reselect global import
 

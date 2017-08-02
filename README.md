@@ -327,7 +327,7 @@ Cache keys of type `number` are treated like strings, since they are assigned to
 The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.17.4#memoize) util.
 
 #### selectorCreator
-`selectorCreator` is an optional function in case you want to use custom selectors. By default it uses Reselect's `createSelector`.
+`selectorCreator` is an optional function in case you want to use [custom selectors](https://github.com/reactjs/reselect/tree/v3.0.0#createselectorcreatormemoize-memoizeoptions). By default it uses Reselect's `createSelector`.
 
 #### Returns
 (Function): a `reReselectInstance` selector ready to be used **like a normal reselect selector**.

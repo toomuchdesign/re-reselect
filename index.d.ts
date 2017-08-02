@@ -2,13 +2,16 @@ export type Selector<S, R> = (state: S) => R;
 
 export type Resolver<S> = (state: S, ...args: any[]) => number | string;
 
+/* Here we should refer to orginal reselect typings. How? */
+export type CreateSelectorInstance = (...args: any[]) => any;
+
 export type OutputSelector<S, R, C> = Selector<S, R> & {
   resultFunc: C;
   recomputations: () => number;
   resetRecomputations: () => number;
 };
 
-export type OutputCachedSelector<S, R, C> = (resolver: Resolver<S>) => OutputSelector<S, R, C> & {
+export type OutputCachedSelector<S, R, C> = (resolver: Resolver<S>, createSelectorInstance?: CreateSelectorInstance) => OutputSelector<S, R, C> & {
   getMatchingSelector: (state: S, ...args: any[]) => OutputSelector<S, R, C>;
   removeMatchingSelector: (state: S, ...args: any[]) => void;
   clearCache: () => void;
@@ -25,7 +28,7 @@ export type OutputParametricSelector<S, P, R, C> = ParametricSelector<S, P, R> &
   resetRecomputations: () => number;
 };
 
-export type OutputParametricCachedSelector<S, P, R, C> = (resolver: ParametricResolver<S, P>) => OutputParametricSelector<S, P, R, C> & {
+export type OutputParametricCachedSelector<S, P, R, C> = (resolver: ParametricResolver<S, P>, createSelectorInstance?: CreateSelectorInstance) => OutputParametricSelector<S, P, R, C> & {
   getMatchingSelector: (state: S, props: P, ...args: any[]) => OutputParametricSelector<S, P, R, C>;
   removeMatchingSelector: (state: S, props: P, ...args: any[]) => void;
   clearCache: () => void;

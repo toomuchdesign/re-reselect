@@ -1,3 +1,4 @@
+import { createSelectorCreator, defaultMemoize } from 'reselect';
 import createCachedSelector from '../index';
 
 function testSelector() {
@@ -312,4 +313,25 @@ function testResolver() {
   );
 
   selector({foo: 'fizz'}, 1, 2);
+}
+
+function testCustomSelectorCreator () {
+  type State = {foo: string};
+
+  const selector = createCachedSelector(
+    (state: State) => state.foo,
+    (foo) => foo,
+  )(
+    (state: State) => state.foo,
+    createSelectorCreator(defaultMemoize)
+  );
+
+  // typings:expect-error
+  const selectorFailing = createCachedSelector(
+    (state: State) => state.foo,
+    (foo) => foo,
+  )(
+    (state: State) => state.foo,
+    (): void => {}
+  );
 }

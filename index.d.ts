@@ -1,9 +1,10 @@
+import { createSelector } from 'reselect';
+
 export type Selector<S, R> = (state: S) => R;
 
 export type Resolver<S> = (state: S, ...args: any[]) => number | string;
 
-/* Here we should refer to orginal reselect typings. How? */
-export type CreateSelectorInstance = (...args: any[]) => any;
+export type CreateSelectorInstance = typeof createSelector;
 
 export type OutputSelector<S, R, C> = Selector<S, R> & {
   resultFunc: C;

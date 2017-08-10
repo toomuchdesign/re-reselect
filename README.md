@@ -312,12 +312,14 @@ myFooDataSelector.resetRecomputations();
 import reReselect from 're-reselect';
 ```
 
-### reReselect([reselect's createSelector arguments])(resolverFunction, selectorCreator = selectorCreator)
+### reReselect([reselect's createSelector arguments [, cacheSize]])(resolverFunction, selectorCreator = selectorCreator)
 
 **Re-reselect** accepts your original [selector creator arguments](https://github.com/reactjs/reselect/tree/v2.5.4#createselectorinputselectors--inputselectors-resultfunc) and returns a new function which accepts **2 arguments**:
 
 - `resolverFunction`
 - `selectorCreator` *(optional)*
+
+Adding `cacheSize` as the last argument will limit the size of cache to *cacheSize* last results.
 
 #### resolverFunction
 `resolverFunction` is a function which receives the same arguments of your selectors (and `inputSelectors`) and *must return a **string** or **number***. The result is used as cache key to store/retrieve selector instances.

@@ -2,6 +2,8 @@ import { createSelector } from 'reselect';
 
 export default function createCachedSelector(...funcs) {
   let cache = {};
+  let cacheOrdering = [];
+  const cacheSize = typeof funcs[funcs.length - 1] === 'number' ? funcs.pop() : 0;
 
   return (resolver, createSelectorInstance = createSelector) => {
     const selector = function(...args) {
@@ -11,7 +13,17 @@ export default function createCachedSelector(...funcs) {
       if (typeof cacheKey === 'string' || typeof cacheKey === 'number') {
         if (cache[cacheKey] === undefined) {
           cache[cacheKey] = createSelectorInstance(...funcs);
+
+          cacheOrdering.push(cacheKey);
+          if (cacheSize > 0 && cacheOrdering.length > cacheSize) {
+            const earliest = cacheOrdering.shift();
+            delete cache[earliest];
+          }
+        } else {
+          // Move the latest cache key to the top.
+          cacheOrdering = [...cacheOrdering.filter(key => key !== cacheKey), cacheKey];
         }
+
         return cache[cacheKey](...args);
       }
       return undefined;
@@ -32,6 +44,7 @@ export default function createCachedSelector(...funcs) {
 
     selector.clearCache = () => {
       cache = {};
+      cacheOrdering = [];
     };
 
     selector.resultFunc = funcs[funcs.length -1];

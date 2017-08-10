@@ -19,7 +19,11 @@ export default function createCachedSelector(...funcs) {
             const earliest = cacheOrdering.shift();
             delete cache[earliest];
           }
+        } else {
+          // Move the latest cache key to the top.
+          cacheOrdering = [...cacheOrdering.filter(key => key !== cacheKey), cacheKey];
         }
+
         return cache[cacheKey](...args);
       }
       return undefined;
@@ -40,7 +44,7 @@ export default function createCachedSelector(...funcs) {
 
     selector.clearCache = () => {
       cache = {};
-      cacheOrdering.length = 0;
+      cacheOrdering = [];
     };
 
     selector.resultFunc = funcs[funcs.length -1];

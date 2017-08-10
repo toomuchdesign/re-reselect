@@ -149,4 +149,26 @@ describe('createCachedSelector', () => {
     expect(secondSelectorActual).not.toBe(undefined);
     expect(thirdSelectorActual).not.toBe(undefined);
   })
+
+  it('Should memoize following LRU rule', () => {
+    const cachedSelector = createCachedSelector(
+      resultFunc,
+      2,
+    )(
+      (arg1, arg2) => arg2
+    );
+
+    cachedSelector('foo', 1); // add to cache
+    cachedSelector('foo', 2); // add to cache
+    cachedSelector('foo', 1); // use from cache
+    cachedSelector('foo', 3); // add to cache
+
+    const firstSelectorActual = cachedSelector.getMatchingSelector('foo', 1);
+    const secondSelectorActual = cachedSelector.getMatchingSelector('foo', 2);
+    const thirdSelectorActual = cachedSelector.getMatchingSelector('foo', 3);
+
+    expect(firstSelectorActual).not.toBe(undefined);
+    expect(secondSelectorActual).toBe(undefined);
+    expect(thirdSelectorActual).not.toBe(undefined);
+  })
 });

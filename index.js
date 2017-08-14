@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 
 // @TODO Move it into a separate file and test it
-class FlatCacheObject {
+export class FlatCacheObject {
   constructor() {
     this._cache = {};
   }
@@ -16,6 +16,65 @@ class FlatCacheObject {
   }
   clear() {
     this._cache = {};
+  }
+}
+
+export class FifoCacheObject {
+  constructor({ cacheSize }) {
+    this._cache = {};
+    this._cacheOrdering = [];
+    this._cacheSize = cacheSize;
+  }
+  set(key, selectorFn) {
+    this._cache[key] = selectorFn;
+    if (this._cacheOrdering.length > this._cacheSize) {
+        this._cacheOrdering.shift();
+        delete this._cache[key];
+    }
+  }
+  get(key) {
+    return this._cache[key];
+  }
+  remove(key) {
+    delete this._cache[key];
+  }
+  clear() {
+    this._cache = {};
+    this._cacheOrdering = [];
+  }
+}
+
+export class LruCacheObject {
+  constructor ({ cacheSize }) {
+    this._cache = {};
+    this._cacheOrdering = [];
+    this._cacheSize = cacheSize;
+  }
+  set(key, selectorFn) {
+    this._cache[key] = selectorFn;
+    this._registerCacheHit(key);
+    if (this._cacheOrdering.length > this._cacheSize) {
+        this._cacheOrdering.shift();
+        delete this._cache[key];
+    }
+  }
+  get(key) {
+    this._registerCacheHit(key);
+    return this._cache[key];
+  }
+  remove(key) {
+    delete this._cache[key];
+  }
+  clear() {
+    this._cache = {};
+    this._cacheOrdering = [];
+  }
+  _registerCacheHit(key) {
+    const index = this._cacheOrdering.indexOf(key);
+    if (index) {
+        this._cacheOrdering.splice(index, 1);
+    }
+    this._cacheOrdering.push(key);
   }
 }
 

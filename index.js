@@ -1,26 +1,26 @@
 import { createSelector } from 'reselect';
 
 // @TODO Move it into a separate file and test it
-function flatCacheObjectCreator() {
-  return {
-    _cache: {},
-    set(key, selectorFn) {
-      this._cache[key] = selectorFn;
-    },
-    get(key) {
-      return this._cache[key];
-    },
-    remove(key) {
-      delete this._cache[key];
-    },
-    clear() {
-      this._cache = {};
-    },
+class FlatCacheObject {
+  constructor() {
+    this._cache = {};
+  }
+  set(key, selectorFn) {
+    this._cache[key] = selectorFn;
+  }
+  get(key) {
+    return this._cache[key];
+  }
+  remove(key) {
+    delete this._cache[key];
+  }
+  clear() {
+    this._cache = {};
   }
 }
 
 export default function createCachedSelector(...funcs) {
-  const defaultCacheCreator = flatCacheObjectCreator;
+  const defaultCacheCreator = FlatCacheObject;
 
   return (resolver, options = {}) => {
     let cache;
@@ -29,10 +29,10 @@ export default function createCachedSelector(...funcs) {
     // Allow "options" to be provided as a "selectorCreator" for backward compatibility
     // @TODO Remove "options" as a function in next breaking release
     if(typeof options === 'function') {
-      cache = defaultCacheCreator();
+      cache = new defaultCacheCreator();
       selectorCreator = options;
     } else {
-      cache = options.cacheObject || defaultCacheCreator();
+      cache = options.cacheObject || new defaultCacheCreator();
       selectorCreator = options.selectorCreator || createSelector;
     }
 

@@ -3,14 +3,14 @@ import { createSelector } from 'reselect';
 export default function createCachedSelector(...funcs) {
   let cache = {};
 
-  return (resolver, createSelectorInstance = createSelector) => {
+  return (resolver, selectorCreator = createSelector) => {
     const selector = function(...args) {
       // Application receives this function
       const cacheKey = resolver(...args);
 
       if (typeof cacheKey === 'string' || typeof cacheKey === 'number') {
         if (cache[cacheKey] === undefined) {
-          cache[cacheKey] = createSelectorInstance(...funcs);
+          cache[cacheKey] = selectorCreator(...funcs);
         }
         return cache[cacheKey](...args);
       }

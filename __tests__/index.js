@@ -8,13 +8,17 @@ beforeEach(() => {
   resultFunc = jest.fn();
 });
 
+function selectorWithMockedResultFunc() {
+  return createCachedSelector(
+    resultFunc,
+  )(
+    (arg1, arg2) => arg2,   // Resolver
+  );
+}
+
 describe('createCachedSelector', () => {
   it('Should use the same cached selector when resolver function returns the same string', () => {
-    const cachedSelector = createCachedSelector(
-      resultFunc,
-    )(
-      (arg1, arg2) => arg2,   // Resolver
-    );
+    const cachedSelector = selectorWithMockedResultFunc();
     const firstCall = cachedSelector('foo', 'bar');
     const secondCallWithSameResolver = cachedSelector('foo', 'bar');
 
@@ -22,11 +26,7 @@ describe('createCachedSelector', () => {
   });
 
   it('Should create 2 different selectors when resolver function returns different strings', () => {
-    const cachedSelector = createCachedSelector(
-      resultFunc,
-    )(
-      (arg1, arg2) => arg2,   // Resolver
-    );
+    const cachedSelector = selectorWithMockedResultFunc();
     const firstCallResult = cachedSelector('foo', 'bar');
     const secondCallWithDifferentResolver = cachedSelector('foo', 'moo');
 
@@ -46,11 +46,7 @@ describe('createCachedSelector', () => {
   });
 
   it('Should allow resolver function to return keys of type number', () => {
-    const cachedSelector = createCachedSelector(
-      resultFunc,
-    )(
-      (arg1, arg2) => arg2,   // Resolver
-    );
+    const cachedSelector = selectorWithMockedResultFunc();
     const firstCall = cachedSelector('foo', 1);
     const secondCallWithSameResolver = cachedSelector('foo', 1);
 
@@ -75,11 +71,7 @@ describe('createCachedSelector', () => {
   })
 
   it('Should return "undefined" when "getMatchingSelector" doesn\'t hit any cache entry', () => {
-    const cachedSelector = createCachedSelector(
-      resultFunc,
-    )(
-      (arg1, arg2) => arg2   // Resolver
-    );
+    const cachedSelector = selectorWithMockedResultFunc();
 
     const actual = cachedSelector.getMatchingSelector('foo', 1);
     const expected = undefined;
@@ -88,11 +80,7 @@ describe('createCachedSelector', () => {
   })
 
   it('Should reset the cache when calling "clearCache"', () => {
-    const cachedSelector = createCachedSelector(
-      resultFunc,
-    )(
-      (arg1, arg2) => arg2
-    );
+    const cachedSelector = selectorWithMockedResultFunc();
 
     cachedSelector('foo', 1) // add to cache
     cachedSelector.clearCache() // clear cache
@@ -102,11 +90,7 @@ describe('createCachedSelector', () => {
   })
 
   it('Should set the selected key to "undefined" when calling "removeMatchingSelector"', () => {
-    const cachedSelector = createCachedSelector(
-      resultFunc,
-    )(
-      (arg1, arg2) => arg2
-    );
+    const cachedSelector = selectorWithMockedResultFunc();
 
     cachedSelector('foo', 1); // add to cache
     cachedSelector('foo', 2); // add to cache
@@ -131,27 +115,30 @@ describe('createCachedSelector', () => {
 
   it('Should accept a selectorCreator function as a 2° option', () => {
     const cachedSelector = createCachedSelector(
-      () => {},
       resultFunc
     )(
       (arg1, arg2) => arg2,
-      createSelector
+      createSelector,
     );
-    const firstCall = cachedSelector('foo', 'bar');
+    expect(resultFunc.mock.calls.length).toBe(0);
+    cachedSelector('foo', 'bar');
+    cachedSelector('foo', 'bar');
     expect(resultFunc.mock.calls.length).toBe(1);
+
   })
 
   it('Should accept an options object', () => {
     const cachedSelector = createCachedSelector(
-      () => {},
       resultFunc
     )(
       (arg1, arg2) => arg2,
       {
-        selectorCreator: createSelector
+        selectorCreator: createSelector,
       }
     );
-    const firstCall = cachedSelector('foo', 'bar');
+    expect(resultFunc.mock.calls.length).toBe(0);
+    cachedSelector('foo', 'bar');
+    cachedSelector('foo', 'bar');
     expect(resultFunc.mock.calls.length).toBe(1);
   })
 });

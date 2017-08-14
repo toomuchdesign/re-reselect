@@ -128,4 +128,30 @@ describe('createCachedSelector', () => {
     );
     expect(cachedSelector.resultFunc).toBe(resultFunc);
   })
+
+  it('Should accept a selectorCreator function as a 2° option', () => {
+    const cachedSelector = createCachedSelector(
+      () => {},
+      resultFunc
+    )(
+      (arg1, arg2) => arg2,
+      createSelector
+    );
+    const firstCall = cachedSelector('foo', 'bar');
+    expect(resultFunc.mock.calls.length).toBe(1);
+  })
+
+  it('Should accept an options object', () => {
+    const cachedSelector = createCachedSelector(
+      () => {},
+      resultFunc
+    )(
+      (arg1, arg2) => arg2,
+      {
+        selectorCreator: createSelector
+      }
+    );
+    const firstCall = cachedSelector('foo', 'bar');
+    expect(resultFunc.mock.calls.length).toBe(1);
+  })
 });

@@ -1,18 +1,54 @@
 import { createSelector } from 'reselect';
 
-export default function createCachedSelector(...funcs) {
-  let cache = {};
+// @TODO Move it into a separate file and test it
+function flatCacheObjectCreator() {
+  return {
+    _cache: {},
+    set(key, selectorFn) {
+      this._cache[key] = selectorFn;
+    },
+    get(key) {
+      return this._cache[key];
+    },
+    remove(key) {
+      delete this._cache[key];
+    },
+    clear() {
+      this._cache = {};
+    },
+  }
+}
 
-  return (resolver, selectorCreator = createSelector) => {
+export default function createCachedSelector(...funcs) {
+  const defaultCacheCreator = flatCacheObjectCreator;
+
+  return (resolver, options = {}) => {
+    let cache;
+    let selectorCreator;
+
+    // Allow "options" to be provided as a "selectorCreator" for backward compatibility
+    // @TODO Remove "options" as a function in next breaking release
+    if(typeof options === 'function') {
+      cache = defaultCacheCreator();
+      selectorCreator = options;
+    } else {
+      cache = options.cacheObject || defaultCacheCreator();
+      selectorCreator = options.selectorCreator || createSelector;
+    }
+
     const selector = function(...args) {
       // Application receives this function
       const cacheKey = resolver(...args);
 
       if (typeof cacheKey === 'string' || typeof cacheKey === 'number') {
-        if (cache[cacheKey] === undefined) {
-          cache[cacheKey] = selectorCreator(...funcs);
+        let cacheResult = cache.get(cacheKey);
+
+        if (cacheResult === undefined) {
+          cache.set(cacheKey, selectorCreator(...funcs));
+          cacheResult = cache.get(cacheKey);
         }
-        return cache[cacheKey](...args);
+
+        return cacheResult(...args);
       }
       return undefined;
     };
@@ -20,18 +56,17 @@ export default function createCachedSelector(...funcs) {
     // Further selector methods
     selector.getMatchingSelector = (...args) => {
       const cacheKey = resolver(...args);
-      return cache[cacheKey];
+      // @NOTE It might update cache hit count in LRU-like caches
+      return cache.get(cacheKey);
     };
 
     selector.removeMatchingSelector = (...args) => {
       const cacheKey = resolver(...args);
-      if (cache[cacheKey] !== undefined) {
-        cache[cacheKey] = undefined;
-      }
+      cache.remove(cacheKey);
     };
 
     selector.clearCache = () => {
-      cache = {};
+      cache.clear();
     };
 
     selector.resultFunc = funcs[funcs.length -1];

@@ -25,7 +25,8 @@
     "test": {
       "presets": [
         ["es2015", {"modules": "commonjs", "loose": true}],
-      ]
+      ],
+      "ignore": []
     }
   }
 }

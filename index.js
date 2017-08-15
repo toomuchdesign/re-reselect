@@ -61,8 +61,8 @@ export class LruCacheObject {
     this._cache[key] = selectorFn;
     this._registerCacheHit(key);
     if (this._cacheOrdering.length > this._cacheSize) {
-        this._cacheOrdering.shift();
-        delete this._cache[key];
+        const earliest = this._cacheOrdering.shift();
+        delete this._cache[earliest];
     }
   }
   get(key) {
@@ -78,7 +78,7 @@ export class LruCacheObject {
   }
   _registerCacheHit(key) {
     const index = this._cacheOrdering.indexOf(key);
-    if (index) {
+    if (index !== -1) {
         this._cacheOrdering.splice(index, 1);
     }
     this._cacheOrdering.push(key);

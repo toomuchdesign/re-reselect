@@ -1,7 +1,5 @@
 import { FifoCacheObject } from '../index';
 
-const selectorFn = () => {};
-
 function fillCache(cache, entries = []) {
   entries.map(entry => cache.set(entry, entry));
   return cache;
@@ -10,8 +8,8 @@ function fillCache(cache, entries = []) {
 describe('FifoCacheObject', () => {
   it('Should return cached value', () => {
     const cache = new FifoCacheObject({ cacheSize: 5 });
-
     const actual = () => {};
+
     cache.set('foo', actual);
     const expected = cache.get('foo');
 
@@ -22,13 +20,10 @@ describe('FifoCacheObject', () => {
     const cache = new FifoCacheObject({ cacheSize: 5 });
 
     cache.set(0, 0);
-    expect(cache.get(0)).toBe(0);
-
     const newEntries = [1, 2, 3, 4, 5];
     fillCache(cache, newEntries)
 
     expect(cache.get(0)).toBe(undefined);
-
     newEntries.map(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
@@ -36,13 +31,12 @@ describe('FifoCacheObject', () => {
 
   it('Should remove a single item', () => {
     const cache = new FifoCacheObject({ cacheSize: 5 });
-
     const newEntries = [1, 2, 3, 4, 5];
     fillCache(cache, newEntries);
+
     cache.remove(3);
 
     expect(cache.get(3)).toBe(undefined);
-
     [1, 2, 4, 5].map( entry => {
       expect(cache.get(entry)).toBe(entry);
     });
@@ -53,7 +47,6 @@ describe('FifoCacheObject', () => {
 
     const newEntries = [1, 2, 3, 4, 5];
     fillCache(cache, newEntries);
-
     cache.clear();
 
     newEntries.map( entry => {

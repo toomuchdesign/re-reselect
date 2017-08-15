@@ -1,4 +1,4 @@
-import { FlatCacheObject } from '../index';
+import { FlatCacheObject } from '../src/index';
 
 function fillCache(cache, entries = []) {
   entries.map(entry => cache.set(entry, entry));

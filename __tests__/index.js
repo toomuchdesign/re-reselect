@@ -1,6 +1,6 @@
 /* eslint comma-dangle: 0 */
 import { createSelector } from 'reselect';
-import createCachedSelector from '../index';
+import createCachedSelector from '../src/index';
 
 let resultFunc;
 

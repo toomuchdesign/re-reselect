@@ -1,4 +1,8 @@
-import createCachedSelector, { FlatCacheObject, FifoCacheObject, LruCacheObject } from '../index';
+import createCachedSelector,{
+  FlatCacheObject,
+  FifoCacheObject,
+  LruCacheObject
+} from '../src/index';
 
 type State = {foo: string};
 const fooSelector = (state: State) => state.foo;

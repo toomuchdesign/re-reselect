@@ -1,4 +1,4 @@
-import { FifoCacheObject } from '../index';
+import { FifoCacheObject } from '../src/index';
 
 function fillCache(cache, entries = []) {
   entries.map(entry => cache.set(entry, entry));

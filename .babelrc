@@ -1,32 +1,17 @@
 {
   "presets": [
-    ["es2015", {"modules": false, "loose": true}],
+    ["es2015", {"modules": false, "loose": true}]
   ],
   "env": {
     "commonjs": {
       "presets": [
-        ["es2015", {"modules": "commonjs", "loose": true}],
+        ["es2015", {"modules": "commonjs", "loose": true}]
       ]
-    },
-    "umd": {
-      "presets": [
-        ["es2015", {"modules": false}],
-      ],
-      "plugins": [
-        ["transform-es2015-modules-umd", {
-          "globals": {
-            "reselect": "Reselect"
-          },
-          "loose": true
-        }]
-      ],
-      "moduleId": "Re-reselect"
     },
     "test": {
       "presets": [
-        ["es2015", {"modules": "commonjs", "loose": true}],
-      ],
-      "ignore": []
+        ["es2015", {"modules": "commonjs", "loose": true}]
+      ]
     }
   }
 }

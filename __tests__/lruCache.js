@@ -57,4 +57,18 @@ describe('LruCacheObject', () => {
       expect(cache.get(entry)).toBe(entry);
     });
   });
+
+  it('Should check mandatory `cacheSize` parameter', () => {
+    expect(() => {
+      const cache = new LruCacheObject();
+    }).toThrow(/Missing/);
+  });
+
+  it('Should check `cacheSize` parameter format', () => {
+    expect(() => {
+      const cache = new LruCacheObject({
+        cacheSize: 2.5
+      });
+    }).toThrow(/a positive integer/);
+  });
 });

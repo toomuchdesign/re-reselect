@@ -53,4 +53,18 @@ describe('FifoCacheObject', () => {
       expect(cache.get(entry)).toBe(undefined);
     });
   });
+
+  it('Should check mandatory `cacheSize` parameter', () => {
+    expect(() => {
+      const cache = new FifoCacheObject();
+    }).toThrow(/Missing/);
+  });
+
+  it('Should check `cacheSize` parameter format', () => {
+    expect(() => {
+      const cache = new FifoCacheObject({
+        cacheSize: 2.5
+      });
+    }).toThrow(/a positive integer/);
+  });
 });

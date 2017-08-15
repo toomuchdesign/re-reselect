@@ -1,5 +1,5 @@
 import { createSelectorCreator, defaultMemoize } from 'reselect';
-import createCachedSelector from '../index';
+import createCachedSelector from '../src/index';
 
 function testSelector() {
   type State = {foo: string};

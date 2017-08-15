@@ -1,13 +1,13 @@
-import { LruCacheObject } from '../src/index';
+import FifoCacheObject from '../FifoCacheObject';
 
 function fillCache(cache, entries = []) {
   entries.map(entry => cache.set(entry, entry));
   return cache;
 }
 
-describe('LruCacheObject', () => {
+describe('FifoCacheObject', () => {
   it('Should return cached value', () => {
-    const cache = new LruCacheObject({ cacheSize: 5 });
+    const cache = new FifoCacheObject({ cacheSize: 5 });
     const actual = () => {};
 
     cache.set('foo', actual);
@@ -16,8 +16,21 @@ describe('LruCacheObject', () => {
     expect(actual).toBe(expected);
   });
 
+  it('Should limit cache queue by removing the first item', () => {
+    const cache = new FifoCacheObject({ cacheSize: 5 });
+
+    cache.set(0, 0);
+    const newEntries = [1, 2, 3, 4, 5];
+    fillCache(cache, newEntries)
+
+    expect(cache.get(0)).toBe(undefined);
+    newEntries.map(entry => {
+      expect(cache.get(entry)).toBe(entry);
+    });
+  });
+
   it('Should remove a single item', () => {
-    const cache = new LruCacheObject({ cacheSize: 5 });
+    const cache = new FifoCacheObject({ cacheSize: 5 });
     const newEntries = [1, 2, 3, 4, 5];
     fillCache(cache, newEntries);
 
@@ -30,10 +43,10 @@ describe('LruCacheObject', () => {
   });
 
   it('Should clear the cache', () => {
-    const cache = new LruCacheObject({ cacheSize: 5 });
+    const cache = new FifoCacheObject({ cacheSize: 5 });
+
     const newEntries = [1, 2, 3, 4, 5];
     fillCache(cache, newEntries);
-
     cache.clear();
 
     newEntries.map( entry => {
@@ -41,32 +54,15 @@ describe('LruCacheObject', () => {
     });
   });
 
-  it('Should limit cache queue by removing the least recently used item', () => {
-    const cache = new LruCacheObject({ cacheSize: 5 });
-
-    const newEntries1 = [0, 1, 2];
-    const newEntries2 = [3, 4, 5];
-    fillCache(cache, newEntries1);
-    cache.get(0);
-    fillCache(cache, newEntries2);
-
-    expect(cache.get(0)).toBe(0);
-    expect(cache.get(1)).toBe(undefined);
-    expect(cache.get(2)).toBe(2);
-    newEntries2.map(entry => {
-      expect(cache.get(entry)).toBe(entry);
-    });
-  });
-
   it('Should check mandatory `cacheSize` parameter', () => {
     expect(() => {
-      const cache = new LruCacheObject();
+      const cache = new FifoCacheObject();
     }).toThrow(/Missing/);
   });
 
   it('Should check `cacheSize` parameter format', () => {
     expect(() => {
-      const cache = new LruCacheObject({
+      const cache = new FifoCacheObject({
         cacheSize: 2.5
       });
     }).toThrow(/a positive integer/);

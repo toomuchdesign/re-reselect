@@ -1,21 +1,18 @@
 // https://github.com/rollup/rollup-starter-project
-import babelrc from 'babelrc-rollup';
 import babel from 'rollup-plugin-babel';
-import uglify from 'rollup-plugin-uglify';
-
-const minify = process.env.MINIFY;
 
 let pkg = require('./package.json');
 let external = Object.keys(pkg.peerDependencies);
 
 let plugins = [
-  babel(babelrc()),
+  babel(),
 ];
 
 const config = {
   entry: 'src/index.js',
   external: external,
   plugins: plugins,
+  exports: 'named',
   targets: [
     {
       dest: pkg.main,
@@ -31,39 +28,12 @@ const config = {
       dest: 'dist/index.js',
       format: 'umd',
       sourceMap: true,
-      moduleId: 'Re-reselect',
       moduleName: 'Re-reselect',
       globals: {
         reselect: 'Reselect',
-      }
+      },
     },
   ],
 };
-
-// Mutate config object to only export minified UMD
-if (minify) {
-  config.plugins.push(
-    uglify({
-      compress: {
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true,
-        warnings: false
-      }
-    })
-  );
-
-  config.targets = [
-    {
-      dest: 'dist/index.min.js',
-      format: 'umd',
-      moduleId: 'Re-reselect',
-      moduleName: 'Re-reselect',
-      globals: {
-        reselect: 'Reselect',
-      }
-    },
-  ];
-}
 
 export default config

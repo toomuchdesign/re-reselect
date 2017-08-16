@@ -5,23 +5,19 @@
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
-  "typings": "./index.d.ts",
+  "typings": "src/index.d.ts",
   "files": [
     "dist",
     "es",
     "lib",
-    "index.d.ts"
+    "src"
   ],
   "scripts": {
     "test": "npm run test:js && npm run test:typescript",
     "test:js": "jest",
     "test:typescript": "typings-tester --dir typescript_test",
     "clean": "rm -rf dist es lib",
-    "compile": "npm run clean && npm run compile:entrypoint && npm run compile:extras",
-    "compile:entrypoint": "rollup -c && cross-env MINIFY=true rollup -c",
-    "compile:extras": "npm run compile:extras:es && npm run compile:extras:commonjs",
-    "compile:extras:es": "babel --ignore __tests__,src/index.js -d es/ src/",
-    "compile:extras:commonjs": "cross-env NODE_ENV=commonjs babel --ignore __tests__,src/index.js -d lib/ src/",
+    "compile": "npm run clean && cross-env BABEL_ENV=rollup rollup -c",
     "contrib:add": "all-contributors add",
     "contrib:generate": "all-contributors generate",
     "preversion": "npm test",
@@ -46,20 +42,17 @@
   },
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",
-    "babel-cli": "^6.24.1",
     "babel-core": "^6.23.1",
     "babel-jest": "^19.0.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
     "babel-preset-es2015": "^6.22.0",
     "babel-register": "^6.23.0",
-    "babelrc-rollup": "^3.0.0",
     "cross-env": "^5.0.5",
     "jest": "^19.0.2",
     "reselect": ">1.0.0",
     "rollup": "^0.47.4",
     "rollup-plugin-babel": "^3.0.1",
-    "rollup-plugin-uglify": "^2.0.1",
     "typescript": "^2.4.1",
     "typings-tester": "^0.2.2"
   }

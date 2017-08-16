@@ -1,5 +1,5 @@
 /* eslint comma-dangle: 0 */
-import { createSelector } from 'reselect';
+import {createSelector} from 'reselect';
 import createCachedSelector from '../index';
 
 let resultFunc;
@@ -9,10 +9,8 @@ beforeEach(() => {
 });
 
 function selectorWithMockedResultFunc() {
-  return createCachedSelector(
-    resultFunc,
-  )(
-    (arg1, arg2) => arg2,   // Resolver
+  return createCachedSelector(resultFunc)(
+    (arg1, arg2) => arg2 // Resolver
   );
 }
 
@@ -34,10 +32,8 @@ describe('createCachedSelector', () => {
   });
 
   it('Should return "undefined" if provided resolver does not return a string', () => {
-    const cachedSelector = createCachedSelector(
-      resultFunc,
-    )(
-      () => {},   // Resolver
+    const cachedSelector = createCachedSelector(resultFunc)(
+      () => {} // Resolver
     );
     const firstCallResult = cachedSelector('foo', 'bar');
 
@@ -54,11 +50,7 @@ describe('createCachedSelector', () => {
   });
 
   it('Should expose underlying reselect selector for a cache key with "getMatchingSelector"', () => {
-    const cachedSelector = createCachedSelector(
-      () => {},
-    )(
-      (arg1, arg2) => arg2
-    );
+    const cachedSelector = createCachedSelector(() => {})((arg1, arg2) => arg2);
 
     // Retrieve result from re-reselect cached selector
     const actualResult = cachedSelector('foo', 1);
@@ -67,8 +59,8 @@ describe('createCachedSelector', () => {
     const reselectSelector = cachedSelector.getMatchingSelector('foo', 1);
     const expectedResultFromSelector = reselectSelector('foo', 1);
 
-    expect(actualResult).toBe(expectedResultFromSelector)
-  })
+    expect(actualResult).toBe(expectedResultFromSelector);
+  });
 
   it('Should return "undefined" when "getMatchingSelector" doesn\'t hit any cache entry', () => {
     const cachedSelector = selectorWithMockedResultFunc();
@@ -76,18 +68,18 @@ describe('createCachedSelector', () => {
     const actual = cachedSelector.getMatchingSelector('foo', 1);
     const expected = undefined;
 
-    expect(actual).toEqual(expected)
-  })
+    expect(actual).toEqual(expected);
+  });
 
   it('Should reset the cache when calling "clearCache"', () => {
     const cachedSelector = selectorWithMockedResultFunc();
 
-    cachedSelector('foo', 1) // add to cache
-    cachedSelector.clearCache() // clear cache
+    cachedSelector('foo', 1); // add to cache
+    cachedSelector.clearCache(); // clear cache
     const actual = cachedSelector.getMatchingSelector('foo', 1);
 
     expect(actual).toBe(undefined);
-  })
+  });
 
   it('Should set the selected key to "undefined" when calling "removeMatchingSelector"', () => {
     const cachedSelector = selectorWithMockedResultFunc();
@@ -101,44 +93,37 @@ describe('createCachedSelector', () => {
 
     expect(firstSelectorActual).toBe(undefined);
     expect(secondSelectorActual).not.toBe(undefined);
-  })
+  });
 
   it('resultFunc attribute should reference provided result function', () => {
-    const cachedSelector = createCachedSelector(
-      () => {},
-      resultFunc
-    )(
+    const cachedSelector = createCachedSelector(() => {}, resultFunc)(
       (arg1, arg2) => arg2
     );
     expect(cachedSelector.resultFunc).toBe(resultFunc);
-  })
+  });
 
   it('Should accept a selectorCreator function as a 2° option', () => {
-    const cachedSelector = createCachedSelector(
-      resultFunc
-    )(
+    const cachedSelector = createCachedSelector(resultFunc)(
       (arg1, arg2) => arg2,
-      createSelector,
+      createSelector
     );
     expect(resultFunc.mock.calls.length).toBe(0);
     cachedSelector('foo', 'bar');
     cachedSelector('foo', 'bar');
     expect(resultFunc.mock.calls.length).toBe(1);
-
-  })
+  });
 
   it('Should accept an options object', () => {
-    const cachedSelector = createCachedSelector(
-      resultFunc
-    )(
+    const cachedSelector = createCachedSelector(resultFunc)(
       (arg1, arg2) => arg2,
       {
         selectorCreator: createSelector,
       }
     );
     expect(resultFunc.mock.calls.length).toBe(0);
+
     cachedSelector('foo', 'bar');
     cachedSelector('foo', 'bar');
     expect(resultFunc.mock.calls.length).toBe(1);
-  })
+  });
 });

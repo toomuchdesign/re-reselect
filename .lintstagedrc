@@ -1,3 +1,4 @@
 {
-  "src/**/*.js": "npm t"
+  "src/**/*.js": ["npm run prettier", "npm t", "git add"],
+  "*.js": ["npm run prettier", "git add"],
 }

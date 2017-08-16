@@ -24,7 +24,9 @@
     "version": "git add package.json",
     "postversion": "git push && git push --tags",
     "prepublish": "npm test && npm run compile",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "prettier": "prettier --single-quote --trailing-comma es5 --no-bracket-spacing --write",
+    "prettier:src": "npm run prettier src/**/*.js"
   },
   "keywords": [
     "react",

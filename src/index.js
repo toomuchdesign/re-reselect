@@ -56,3 +56,7 @@ export default function createCachedSelector(...funcs) {
     return selector;
   }
 }
+
+export { FlatCacheObject };
+export { default as FifoCacheObject } from './cache/FifoCacheObject';
+export { default as LruCacheObject } from './cache/LruCacheObject';

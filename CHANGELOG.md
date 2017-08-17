@@ -1,3 +1,8 @@
+# 1.0.0
+- Accept an option object to receive `cacheObject` and `selectorCreator` options
+- Extract caching logic into pluggable/customizable cache objects
+- Introduce `Rollup.js` as bundler
+
 # 0.6.3
 - Add TS type definition for optional `selectorCreator`
 

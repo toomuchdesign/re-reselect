@@ -75,6 +75,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
 - [FAQ](#faq)
   - [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
   - [How do I use multiple inputs to set the cache key?](#how-do-i-use-multiple-inputs-to-set-the-cache-key)
+  - [How do I limit the cache size?](#how-do-i-limit-the-cache-size)
   - [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
   - [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
 - [API](#api)
@@ -208,6 +209,9 @@ createCachedSelector(
 )((state, props) => `${props.a}:${props.b}`)
 ```
 
+### How do I limit the cache size?
+Use the [`cacheObject` option](#cacheobject).
+
 ### How to share a selector across multiple components while passing in props and retaining memoization?
 This example is how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components).
 
@@ -312,12 +316,12 @@ myFooDataSelector.resetRecomputations();
 import reReselect from 're-reselect';
 ```
 
-### reReselect([reselect's createSelector arguments])(resolverFunction, selectorCreator = selectorCreator)
+### reReselect([reselect's createSelector arguments])(resolverFunction, { cacheObject, selectorCreator } | selectorCreator)
 
 **Re-reselect** accepts your original [selector creator arguments](https://github.com/reactjs/reselect/tree/v2.5.4#createselectorinputselectors--inputselectors-resultfunc) and returns a new function which accepts **2 arguments**:
 
 - `resolverFunction`
-- `selectorCreator` *(optional)*
+- `{ selectorCreator, cacheObject }` | `selectorCreator` *(optional)*
 
 #### resolverFunction
 `resolverFunction` is a function which receives the same arguments of your selectors (and `inputSelectors`) and *must return a **string** or **number***. The result is used as cache key to store/retrieve selector instances.
@@ -325,6 +329,43 @@ import reReselect from 're-reselect';
 Cache keys of type `number` are treated like strings, since they are assigned to a JS object as arguments.
 
 The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.17.4#memoize) util.
+
+#### cacheObject
+An optional custom [strategy object](https://sourcemaking.com/design_patterns/strategy) to handle the caching behaviour. It must adhere to the following interface:
+
+```js
+interface ICacheObject {
+  set (key: string|number, selectorFn: Function): void;
+  get (key: string|number): Function;
+  remove (key: string|number): void;
+  clear (): void;
+}
+```
+
+`re-reselect` provides **3 ready to use cache object creators**:
+
+- [`FlatCacheObject`](src/cache/FlatCacheObject.js) (default)
+- [`FifoCacheObject`](src/cache/FifoCacheObject.js) ([first in first out cache](https://en.wikipedia.org/wiki/Cache_replacement_policies#First_In_First_Out_.28FIFO.29))
+- [`LruCacheObject`](src/cache/LruCacheObject.js) ([least recently used cache](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_.28LRU.29))
+
+```js
+import createCachedSelector, { LruCacheObject, FifoCacheObject } from re-reselect;
+
+createCachedSelector(
+  // ...
+)(
+  resolverFunction,
+  {
+    cacheObject: new LruCacheObject({ cacheSize: 5 });
+    // or:
+    // cacheObject: new FifoCacheObject({ cacheSize: 5 });
+  }
+)
+```
+
+The default cache strategy, `FlatCache` doesn't limit cache.
+
+You can provide **any kind of caching strategy**. Just write your own. You can use the [existing ones](src/cache/) as starting point.
 
 #### selectorCreator
 `selectorCreator` is an optional function in case you want to use [custom selectors](https://github.com/reactjs/reselect/tree/v3.0.0#createselectorcreatormemoize-memoizeoptions). By default it uses Reselect's `createSelector`.
@@ -350,7 +391,6 @@ Clear the whole `reReselectInstance` cache.
 Get `resultFunc` for easily [test composed selectors](https://github.com/reactjs/reselect#q-how-do-i-test-a-selector).
 
 ## Todo's
-- Named exports?
 - Flow type definitions?
 - Improve TS tests readability
 

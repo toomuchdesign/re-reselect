@@ -1,5 +1,9 @@
 import LruCacheObject from '../LruCacheObject';
 
+function newCache(cacheSize) {
+  return new LruCacheObject({cacheSize});
+}
+
 function fillCache(cache, entries = []) {
   entries.map(entry => cache.set(entry, entry));
   return cache;
@@ -7,7 +11,7 @@ function fillCache(cache, entries = []) {
 
 describe('LruCacheObject', () => {
   it('Should return cached value', () => {
-    const cache = new LruCacheObject({ cacheSize: 5 });
+    const cache = newCache(5);
     const actual = () => {};
 
     cache.set('foo', actual);
@@ -17,32 +21,43 @@ describe('LruCacheObject', () => {
   });
 
   it('Should remove a single item', () => {
-    const cache = new LruCacheObject({ cacheSize: 5 });
+    const cache = newCache(5);
     const newEntries = [1, 2, 3, 4, 5];
     fillCache(cache, newEntries);
 
     cache.remove(3);
 
     expect(cache.get(3)).toBe(undefined);
-    [1, 2, 4, 5].map( entry => {
+  });
+
+  it('Should remove a single item und update cache ordering', () => {
+    const cache = newCache(5);
+    const newEntries = [1, 2, 3, 4, 5];
+    fillCache(cache, newEntries);
+
+    cache.remove(3);
+    cache.set(6, 6);
+
+    expect(cache.get(3)).toBe(undefined);
+    [1, 2, 4, 5, 6].map(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
   });
 
   it('Should clear the cache', () => {
-    const cache = new LruCacheObject({ cacheSize: 5 });
+    const cache = newCache(5);
     const newEntries = [1, 2, 3, 4, 5];
     fillCache(cache, newEntries);
 
     cache.clear();
 
-    newEntries.map( entry => {
+    newEntries.map(entry => {
       expect(cache.get(entry)).toBe(undefined);
     });
   });
 
   it('Should limit cache queue by removing the least recently used item', () => {
-    const cache = new LruCacheObject({ cacheSize: 5 });
+    const cache = newCache(5);
 
     const newEntries1 = [0, 1, 2];
     const newEntries2 = [3, 4, 5];
@@ -67,7 +82,7 @@ describe('LruCacheObject', () => {
   it('Should check `cacheSize` parameter format', () => {
     expect(() => {
       const cache = new LruCacheObject({
-        cacheSize: 2.5
+        cacheSize: 2.5,
       });
     }).toThrow(/a positive integer/);
   });

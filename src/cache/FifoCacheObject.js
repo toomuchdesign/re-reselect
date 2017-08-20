@@ -17,8 +17,8 @@ export default class FifoCacheObject {
     this._cacheOrdering.push(key);
 
     if (this._cacheOrdering.length > this._cacheSize) {
-      const earliest = this._cacheOrdering.shift();
-      delete this._cache[earliest];
+      const earliest = this._cacheOrdering[0];
+      this.remove(earliest);
     }
   }
   get(key) {
@@ -29,8 +29,8 @@ export default class FifoCacheObject {
 
     if (index > -1) {
       this._cacheOrdering.splice(index, 1);
-      delete this._cache[key];
     }
+    delete this._cache[key];
   }
   clear() {
     this._cache = {};

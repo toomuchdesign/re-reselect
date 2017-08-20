@@ -15,8 +15,9 @@ export default class LruCacheObject {
   set(key, selectorFn) {
     this._cache[key] = selectorFn;
     this._registerCacheHit(key);
+
     if (this._cacheOrdering.length > this._cacheSize) {
-      const earliest = this._cacheOrdering.shift();
+      const earliest = this._cacheOrdering[0];
       this.remove(earliest);
     }
   }
@@ -25,8 +26,8 @@ export default class LruCacheObject {
     return this._cache[key];
   }
   remove(key) {
-    delete this._cache[key];
     this._deleteCacheHit(key);
+    delete this._cache[key];
   }
   clear() {
     this._cache = {};

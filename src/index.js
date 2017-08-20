@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+import {createSelector} from 'reselect';
 import FlatCacheObject from './cache/FlatCacheObject';
 
 export default function createCachedSelector(...funcs) {
@@ -10,7 +10,7 @@ export default function createCachedSelector(...funcs) {
 
     // Allow "options" to be provided as a "selectorCreator" for backward compatibility
     // @TODO Remove "options" as a function in next breaking release
-    if(typeof options === 'function') {
+    if (typeof options === 'function') {
       cache = new defaultCacheCreator();
       selectorCreator = options;
     } else {
@@ -51,12 +51,12 @@ export default function createCachedSelector(...funcs) {
       cache.clear();
     };
 
-    selector.resultFunc = funcs[funcs.length -1];
+    selector.resultFunc = funcs[funcs.length - 1];
 
     return selector;
-  }
+  };
 }
 
-export { FlatCacheObject };
-export { default as FifoCacheObject } from './cache/FifoCacheObject';
-export { default as LruCacheObject } from './cache/LruCacheObject';
+export {FlatCacheObject};
+export {default as FifoCacheObject} from './cache/FifoCacheObject';
+export {default as LruCacheObject} from './cache/LruCacheObject';

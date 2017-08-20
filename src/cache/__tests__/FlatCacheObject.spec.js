@@ -24,7 +24,7 @@ describe('FlatCacheObject', () => {
     cache.remove(3);
 
     expect(cache.get(3)).toBe(undefined);
-    [1, 2, 4, 5].map( entry => {
+    [1, 2, 4, 5].map(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
   });
@@ -36,7 +36,7 @@ describe('FlatCacheObject', () => {
     fillCache(cache, newEntries);
     cache.clear();
 
-    newEntries.map( entry => {
+    newEntries.map(entry => {
       expect(cache.get(entry)).toBe(undefined);
     });
   });

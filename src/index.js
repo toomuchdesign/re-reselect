@@ -11,6 +11,9 @@ export default function createCachedSelector(...funcs) {
     // Allow "options" to be provided as a "selectorCreator" for backward compatibility
     // @TODO Remove "options" as a function in next breaking release
     if (typeof options === 'function') {
+      console.warn(
+        '[re-reselect] Deprecation warning: "selectorCreator" argument is discouraged and will be removed in the upcoming major release. Please use "options.selectorCreator" instead.'
+      );
       cache = new defaultCacheCreator();
       selectorCreator = options;
     } else {

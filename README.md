@@ -210,7 +210,7 @@ createCachedSelector(
 ```
 
 ### How do I limit the cache size?
-Use the [`cacheObject` option](#cacheobject).
+Use the [`cacheObject` option](#options.cacheobject).
 
 ### How to share a selector across multiple components while passing in props and retaining memoization?
 This example is how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components).
@@ -310,18 +310,18 @@ myFooDataSelector.resetRecomputations();
 ```
 
 ## API
-**Re-reselect** consists in just one method exported as default.
+`Re-reselect` exposes its **cached selector creator** as **default export**.
 
 ```js
 import reReselect from 're-reselect';
 ```
 
-### reReselect([reselect's createSelector arguments])(resolverFunction, { cacheObject, selectorCreator } | selectorCreator)
+### reReselect([reselect's createSelector arguments])(resolverFunction, { cacheObject, selectorCreator })
 
 **Re-reselect** accepts your original [selector creator arguments](https://github.com/reactjs/reselect/tree/v2.5.4#createselectorinputselectors--inputselectors-resultfunc) and returns a new function which accepts **2 arguments**:
 
 - `resolverFunction`
-- `{ selectorCreator, cacheObject }` | `selectorCreator` *(optional)*
+- `options { cacheObject, selectorCreator }` *(optional)*
 
 #### resolverFunction
 `resolverFunction` is a function which receives the same arguments of your selectors (and `inputSelectors`) and *must return a **string** or **number***. The result is used as cache key to store/retrieve selector instances.
@@ -330,7 +330,7 @@ Cache keys of type `number` are treated like strings, since they are assigned to
 
 The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.17.4#memoize) util.
 
-#### cacheObject
+#### options.cacheObject
 An optional custom [strategy object](https://sourcemaking.com/design_patterns/strategy) to handle the caching behaviour. It must adhere to the following interface:
 
 ```js
@@ -367,8 +367,8 @@ The default cache strategy, `FlatCache` doesn't limit cache.
 
 You can provide **any kind of caching strategy**. Just write your own. You can use the [existing ones](src/cache/) as starting point.
 
-#### selectorCreator
-`selectorCreator` is an optional function in case you want to use [custom selectors](https://github.com/reactjs/reselect/tree/v3.0.0#createselectorcreatormemoize-memoizeoptions). By default it uses Reselect's `createSelector`.
+#### options.selectorCreator
+`selectorCreator` is an optional function describing a [custom selectors](https://github.com/reactjs/reselect/tree/v3.0.0#createselectorcreatormemoize-memoizeoptions). By default it uses Reselect's `createSelector`.
 
 #### Returns
 (Function): a `reReselectInstance` selector ready to be used **like a normal reselect selector**.

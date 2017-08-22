@@ -1,6 +1,6 @@
 /* eslint comma-dangle: 0 */
 import {createSelector} from 'reselect';
-import createCachedSelector from '../index';
+import createCachedSelector, {FlatCacheObject} from '../index';
 
 let resultFunc;
 
@@ -95,33 +95,55 @@ describe('createCachedSelector', () => {
     expect(secondSelectorActual).not.toBe(undefined);
   });
 
-  it('resultFunc attribute should reference provided result function', () => {
+  it('resultFunc attribute should point to provided result function', () => {
     const cachedSelector = createCachedSelector(() => {}, resultFunc)(
       (arg1, arg2) => arg2
     );
     expect(cachedSelector.resultFunc).toBe(resultFunc);
   });
 
-  it('Should accept a selectorCreator function as a 2° option', () => {
+  it('Should accept a "selectorCreator" function as 2° argument', () => {
+    const consoleWarnSpy = jest
+      .spyOn(global.console, 'warn')
+      .mockImplementation(() => {});
     const cachedSelector = createCachedSelector(resultFunc)(
       (arg1, arg2) => arg2,
       createSelector
     );
+
     expect(resultFunc.mock.calls.length).toBe(0);
     cachedSelector('foo', 'bar');
     cachedSelector('foo', 'bar');
     expect(resultFunc.mock.calls.length).toBe(1);
+
+    consoleWarnSpy.mockReset();
+    consoleWarnSpy.mockRestore();
+  });
+
+  it('Should cast a deprecation warning when "selectorCreator" is provided as 2° argument', () => {
+    const consoleWarnSpy = jest
+      .spyOn(global.console, 'warn')
+      .mockImplementation(() => {});
+    const cachedSelector = createCachedSelector(
+      resultFunc
+    )(() => {}, createSelector);
+
+    expect(consoleWarnSpy).toHaveBeenCalled();
+
+    consoleWarnSpy.mockReset();
+    consoleWarnSpy.mockRestore();
   });
 
   it('Should accept an options object', () => {
     const cachedSelector = createCachedSelector(resultFunc)(
       (arg1, arg2) => arg2,
       {
+        cacheObject: new FlatCacheObject(),
         selectorCreator: createSelector,
       }
     );
-    expect(resultFunc.mock.calls.length).toBe(0);
 
+    expect(resultFunc.mock.calls.length).toBe(0);
     cachedSelector('foo', 'bar');
     cachedSelector('foo', 'bar');
     expect(resultFunc.mock.calls.length).toBe(1);

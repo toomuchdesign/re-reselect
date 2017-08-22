@@ -26,14 +26,14 @@ export default function createCachedSelector(...funcs) {
       const cacheKey = resolver(...args);
 
       if (typeof cacheKey === 'string' || typeof cacheKey === 'number') {
-        let cacheResult = cache.get(cacheKey);
+        let cacheResponse = cache.get(cacheKey);
 
-        if (cacheResult === undefined) {
-          cache.set(cacheKey, selectorCreator(...funcs));
-          cacheResult = cache.get(cacheKey);
+        if (cacheResponse === undefined) {
+          cacheResponse = selectorCreator(...funcs);
+          cache.set(cacheKey, cacheResponse);
         }
 
-        return cacheResult(...args);
+        return cacheResponse(...args);
       }
       return undefined;
     };

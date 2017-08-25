@@ -8,6 +8,7 @@
 - Accept an option object to provide `cacheObject` and `selectorCreator` options
 - Extract caching logic into pluggable/customizable cache objects
 - Introduce `Rollup.js` as bundler
+- Make compilation cross-platform
 
 ## 0.6.3
 - Add TS type definition for optional `selectorCreator`

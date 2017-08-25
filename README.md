@@ -210,7 +210,7 @@ createCachedSelector(
 ```
 
 ### How do I limit the cache size?
-Use the [`cacheObject` option](#options.cacheobject).
+Use the [`cacheObject` option](#optionscacheobject).
 
 ### How to share a selector across multiple components while passing in props and retaining memoization?
 This example is how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components).

@@ -1,5 +1,5 @@
 import { createSelectorCreator, defaultMemoize } from 'reselect';
-import createCachedSelector from '../index';
+import createCachedSelector from '../src/index';
 
 function testSelector() {
   type State = {foo: string};
@@ -318,12 +318,22 @@ function testResolver() {
 function testCustomSelectorCreator () {
   type State = {foo: string};
 
-  const selector = createCachedSelector(
+  const selector1 = createCachedSelector(
     (state: State) => state.foo,
     (foo) => foo,
   )(
     (state: State) => state.foo,
     createSelectorCreator(defaultMemoize)
+  );
+
+  const selector2 = createCachedSelector(
+    (state: State) => state.foo,
+    (foo) => foo,
+  )(
+    (state: State) => state.foo,
+    {
+      selectorCreator: createSelectorCreator(defaultMemoize)
+    }
   );
 
   // typings:expect-error

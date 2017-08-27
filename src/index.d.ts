@@ -6,13 +6,21 @@ export type Resolver<S> = (state: S, ...args: any[]) => number | string;
 
 export type CreateSelectorInstance = typeof createSelector;
 
+type Options = {
+  selectorCreator?: CreateSelectorInstance;
+  cacheObject: ICacheObject;
+}|{
+  selectorCreator: CreateSelectorInstance;
+  cacheObject?: ICacheObject;
+}|CreateSelectorInstance;
+
 export type OutputSelector<S, R, C> = Selector<S, R> & {
   resultFunc: C;
   recomputations: () => number;
   resetRecomputations: () => number;
 };
 
-export type OutputCachedSelector<S, R, C> = (resolver: Resolver<S>, createSelectorInstance?: CreateSelectorInstance) => OutputSelector<S, R, C> & {
+export type OutputCachedSelector<S, R, C> = (resolver: Resolver<S>, optionsOrSelectorCreator?: Options) => OutputSelector<S, R, C> & {
   getMatchingSelector: (state: S, ...args: any[]) => OutputSelector<S, R, C>;
   removeMatchingSelector: (state: S, ...args: any[]) => void;
   clearCache: () => void;
@@ -29,7 +37,7 @@ export type OutputParametricSelector<S, P, R, C> = ParametricSelector<S, P, R> &
   resetRecomputations: () => number;
 };
 
-export type OutputParametricCachedSelector<S, P, R, C> = (resolver: ParametricResolver<S, P>, createSelectorInstance?: CreateSelectorInstance) => OutputParametricSelector<S, P, R, C> & {
+export type OutputParametricCachedSelector<S, P, R, C> = (resolver: ParametricResolver<S, P>, optionsOrSelectorCreator?: Options) => OutputParametricSelector<S, P, R, C> & {
   getMatchingSelector: (state: S, props: P, ...args: any[]) => OutputParametricSelector<S, P, R, C>;
   removeMatchingSelector: (state: S, props: P, ...args: any[]) => void;
   clearCache: () => void;
@@ -589,3 +597,33 @@ export default function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, R
             res7: R7, res8: R8, res9: R9, res10: R10, res11: R11, res12: R12) => T
 ): OutputParametricCachedSelector<S, P, T, (res1: R1, res2: R2, res3: R3, res4: R4, res5: R5, res6: R6,
             res7: R7, res8: R8, res9: R9, res10: R10, res11: R11, res12: R12) => T>;
+
+export interface ICacheObject {
+  set (key: string|number, selectorFn: any): void;
+  get (key: string|number): any;
+  remove (key: string|number): void;
+  clear (): void;
+}
+
+export class FlatCacheObject implements ICacheObject {
+  set (key: string|number, selectorFn: any): void;
+  get (key: string|number): any;
+  remove (key: string|number): void;
+  clear (): void;
+}
+
+export class FifoCacheObject implements ICacheObject {
+  constructor (options: { cacheSize: number });
+  set (key: string|number, selectorFn: any): void;
+  get (key: string|number): any;
+  remove (key: string|number): void;
+  clear (): void;
+}
+
+export class LruCacheObject implements ICacheObject {
+  constructor (options: { cacheSize: number });
+  set (key: string|number, selectorFn: any): void;
+  get (key: string|number): any;
+  remove (key: string|number): void;
+  clear (): void;
+}

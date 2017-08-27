@@ -1,18 +1,27 @@
 # Re-reselect [![Build Status][ci-img]][ci]
 
-Improve **[Reselect][reselect] selectors performance** on a few edge cases, by initializing selectors on runtime, using a **memoized factory**.
+Improve **[Reselect][reselect] selectors performance/usage** on a few edge cases, by initializing selectors on runtime, using a **memoized factory**.
 
 **Re-reselect returns a reselect-like selector**, which is able to determine internally when **querying a new selector instance or a cached one** on the fly, depending on the supplied arguments.
 
 Useful to **reduce selectors recalculation** when:
 - a selector is sequentially **called with one/few different arguments**
 - a selector is **imported by different modules** at the same time
-- **sharing selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components) and [re-reselect solution](https://github.com/toomuchdesign/re-reselect#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization))
-- selectors need to be **instantiated on runtime**
+
+...or to:
+- **join similar selectors** into one
+- **share selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components) and [re-reselect solution](https://github.com/toomuchdesign/re-reselect#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization))
+- **instantiate** selectors **on runtime**
 
 [reselect]:    https://github.com/reactjs/reselect
 [ci-img]:      https://travis-ci.org/toomuchdesign/re-reselect.svg
 [ci]:          https://travis-ci.org/toomuchdesign/re-reselect
+
+
+```js
+import reselect from 'reselect';
+
+```
 
 ```js
 import createCachedSelector from 're-reselect';
@@ -75,6 +84,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
 - [FAQ](#faq)
   - [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
   - [How do I use multiple inputs to set the cache key?](#how-do-i-use-multiple-inputs-to-set-the-cache-key)
+  - [How do I limit the cache size?](#how-do-i-limit-the-cache-size)
   - [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
   - [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
 - [API](#api)
@@ -208,6 +218,9 @@ createCachedSelector(
 )((state, props) => `${props.a}:${props.b}`)
 ```
 
+### How do I limit the cache size?
+Use the [`cacheObject` option](#optionscacheobject).
+
 ### How to share a selector across multiple components while passing in props and retaining memoization?
 This example is how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components).
 
@@ -306,18 +319,18 @@ myFooDataSelector.resetRecomputations();
 ```
 
 ## API
-**Re-reselect** consists in just one method exported as default.
+`Re-reselect` exposes its **cached selector creator** as **default export**.
 
 ```js
 import reReselect from 're-reselect';
 ```
 
-### reReselect([reselect's createSelector arguments])(resolverFunction, selectorCreator = selectorCreator)
+### reReselect([reselect's createSelector arguments])(resolverFunction, { cacheObject, selectorCreator })
 
 **Re-reselect** accepts your original [selector creator arguments](https://github.com/reactjs/reselect/tree/v2.5.4#createselectorinputselectors--inputselectors-resultfunc) and returns a new function which accepts **2 arguments**:
 
 - `resolverFunction`
-- `selectorCreator` *(optional)*
+- `options { cacheObject, selectorCreator }` *(optional)*
 
 #### resolverFunction
 `resolverFunction` is a function which receives the same arguments of your selectors (and `inputSelectors`) and *must return a **string** or **number***. The result is used as cache key to store/retrieve selector instances.
@@ -326,8 +339,45 @@ Cache keys of type `number` are treated like strings, since they are assigned to
 
 The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.17.4#memoize) util.
 
-#### selectorCreator
-`selectorCreator` is an optional function in case you want to use [custom selectors](https://github.com/reactjs/reselect/tree/v3.0.0#createselectorcreatormemoize-memoizeoptions). By default it uses Reselect's `createSelector`.
+#### options.cacheObject
+An optional custom [strategy object](https://sourcemaking.com/design_patterns/strategy) to handle the caching behaviour. It must adhere to the following interface:
+
+```js
+interface ICacheObject {
+  set (key: string|number, selectorFn: Function): void;
+  get (key: string|number): Function;
+  remove (key: string|number): void;
+  clear (): void;
+}
+```
+
+`re-reselect` provides **3 ready to use cache object creators**:
+
+- [`FlatCacheObject`](src/cache/FlatCacheObject.js) (default)
+- [`FifoCacheObject`](src/cache/FifoCacheObject.js) ([first in first out cache](https://en.wikipedia.org/wiki/Cache_replacement_policies#First_In_First_Out_.28FIFO.29))
+- [`LruCacheObject`](src/cache/LruCacheObject.js) ([least recently used cache](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_.28LRU.29))
+
+```js
+import createCachedSelector, { LruCacheObject, FifoCacheObject } from re-reselect;
+
+createCachedSelector(
+  // ...
+)(
+  resolverFunction,
+  {
+    cacheObject: new LruCacheObject({ cacheSize: 5 });
+    // or:
+    // cacheObject: new FifoCacheObject({ cacheSize: 5 });
+  }
+)
+```
+
+The default cache strategy, `FlatCache` doesn't limit cache.
+
+You can provide **any kind of caching strategy**. Just write your own. You can use the [existing ones](src/cache/) as starting point.
+
+#### options.selectorCreator
+`selectorCreator` is an optional function describing a [custom selectors](https://github.com/reactjs/reselect/tree/v3.0.0#createselectorcreatormemoize-memoizeoptions). By default it uses Reselect's `createSelector`.
 
 #### Returns
 (Function): a `reReselectInstance` selector ready to be used **like a normal reselect selector**.
@@ -350,7 +400,6 @@ Clear the whole `reReselectInstance` cache.
 Get `resultFunc` for easily [test composed selectors](https://github.com/reactjs/reselect#q-how-do-i-test-a-selector).
 
 ## Todo's
-- Named exports?
 - Flow type definitions?
 - Improve TS tests readability
 
@@ -360,5 +409,5 @@ Thanks to you all ([emoji key](https://github.com/kentcdodds/all-contributors#em
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 | [<img src="https://avatars3.githubusercontent.com/u/4573549?v=4" width="100px;"/><br /><sub>Andrea Carraro</sub>](http://www.andreacarraro.it)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign "Code") [📖](https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign "Documentation") [🚇](#infra-toomuchdesign "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign "Tests") [👀](#review-toomuchdesign "Reviewed Pull Requests") | [<img src="https://avatars2.githubusercontent.com/u/830824?v=4" width="100px;"/><br /><sub>Stepan Burguchev</sub>](https://github.com/xsburg)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=xsburg "Code") [👀](#review-xsburg "Reviewed Pull Requests") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=xsburg "Tests") | [<img src="https://avatars3.githubusercontent.com/u/693493?v=4" width="100px;"/><br /><sub>Mitch Robb</sub>](https://olslash.github.io/)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=olslash "Code") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=olslash "Tests") | [<img src="https://avatars3.githubusercontent.com/u/1128559?v=4" width="100px;"/><br /><sub>Stephane Rufer</sub>](https://github.com/rufman)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=rufman "Code") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=rufman "Tests") | [<img src="https://avatars0.githubusercontent.com/u/2788860?v=4" width="100px;"/><br /><sub>Tracy Mullen</sub>](https://github.com/spiffysparrow)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow "Code") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow "Tests") | [<img src="https://avatars1.githubusercontent.com/u/4211838?v=4" width="100px;"/><br /><sub>Sushain Cherivirala</sub>](https://www.skc.name)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=sushain97 "Code") | [<img src="https://avatars0.githubusercontent.com/u/6316590?v=4" width="100px;"/><br /><sub>Steve Mao</sub>](https://twitter.com/MaoStevemao)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=stevemao "Documentation") |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| [<img src="https://avatars3.githubusercontent.com/u/1177323?v=4" width="100px;"/><br /><sub>Denis Sikuler</sub>](https://github.com/gamtiq)<br />[💬](#question-gamtiq "Answering Questions") | [<img src="https://avatars1.githubusercontent.com/u/1586931?v=4" width="100px;"/><br /><sub>Sigfried Gold</sub>](http://sigfried.org)<br />[💬](#question-Sigfried "Answering Questions") | [<img src="https://avatars1.githubusercontent.com/u/132278?v=4" width="100px;"/><br /><sub>Daniel Karp</sub>](https://twitter.com/karptonite)<br />[💬](#question-karptonite "Answering Questions") | [<img src="https://avatars3.githubusercontent.com/u/10407025?v=4" width="100px;"/><br /><sub>Maarten Schumacher</sub>](https://github.com/maartenschumacher)<br />[💬](#question-maartenschumacher "Answering Questions") | [<img src="https://avatars2.githubusercontent.com/u/1428826?v=4" width="100px;"/><br /><sub>Gaurav Lahoti</sub>](https://github.com/Dante-101)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3ADante-101 "Bug reports") | [<img src="https://avatars3.githubusercontent.com/u/13602053?v=4" width="100px;"/><br /><sub>Lon</sub>](http://lon.im)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3Acnlon "Bug reports") |
+| [<img src="https://avatars2.githubusercontent.com/u/1428826?v=4" width="100px;"/><br /><sub>Gaurav Lahoti</sub>](https://github.com/Dante-101)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3ADante-101 "Bug reports") | [<img src="https://avatars3.githubusercontent.com/u/13602053?v=4" width="100px;"/><br /><sub>Lon</sub>](http://lon.im)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3Acnlon "Bug reports") | [<img src="https://avatars2.githubusercontent.com/u/5492495?v=4" width="100px;"/><br /><sub>bratushka</sub>](https://github.com/bratushka)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=bratushka "Code") |
 <!-- ALL-CONTRIBUTORS-LIST:END -->

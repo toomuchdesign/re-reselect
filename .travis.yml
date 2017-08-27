@@ -4,6 +4,8 @@ node_js:
   - "5"
   - "6"
   - "7"
+before_install:
+  - npm install -g npm@5.3.x
 script:
   - npm test
   - npm run compile

@@ -80,42 +80,6 @@
       ]
     },
     {
-      "login": "gamtiq",
-      "name": "Denis Sikuler",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/1177323?v=4",
-      "profile": "https://github.com/gamtiq",
-      "contributions": [
-        "question"
-      ]
-    },
-    {
-      "login": "Sigfried",
-      "name": "Sigfried Gold",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/1586931?v=4",
-      "profile": "http://sigfried.org",
-      "contributions": [
-        "question"
-      ]
-    },
-    {
-      "login": "karptonite",
-      "name": "Daniel Karp",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/132278?v=4",
-      "profile": "https://twitter.com/karptonite",
-      "contributions": [
-        "question"
-      ]
-    },
-    {
-      "login": "maartenschumacher",
-      "name": "Maarten Schumacher",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/10407025?v=4",
-      "profile": "https://github.com/maartenschumacher",
-      "contributions": [
-        "question"
-      ]
-    },
-    {
       "login": "Dante-101",
       "name": "Gaurav Lahoti",
       "avatar_url": "https://avatars2.githubusercontent.com/u/1428826?v=4",
@@ -131,6 +95,15 @@
       "profile": "http://lon.im",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "bratushka",
+      "name": "bratushka",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5492495?v=4",
+      "profile": "https://github.com/bratushka",
+      "contributions": [
+        "code"
       ]
     }
   ]

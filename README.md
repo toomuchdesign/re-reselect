@@ -1,18 +1,27 @@
 # Re-reselect [![Build Status][ci-img]][ci]
 
-Improve **[Reselect][reselect] selectors performance** on a few edge cases, by initializing selectors on runtime, using a **memoized factory**.
+Improve **[Reselect][reselect] selectors performance/usage** on a few edge cases, by initializing selectors on runtime, using a **memoized factory**.
 
 **Re-reselect returns a reselect-like selector**, which is able to determine internally when **querying a new selector instance or a cached one** on the fly, depending on the supplied arguments.
 
 Useful to **reduce selectors recalculation** when:
 - a selector is sequentially **called with one/few different arguments**
 - a selector is **imported by different modules** at the same time
-- **sharing selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components) and [re-reselect solution](https://github.com/toomuchdesign/re-reselect#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization))
-- selectors need to be **instantiated on runtime**
+
+...or to:
+- **join similar selectors** into one
+- **share selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components) and [re-reselect solution](https://github.com/toomuchdesign/re-reselect#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization))
+- **instantiate** selectors **on runtime**
 
 [reselect]:    https://github.com/reactjs/reselect
 [ci-img]:      https://travis-ci.org/toomuchdesign/re-reselect.svg
 [ci]:          https://travis-ci.org/toomuchdesign/re-reselect
+
+
+```js
+import reselect from 'reselect';
+
+```
 
 ```js
 import createCachedSelector from 're-reselect';

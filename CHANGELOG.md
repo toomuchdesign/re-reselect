@@ -1,5 +1,8 @@
 # Change log
 
+## 1.0.1
+- Remove wrong line at the beginning of the docs
+
 ## 1.0.0
 ### Breaking Changes
 - `selectorCreator` argument is deprecated in favor of an option object

@@ -17,12 +17,6 @@ Useful to **reduce selectors recalculation** when:
 [ci-img]:      https://travis-ci.org/toomuchdesign/re-reselect.svg
 [ci]:          https://travis-ci.org/toomuchdesign/re-reselect
 
-
-```js
-import reselect from 'reselect';
-
-```
-
 ```js
 import createCachedSelector from 're-reselect';
 

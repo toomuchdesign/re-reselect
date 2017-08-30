@@ -4,18 +4,17 @@ Improve **[Reselect][reselect] selectors performance/usage** on a few edge cases
 
 **Re-reselect returns a reselect-like selector**, which is able to determine internally when **querying a new selector instance or a cached one** on the fly, depending on the supplied arguments.
 
-Useful to **reduce selectors recalculation** when:
-- a selector is sequentially **called with one/few different arguments**
-- a selector is **imported by different modules** at the same time
-
-...or to:
+Useful to:
+- **reduce selectors recalculation** when a selector is sequentially **called with one/few different arguments** ([example][example-1])
 - **join similar selectors** into one
-- **share selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components) and [re-reselect solution](https://github.com/toomuchdesign/re-reselect#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization))
+- **share selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components) and [re-reselect solution][example-2])
 - **instantiate** selectors **on runtime**
 
 [reselect]:    https://github.com/reactjs/reselect
 [ci-img]:      https://travis-ci.org/toomuchdesign/re-reselect.svg
 [ci]:          https://travis-ci.org/toomuchdesign/re-reselect
+[example-1]:   examples/1-join-selectors.md
+[example-2]:   examples/2-avoid-selector-factories.md
 
 ```js
 import createCachedSelector from 're-reselect';
@@ -216,61 +215,7 @@ createCachedSelector(
 Use the [`cacheObject` option](#optionscacheobject).
 
 ### How to share a selector across multiple components while passing in props and retaining memoization?
-This example is how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components).
-
-We can directly declare `getVisibleTodos` selector. Since `re-reselect` handles selectors instantiation transparently, there is no need to declare a `makeGetVisibleTodos` factory.
-
-#### `selectors/todoSelectors.js`
-
-```js
-import createCachedSelector from 're-reselect';
-
-const getVisibilityFilter = (state, props) =>
-  state.todoLists[props.listId].visibilityFilter
-
-const getTodos = (state, props) =>
-  state.todoLists[props.listId].todos
-
-const getVisibleTodos = createCachedSelector(
-  [ getVisibilityFilter, getTodos ],
-  (visibilityFilter, todos) => {
-    switch (visibilityFilter) {
-      case 'SHOW_COMPLETED':
-        return todos.filter(todo => todo.completed)
-      case 'SHOW_ACTIVE':
-        return todos.filter(todo => !todo.completed)
-      default:
-        return todos
-    }
-  }
-)(
-  /*
-   * Re-reselect resolver function.
-   * Cache/call a new selector for each different "listId"
-   */
-  (state, props) => props.listId,
-);
-
-export default getVisibleTodos;
-```
-
-#### `containers/VisibleTodoList.js`
-```js
-import { connect } from 'react-redux'
-import { toggleTodo } from '../actions'
-import TodoList from '../components/TodoList'
-import { getVisibleTodos } from '../selectors'
-
-// No need of makeMapStateToProps function:
-// use getVisibleTodos as a normal selector
-const mapStateToProps = (state, props) => {
-  return {
-    todos: getVisibleTodos(state, props)
-  }
-}
-
-// ...
-```
+[This example][example-2] shows how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components).
 
 ### How do I test a re-reselect selector?
 Just like a normal reselect selector! Read more [here](https://github.com/reactjs/reselect#q-how-do-i-test-a-selector).
@@ -396,6 +341,7 @@ Get `resultFunc` for easily [test composed selectors](https://github.com/reactjs
 ## Todo's
 - Flow type definitions?
 - Improve TS tests readability
+- More examples
 
 ## Contributors
 Thanks to you all ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):

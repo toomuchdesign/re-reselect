@@ -59,7 +59,7 @@ import createCachedSelector from re-reselect;
 
 const getWorldData = state => state.world;
 
-const getCountryData = createSelector(
+const getCountryData = createCachedSelector(
   getWorldData,
   (state, country) => country,
   (world, country) => extractData(world, country);

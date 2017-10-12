@@ -14,12 +14,12 @@ const getWorldData = state => state.world;
  */
 const getAfghanistanData = createSelector(
   getWorldData,
-  world => extractData(world, 'afghanistan');
+  world => extractData(world, 'afghanistan'),
 );
 /// ...
 const getZimbabweData = createSelector(
   getWorldData,
-  world => extractData(world, 'zimbawe');
+  world => extractData(world, 'zimbawe'),
 );
 
 /*
@@ -29,7 +29,7 @@ const getZimbabweData = createSelector(
 const getCountryData = createSelector(
   getWorldData,
   (state, country) => country,
-  (world, country) => extractData(world, country);
+  (world, country) => extractData(world, country),
 );
 
 const afghanistan = getCountryData(state, 'afghanistan');
@@ -47,7 +47,7 @@ const afghanistanAgain = getCountryData(state, 'afghanistan');
 const makeGetCountryData = country => {
   return createSelector(
     getWorldData,
-    world => extractData(world, country);
+    world => extractData(world, country),
   );
 }
 
@@ -62,7 +62,7 @@ const getWorldData = state => state.world;
 const getCountryData = createCachedSelector(
   getWorldData,
   (state, country) => country,
-  (world, country) => extractData(world, country);
+  (world, country) => extractData(world, country),
 )(
   (state, country) => country, // Cache selectors by state name
 );

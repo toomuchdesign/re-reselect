@@ -304,9 +304,9 @@ createCachedSelector(
 )(
   resolverFunction,
   {
-    cacheObject: new LruCacheObject({ cacheSize: 5 });
+    cacheObject: new LruCacheObject({ cacheSize: 5 }),
     // or:
-    // cacheObject: new FifoCacheObject({ cacheSize: 5 });
+    // cacheObject: new FifoCacheObject({ cacheSize: 5 }),
   }
 )
 ```

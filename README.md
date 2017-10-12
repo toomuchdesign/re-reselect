@@ -118,9 +118,9 @@ That said, I was able to configure `re-reselect` to retrieve my data by querying
 ```js
 const getPieceOfData = createCachedSelector(
   state => state,
-  (state, itemId) => itemId
-  (state, itemId, dataType) => dataType
-  (state, itemId, dataType, otherArg) => otherArg
+  (state, itemId) => itemId,
+  (state, itemId, dataType) => dataType,
+  (state, itemId, dataType, otherArg) => otherArg,
   (state, itemId, dataType, otherArg) => expensiveComputation(state, itemId, dataType, otherArg),
 )(
   (state, itemId, dataType) => dataType,    // Memoize by dataType

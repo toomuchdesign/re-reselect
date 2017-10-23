@@ -7,7 +7,7 @@ Improve **[Reselect][reselect] selectors performance/usage** on a few edge cases
 Useful to:
 - **reduce selectors recalculation** when a selector is sequentially **called with one/few different arguments** ([example][example-1])
 - **join similar selectors** into one
-- **share selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components) and [re-reselect solution][example-2])
+- **share selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-component-instances) and [re-reselect solution][example-2])
 - **instantiate** selectors **on runtime**
 
 [reselect]:    https://github.com/reactjs/reselect

@@ -1,6 +1,7 @@
 # Re-reselect
-[![Build Status][ci-badge]][ci]
+[![Build status][ci-badge]][ci]
 [![Coveralls][coveralls-badge]][coveralls]
+[![Npm][npm-badge]][npm]
 
 Improve **[Reselect][reselect] selectors performance/usage** on a few edge cases, by initializing selectors on runtime, using a **memoized factory**.
 
@@ -354,6 +355,8 @@ Thanks to you all ([emoji key](https://github.com/kentcdodds/all-contributors#em
 [ci]:               https://travis-ci.org/toomuchdesign/re-reselect
 [coveralls-badge]:  https://coveralls.io/repos/github/toomuchdesign/re-reselect/badge.svg?branch=master
 [coveralls]:        https://coveralls.io/github/toomuchdesign/re-reselect?branch=master
+[npm-badge]:        https://img.shields.io/npm/dm/re-reselect.svg
+[npm]:              https://www.npmjs.com/package/re-reselect
 
 [example-1]:        examples/1-join-selectors.md
 [example-2]:        examples/2-avoid-selector-factories.md

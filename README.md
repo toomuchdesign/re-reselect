@@ -1,4 +1,6 @@
-# Re-reselect [![Build Status][ci-img]][ci]
+# Re-reselect
+[![Build Status][ci-badge]][ci]
+[![Coveralls][coveralls-badge]][coveralls]
 
 Improve **[Reselect][reselect] selectors performance/usage** on a few edge cases, by initializing selectors on runtime, using a **memoized factory**.
 
@@ -9,12 +11,6 @@ Useful to:
 - **join similar selectors** into one
 - **share selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components) and [re-reselect solution][example-2])
 - **instantiate** selectors **on runtime**
-
-[reselect]:    https://github.com/reactjs/reselect
-[ci-img]:      https://travis-ci.org/toomuchdesign/re-reselect.svg
-[ci]:          https://travis-ci.org/toomuchdesign/re-reselect
-[example-1]:   examples/1-join-selectors.md
-[example-2]:   examples/2-avoid-selector-factories.md
 
 ```js
 import createCachedSelector from 're-reselect';
@@ -351,3 +347,13 @@ Thanks to you all ([emoji key](https://github.com/kentcdodds/all-contributors#em
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | [<img src="https://avatars2.githubusercontent.com/u/1428826?v=4" width="100px;"/><br /><sub>Gaurav Lahoti</sub>](https://github.com/Dante-101)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3ADante-101 "Bug reports") | [<img src="https://avatars3.githubusercontent.com/u/13602053?v=4" width="100px;"/><br /><sub>Lon</sub>](http://lon.im)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3Acnlon "Bug reports") | [<img src="https://avatars2.githubusercontent.com/u/5492495?v=4" width="100px;"/><br /><sub>bratushka</sub>](https://github.com/bratushka)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=bratushka "Code") | [<img src="https://avatars3.githubusercontent.com/u/615381?v=4" width="100px;"/><br /><sub>Anders D. Johnson</sub>](https://andrz.me)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=AndersDJohnson "Documentation") | [<img src="https://avatars3.githubusercontent.com/u/8556724?v=4" width="100px;"/><br /><sub>Július Retzer</sub>](https://github.com/wormyy)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=wormyy "Documentation") |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+[reselect]:         https://github.com/reactjs/reselect
+
+[ci-badge]:         https://travis-ci.org/toomuchdesign/re-reselect.svg?branch=master
+[ci]:               https://travis-ci.org/toomuchdesign/re-reselect
+[coveralls-badge]:  https://coveralls.io/repos/github/toomuchdesign/re-reselect/badge.svg?branch=master
+[coveralls]:        https://coveralls.io/github/toomuchdesign/re-reselect?branch=master
+
+[example-1]:        examples/1-join-selectors.md
+[example-2]:        examples/2-avoid-selector-factories.md

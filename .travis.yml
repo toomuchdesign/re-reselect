@@ -7,8 +7,10 @@ node_js:
 before_install:
   - npm install -g npm@5.3.x
 script:
-  - npm test
+  - npm test -- --coverage
   - npm run compile
+after_success:
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 notifications:
   email:
     on_success: change

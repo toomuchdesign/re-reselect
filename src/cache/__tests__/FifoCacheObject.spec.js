@@ -20,23 +20,25 @@ describe('FifoCacheObject', () => {
     expect(actual).toBe(expected);
   });
 
-  it('Should limit cache queue by removing the first item', () => {
+  it('Should limit cache queue by removing the first added items', () => {
     const cache = newCache(5);
+    const entries = [1, 2, 3, 4];
+    const newEntries = [5, 6, 7];
 
-    cache.set(0, 0);
-    const newEntries = [1, 2, 3, 4, 5];
+    fillCache(cache, entries);
     fillCache(cache, newEntries);
 
-    expect(cache.get(0)).toBe(undefined);
-    newEntries.map(entry => {
+    expect(cache.get(1)).toBe(undefined);
+    expect(cache.get(2)).toBe(undefined);
+    [4, 5, 6, 7].map(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
   });
 
   it('Should remove a single item', () => {
     const cache = newCache(5);
-    const newEntries = [1, 2, 3, 4, 5];
-    fillCache(cache, newEntries);
+    const entries = [1, 2, 3, 4, 5];
+    fillCache(cache, entries);
 
     cache.remove(3);
 
@@ -46,14 +48,32 @@ describe('FifoCacheObject', () => {
     });
   });
 
+  it('Should mantain cache updated after removing extraneous entry', () => {
+    const cache = newCache(5);
+    const entries = [1, 2, 3, 4, 5];
+    fillCache(cache, entries);
+
+    cache.remove(7); // Extraneous
+    cache.remove(3);
+    cache.set(6, 6);
+    cache.set(7, 7);
+
+    expect(cache.get(1)).toBe(undefined);
+    expect(cache.get(3)).toBe(undefined);
+
+    [2, 4, 5, 6, 7].map(entry => {
+      expect(cache.get(entry)).toBe(entry);
+    });
+  });
+
   it('Should clear the cache', () => {
     const cache = newCache(5);
+    const entries = [1, 2, 3, 4, 5];
+    fillCache(cache, entries);
 
-    const newEntries = [1, 2, 3, 4, 5];
-    fillCache(cache, newEntries);
     cache.clear();
 
-    newEntries.map(entry => {
+    [1, 2, 3, 4, 5].map(entry => {
       expect(cache.get(entry)).toBe(undefined);
     });
   });

@@ -22,8 +22,8 @@ describe('LruCacheObject', () => {
 
   it('Should remove a single item', () => {
     const cache = newCache(5);
-    const newEntries = [1, 2, 3, 4, 5];
-    fillCache(cache, newEntries);
+    const entries = [1, 2, 3, 4, 5];
+    fillCache(cache, entries);
 
     cache.remove(3);
 
@@ -32,8 +32,8 @@ describe('LruCacheObject', () => {
 
   it('Should remove a single item und update cache ordering', () => {
     const cache = newCache(5);
-    const newEntries = [1, 2, 3, 4, 5];
-    fillCache(cache, newEntries);
+    const entries = [1, 2, 3, 4, 5];
+    fillCache(cache, entries);
 
     cache.remove(3);
     cache.set(6, 6);
@@ -46,12 +46,12 @@ describe('LruCacheObject', () => {
 
   it('Should clear the cache', () => {
     const cache = newCache(5);
-    const newEntries = [1, 2, 3, 4, 5];
-    fillCache(cache, newEntries);
+    const entries = [1, 2, 3, 4, 5];
+    fillCache(cache, entries);
 
     cache.clear();
 
-    newEntries.map(entry => {
+    [1, 2, 3, 4, 5].map(entry => {
       expect(cache.get(entry)).toBe(undefined);
     });
   });
@@ -59,16 +59,16 @@ describe('LruCacheObject', () => {
   it('Should limit cache queue by removing the least recently used item', () => {
     const cache = newCache(5);
 
-    const newEntries1 = [0, 1, 2];
-    const newEntries2 = [3, 4, 5];
-    fillCache(cache, newEntries1);
+    const entries = [0, 1, 2];
+    const newEntries = [3, 4, 5];
+    fillCache(cache, entries);
     cache.get(0);
-    fillCache(cache, newEntries2);
+    fillCache(cache, newEntries);
 
     expect(cache.get(0)).toBe(0);
     expect(cache.get(1)).toBe(undefined);
     expect(cache.get(2)).toBe(2);
-    newEntries2.map(entry => {
+    newEntries.map(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
   });

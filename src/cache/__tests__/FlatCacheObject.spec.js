@@ -18,8 +18,8 @@ describe('FlatCacheObject', () => {
 
   it('Should remove a single item', () => {
     const cache = new FlatCacheObject();
-    const newEntries = [1, 2, 3, 4, 5];
-    fillCache(cache, newEntries);
+    const entries = [1, 2, 3, 4, 5];
+    fillCache(cache, entries);
 
     cache.remove(3);
 
@@ -31,12 +31,12 @@ describe('FlatCacheObject', () => {
 
   it('Should clear the cache', () => {
     const cache = new FlatCacheObject();
+    const entries = [1, 2, 3, 4, 5];
+    fillCache(cache, entries);
 
-    const newEntries = [1, 2, 3, 4, 5];
-    fillCache(cache, newEntries);
     cache.clear();
 
-    newEntries.map(entry => {
+    [1, 2, 3, 4, 5].map(entry => {
       expect(cache.get(entry)).toBe(undefined);
     });
   });

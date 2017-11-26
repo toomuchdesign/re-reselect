@@ -123,6 +123,24 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "maartenschumacher",
+      "name": "Maarten Schumacher",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/10407025?v=4",
+      "profile": "https://github.com/maartenschumacher",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "alexanderjarvis",
+      "name": "Alexander Jarvis",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/664238?v=4",
+      "profile": "https://github.com/alexanderjarvis",
+      "contributions": [
+        "ideas"
+      ]
     }
   ]
 }

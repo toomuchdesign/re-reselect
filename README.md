@@ -3,9 +3,13 @@
 [![Coveralls][coveralls-badge]][coveralls]
 [![Npm][npm-badge]][npm]
 
-Improve **[Reselect][reselect] selectors performance/usage** on a few edge cases, by initializing selectors on runtime, using a **memoized factory**.
+`re-reselect` is a lightweight wrapper around **[Reselect][reselect]** meant to enhance selectors with **deeper memoization** and **cache management**.
 
-**Re-reselect returns a reselect-like selector**, which is able to determine internally when **querying a new selector instance or a cached one** on the fly, depending on the supplied arguments.
+**Switching between different arguments** with standard `reselect` selectors causes **cache invalidation** since default `reselect` cache has a **limit of one**.
+
+`re-reselect` **stores different calls as new** `reselect` **selectors** so that computed/memoized values are retained.
+
+`re-reselect` **selectors work as normal** `reselect` **selectors** but they are able to determine when **creating a new selector or querying a cached one** on the fly, depending on the supplied arguments.
 
 Useful to:
 - **reduce selectors recalculation** when a selector is sequentially **called with one/few different arguments** ([example][example-1])
@@ -77,6 +81,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
   - [How do I limit the cache size?](#how-do-i-limit-the-cache-size)
   - [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
   - [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
+- [Examples](#examples)
 - [API](#api)
   - [`reReselect`](#rereselectreselects-createselector-argumentsresolverfunction-selectorcreator--selectorcreator)
   - [reReselectInstance`()`](#rereselectinstanceselectorarguments)
@@ -149,6 +154,11 @@ Fine, but has 2 downsides:
 #### 3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector
 
 This is what **re-reselect** actually does. It's quite verbose (since should be repeated for each selector), that's why re-reselect is here.
+
+## Examples
+- [Join similar selectors][example-1]
+- [Avoid selector factories][example-2]
+- [Cache API calls][example-3]
 
 ## FAQ
 ### How do I wrap my existing selector with re-reselect?
@@ -360,3 +370,4 @@ Thanks to you all ([emoji key](https://github.com/kentcdodds/all-contributors#em
 
 [example-1]:        examples/1-join-selectors.md
 [example-2]:        examples/2-avoid-selector-factories.md
+[example-3]:        examples/3-cache-api-calls.md

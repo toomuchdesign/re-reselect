@@ -16,7 +16,7 @@ const getAfghanistanData = createSelector(
   getWorldData,
   world => extractData(world, 'afghanistan'),
 );
-/// ...
+// Albania, Algeria, Amer...
 const getZimbabweData = createSelector(
   getWorldData,
   world => extractData(world, 'zimbawe'),
@@ -24,7 +24,8 @@ const getZimbabweData = createSelector(
 
 /*
  * Solution 2: one selector shared by all countries
- * Problem: calling a second different country invalidates the cache of the first one
+ * Problem: each call to a different country invalidates
+ * the cache of the previous one
  */
 const getCountryData = createSelector(
   getWorldData,
@@ -33,7 +34,7 @@ const getCountryData = createSelector(
 );
 
 const afghanistan = getCountryData(state, 'afghanistan');
-const zimbabwe = getCountryData(state, 'zimbawe');  // Cache invaidated
+const zimbabwe = getCountryData(state, 'zimbawe');  // Cache invalidated
 const afghanistanAgain = getCountryData(state, 'afghanistan');
 
 // afghanistan !== afghanistanAgain
@@ -41,8 +42,8 @@ const afghanistanAgain = getCountryData(state, 'afghanistan');
 /*
  * Solution 3: use a factory function
  * Problem:
- * - Memoization lost across multiple components
- * - Components need to call the factory and handle the 195 selectors
+ * - Lost memoization across multiple components
+ * - Must the factory once for each country on each container component
  */
 const makeGetCountryData = country => {
   return createSelector(
@@ -71,6 +72,7 @@ const afghanistan = getCountryData(state, 'afghanistan');
 const zimbabwe = getCountryData(state, 'zimbawe');
 const afghanistanAgain = getCountryData(state, 'afghanistan');
 
+// No selector factories and memoization preserved among different components
 // afghanistan === afghanistanAgain
 
 ```

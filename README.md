@@ -11,6 +11,8 @@
 
 `re-reselect` **selectors work as normal** `reselect` **selectors** but they are able to determine when **creating a new selector or querying a cached one** on the fly, depending on the supplied arguments.
 
+![Reselect and re-reselect](examples/reselect-and-re-reselect.png?raw=true "Reselect and re-reselect")
+
 Useful to:
 - **reduce selectors recalculation** when a selector is sequentially **called with one/few different arguments** ([example][example-1])
 - **join similar selectors** into one

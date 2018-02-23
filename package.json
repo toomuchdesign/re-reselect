@@ -13,7 +13,7 @@
     "src"
   ],
   "scripts": {
-    "test": "npm run test:js -- --coverage && npm run test:typescript",
+    "test": "npm run test:typescript && npm run test:js -- --coverage",
     "test:js": "jest",
     "test:typescript": "typings-tester --dir typescript_test",
     "clean": "rimraf dist es lib",

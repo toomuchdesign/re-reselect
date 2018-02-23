@@ -5,7 +5,7 @@ function newCache(cacheSize) {
 }
 
 function fillCache(cache, entries = []) {
-  entries.map(entry => cache.set(entry, entry));
+  entries.forEach(entry => cache.set(entry, entry));
   return cache;
 }
 
@@ -30,7 +30,7 @@ describe('FifoCacheObject', () => {
 
     expect(cache.get(1)).toBe(undefined);
     expect(cache.get(2)).toBe(undefined);
-    [4, 5, 6, 7].map(entry => {
+    [4, 5, 6, 7].forEach(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
   });
@@ -43,7 +43,7 @@ describe('FifoCacheObject', () => {
     cache.remove(3);
 
     expect(cache.get(3)).toBe(undefined);
-    [1, 2, 4, 5].map(entry => {
+    [1, 2, 4, 5].forEach(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
   });
@@ -61,7 +61,7 @@ describe('FifoCacheObject', () => {
     expect(cache.get(1)).toBe(undefined);
     expect(cache.get(3)).toBe(undefined);
 
-    [2, 4, 5, 6, 7].map(entry => {
+    [2, 4, 5, 6, 7].forEach(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
   });
@@ -73,7 +73,7 @@ describe('FifoCacheObject', () => {
 
     cache.clear();
 
-    [1, 2, 3, 4, 5].map(entry => {
+    [1, 2, 3, 4, 5].forEach(entry => {
       expect(cache.get(entry)).toBe(undefined);
     });
   });

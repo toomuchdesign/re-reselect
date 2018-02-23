@@ -1,7 +1,7 @@
 import FlatCacheObject from '../FlatCacheObject';
 
 function fillCache(cache, entries = []) {
-  entries.map(entry => cache.set(entry, entry));
+  entries.forEach(entry => cache.set(entry, entry));
   return cache;
 }
 
@@ -24,7 +24,7 @@ describe('FlatCacheObject', () => {
     cache.remove(3);
 
     expect(cache.get(3)).toBe(undefined);
-    [1, 2, 4, 5].map(entry => {
+    [1, 2, 4, 5].forEach(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
   });
@@ -36,7 +36,7 @@ describe('FlatCacheObject', () => {
 
     cache.clear();
 
-    [1, 2, 3, 4, 5].map(entry => {
+    [1, 2, 3, 4, 5].forEach(entry => {
       expect(cache.get(entry)).toBe(undefined);
     });
   });

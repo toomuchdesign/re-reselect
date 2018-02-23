@@ -1,9 +1,13 @@
 import {createSelector} from 'reselect';
 import FlatCacheObject from './cache/FlatCacheObject';
 
-export default function createCachedSelector(...funcs) {
-  const defaultCacheCreator = FlatCacheObject;
+const defaultCacheCreator = FlatCacheObject;
+const defaultCacheKeyValidator = cacheKey => {
+  // By default avoid implicit cache entries conversions like "[object Object]" or "1,2,3"
+  return typeof cacheKey === 'string' || typeof cacheKey === 'number';
+};
 
+export default function createCachedSelector(...funcs) {
   return (resolver, options = {}) => {
     let cache;
     let selectorCreator;
@@ -21,14 +25,13 @@ export default function createCachedSelector(...funcs) {
       selectorCreator = options.selectorCreator || createSelector;
     }
 
+    const isCacheKeyValid = cache.isCacheKeyValid || defaultCacheKeyValidator;
+
+    // Application receives this function
     const selector = function(...args) {
-      // Application receives this function
       const cacheKey = resolver(...args);
 
-      // Avoid implicit cache entries conversions like "[object Object]" or "1,2,3"
-      // when an object or an array is passed as cacheKey
-      // @NOTE this check is preventing cache from using Maps
-      if (typeof cacheKey === 'string' || typeof cacheKey === 'number') {
+      if (isCacheKeyValid(cacheKey)) {
         let cacheResponse = cache.get(cacheKey);
 
         if (cacheResponse === undefined) {

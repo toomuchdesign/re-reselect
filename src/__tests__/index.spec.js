@@ -53,6 +53,26 @@ describe('createCachedSelector', () => {
 
       expect(resultFunc).toHaveBeenCalledTimes(1);
     });
+
+    it('Should run a custom cacheKey check when cacheObject.isCacheKeyValid provides one', () => {
+      const cacheObject = new FlatCacheObject();
+      cacheObject.isCacheKeyValid = jest.fn(() => true);
+      cacheObject.set = jest.fn();
+
+      const cachedSelector = createCachedSelector(resultFunc)(
+        (arg1, arg2) => arg2,
+        {
+          cacheObject: cacheObject,
+        }
+      );
+
+      cachedSelector('foo', {});
+
+      expect(cacheObject.isCacheKeyValid).toHaveBeenCalledTimes(1);
+      expect(cacheObject.set).toHaveBeenCalledTimes(1);
+      // Receive cacheKey and reselect selector as arguments
+      expect(cacheObject.set).toHaveBeenCalledWith({}, expect.any(Function));
+    });
   });
 
   it('Should accept a "selectorCreator" function as 2° argument', () => {

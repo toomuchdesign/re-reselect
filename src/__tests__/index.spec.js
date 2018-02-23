@@ -20,7 +20,7 @@ describe('createCachedSelector', () => {
     const firstCall = cachedSelector('foo', 'bar');
     const secondCallWithSameResolver = cachedSelector('foo', 'bar');
 
-    expect(resultFunc.mock.calls.length).toBe(1);
+    expect(resultFunc).toHaveBeenCalledTimes(1);
   });
 
   it('Should create 2 different selectors when resolver function returns different strings', () => {
@@ -28,25 +28,29 @@ describe('createCachedSelector', () => {
     const firstCallResult = cachedSelector('foo', 'bar');
     const secondCallWithDifferentResolver = cachedSelector('foo', 'moo');
 
-    expect(resultFunc.mock.calls.length).toBe(2);
+    expect(resultFunc).toHaveBeenCalledTimes(2);
   });
 
-  it('Should return "undefined" if provided resolver does not return a string', () => {
-    const cachedSelector = createCachedSelector(resultFunc)(
-      () => {} // Resolver
-    );
-    const firstCallResult = cachedSelector('foo', 'bar');
+  it('Should return "undefined" if provided resolver does not return a string or number', () => {
+    const cachedSelector = selectorWithMockedResultFunc();
+    const results = [
+      cachedSelector('foo', {}),
+      cachedSelector('foo', []),
+      cachedSelector('foo', null),
+      cachedSelector('foo', undefined),
+    ];
 
-    expect(resultFunc.mock.calls.length).toBe(0);
-    expect(firstCallResult).toBe(undefined);
+    expect(resultFunc).toHaveBeenCalledTimes(0);
+
+    results.forEach(result => expect(result).toBe(undefined));
   });
 
   it('Should allow resolver function to return keys of type number', () => {
     const cachedSelector = selectorWithMockedResultFunc();
     const firstCall = cachedSelector('foo', 1);
-    const secondCallWithSameResolver = cachedSelector('foo', 1);
+    const secondCall = cachedSelector('foo', 1);
 
-    expect(resultFunc.mock.calls.length).toBe(1);
+    expect(resultFunc).toHaveBeenCalledTimes(1);
   });
 
   it('Should expose underlying reselect selector for a cache key with "getMatchingSelector"', () => {
@@ -111,10 +115,10 @@ describe('createCachedSelector', () => {
       createSelector
     );
 
-    expect(resultFunc.mock.calls.length).toBe(0);
+    expect(resultFunc).toHaveBeenCalledTimes(0);
     cachedSelector('foo', 'bar');
     cachedSelector('foo', 'bar');
-    expect(resultFunc.mock.calls.length).toBe(1);
+    expect(resultFunc).toHaveBeenCalledTimes(1);
 
     consoleWarnSpy.mockReset();
     consoleWarnSpy.mockRestore();
@@ -143,9 +147,9 @@ describe('createCachedSelector', () => {
       }
     );
 
-    expect(resultFunc.mock.calls.length).toBe(0);
+    expect(resultFunc).toHaveBeenCalledTimes(0);
     cachedSelector('foo', 'bar');
     cachedSelector('foo', 'bar');
-    expect(resultFunc.mock.calls.length).toBe(1);
+    expect(resultFunc).toHaveBeenCalledTimes(1);
   });
 });

@@ -25,6 +25,9 @@ export default function createCachedSelector(...funcs) {
       // Application receives this function
       const cacheKey = resolver(...args);
 
+      // Avoid implicit cache entries conversions like "[object Object]" or "1,2,3"
+      // when an object or an array is passed as cacheKey
+      // @NOTE this check is preventing cache from using Maps
       if (typeof cacheKey === 'string' || typeof cacheKey === 'number') {
         let cacheResponse = cache.get(cacheKey);
 

@@ -5,7 +5,7 @@ function newCache(cacheSize) {
 }
 
 function fillCache(cache, entries = []) {
-  entries.map(entry => cache.set(entry, entry));
+  entries.forEach(entry => cache.set(entry, entry));
   return cache;
 }
 
@@ -39,7 +39,7 @@ describe('LruCacheObject', () => {
     cache.set(6, 6);
 
     expect(cache.get(3)).toBe(undefined);
-    [1, 2, 4, 5, 6].map(entry => {
+    [1, 2, 4, 5, 6].forEach(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
   });
@@ -51,7 +51,7 @@ describe('LruCacheObject', () => {
 
     cache.clear();
 
-    [1, 2, 3, 4, 5].map(entry => {
+    [1, 2, 3, 4, 5].forEach(entry => {
       expect(cache.get(entry)).toBe(undefined);
     });
   });
@@ -68,7 +68,7 @@ describe('LruCacheObject', () => {
     expect(cache.get(0)).toBe(0);
     expect(cache.get(1)).toBe(undefined);
     expect(cache.get(2)).toBe(2);
-    newEntries.map(entry => {
+    newEntries.forEach(entry => {
       expect(cache.get(entry)).toBe(entry);
     });
   });

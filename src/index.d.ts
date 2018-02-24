@@ -627,3 +627,11 @@ export class LruCacheObject implements ICacheObject {
   remove (key: string|number): void;
   clear (): void;
 }
+
+export class FlatMapCacheObject implements ICacheObject {
+  set (key: any, selectorFn: any): void;
+  get (key: any): any;
+  remove (key: any): void;
+  clear (): void;
+  isCacheKeyValid (): boolean;
+}

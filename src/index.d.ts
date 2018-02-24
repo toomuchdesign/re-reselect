@@ -635,3 +635,12 @@ export class FlatMapCacheObject implements ICacheObject {
   clear (): void;
   isCacheKeyValid (): boolean;
 }
+
+export class FifoMapCacheObject implements ICacheObject {
+  constructor (options: { cacheSize: number });
+  set (key: any, selectorFn: any): void;
+  get (key: any): any;
+  remove (key: any): void;
+  clear (): void;
+  isCacheKeyValid (): boolean;
+}

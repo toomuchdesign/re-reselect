@@ -16,3 +16,4 @@ coverage
 !.lintstagedrc
 !.npmignore
 !.travis.yml
+!.github

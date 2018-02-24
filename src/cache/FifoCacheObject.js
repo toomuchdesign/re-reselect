@@ -1,13 +1,8 @@
+import validateCacheSize from './util/validateCacheSize';
+
 export default class FifoCacheObject {
   constructor({cacheSize} = {}) {
-    if (cacheSize === undefined) {
-      throw new Error('Missing the required property `cacheSize`.');
-    }
-    if (!Number.isInteger(cacheSize) || cacheSize <= 0) {
-      throw new Error(
-        'The `cacheSize` property must be a positive integer value.'
-      );
-    }
+    validateCacheSize(cacheSize);
     this._cache = {};
     this._cacheOrdering = [];
     this._cacheSize = cacheSize;

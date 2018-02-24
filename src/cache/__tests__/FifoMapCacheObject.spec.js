@@ -1,4 +1,5 @@
 import FifoMapCacheObject from '../FifoMapCacheObject';
+import * as validateCacheSize from '../util/validateCacheSize';
 
 function newCache(cacheSize) {
   return new FifoMapCacheObject({cacheSize});
@@ -79,17 +80,11 @@ describe('FifoMapCacheObject', () => {
     });
   });
 
-  it('Should check mandatory `cacheSize` parameter', () => {
-    expect(() => {
-      const cache = new FifoMapCacheObject();
-    }).toThrow(/Missing/);
-  });
+  it('Should validate `cacheSize` parameter', () => {
+    const spy = jest.spyOn(validateCacheSize, 'default');
+    newCache(5);
 
-  it('Should check `cacheSize` parameter format', () => {
-    expect(() => {
-      const cache = new FifoMapCacheObject({
-        cacheSize: 2.5,
-      });
-    }).toThrow(/a positive integer/);
+    expect(spy).toHaveBeenCalledWith(5);
+    spy.mockRestore();
   });
 });

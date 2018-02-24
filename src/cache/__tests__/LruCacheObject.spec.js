@@ -1,4 +1,5 @@
 import LruCacheObject from '../LruCacheObject';
+import * as validateCacheSize from '../util/validateCacheSize';
 
 function newCache(cacheSize) {
   return new LruCacheObject({cacheSize});
@@ -73,17 +74,11 @@ describe('LruCacheObject', () => {
     });
   });
 
-  it('Should check mandatory `cacheSize` parameter', () => {
-    expect(() => {
-      const cache = new LruCacheObject();
-    }).toThrow(/Missing/);
-  });
+  it('Should validate `cacheSize` parameter', () => {
+    const spy = jest.spyOn(validateCacheSize, 'default');
+    newCache(5);
 
-  it('Should check `cacheSize` parameter format', () => {
-    expect(() => {
-      const cache = new LruCacheObject({
-        cacheSize: 2.5,
-      });
-    }).toThrow(/a positive integer/);
+    expect(spy).toHaveBeenCalledWith(5);
+    spy.mockRestore();
   });
 });

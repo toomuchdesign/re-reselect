@@ -25,6 +25,8 @@ function testFlatCacheObject () {
   const cacheObject = new FlatCacheObject();
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
+  // typings:expect-error
+  cacheObject.set({}, () => {});
   const result1: any = cacheObject.get('foo');
   const result2: any = cacheObject.get(2);
   cacheObject.remove('foo');
@@ -50,6 +52,8 @@ function testFifoCacheObject () {
   const cacheObject = new FifoCacheObject({ cacheSize: 10 });
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
+  // typings:expect-error
+  cacheObject.set({}, () => {});
   const result1: any = cacheObject.get('foo');
   const result2: any = cacheObject.get(2);
   cacheObject.remove('foo');
@@ -75,6 +79,8 @@ function testLruCacheObject () {
   const cacheObject = new LruCacheObject({ cacheSize: 10 });
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
+  // typings:expect-error
+  cacheObject.set({}, () => {});
   const result1: any = cacheObject.get('foo');
   const result2: any = cacheObject.get(2);
   cacheObject.remove('foo');

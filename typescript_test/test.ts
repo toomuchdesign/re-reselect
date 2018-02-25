@@ -301,18 +301,25 @@ function testArrayArgument() {
 }
 
 function testResolver() {
-  type State = {foo: string};
+  type State = {foo: string, obj: { bar: string } };
 
   const selector = createCachedSelector(
     (state: State) => state.foo,
     (state: never, arg1: number) => arg1,
     (state: never, arg1: number, arg2: number) => arg1 + arg2,
-    (foo, arg1, sum) => ({foo, arg1, sum}),
+    (foo, arg1, sum) => ({foo, arg1, sum})
   )(
-    (state: never, arg1: number, arg2: number) => arg1 + arg2,
+    (state: never, arg1: number, arg2: number) => arg1 + arg2
   );
 
-  selector({foo: 'fizz'}, 1, 2);
+  selector({foo: 'fizz', obj: { bar: 'bar' } }, 1, 2);
+
+  const selector2 = createCachedSelector(
+    (state: State) => state.obj,
+    obj => obj
+  )(
+    (state: never, obj) => obj
+  );
 }
 
 function testCustomSelectorCreator () {

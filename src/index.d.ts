@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 
 export type Selector<S, R> = (state: S) => R;
 
-export type Resolver<S> = (state: S, ...args: any[]) => number | string;
+export type Resolver<S> = (state: S, ...args: any[]) => any;
 
 export type CreateSelectorInstance = typeof createSelector;
 
@@ -29,7 +29,7 @@ export type OutputCachedSelector<S, R, C> = (resolver: Resolver<S>, optionsOrSel
 
 export type ParametricSelector<S, P, R> = (state: S, props: P, ...args: any[]) => R;
 
-export type ParametricResolver<S, P> = (state: S, props: P, ...args: any[]) => number | string;
+export type ParametricResolver<S, P> = (state: S, props: P, ...args: any[]) => any;
 
 export type OutputParametricSelector<S, P, R, C> = ParametricSelector<S, P, R> & {
   resultFunc: C;
@@ -599,9 +599,9 @@ export default function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, R
             res7: R7, res8: R8, res9: R9, res10: R10, res11: R11, res12: R12) => T>;
 
 export interface ICacheObject {
-  set (key: string|number, selectorFn: any): void;
-  get (key: string|number): any;
-  remove (key: string|number): void;
+  set (key: any, selectorFn: any): void;
+  get (key: any): any;
+  remove (key: any): void;
   clear (): void;
 }
 

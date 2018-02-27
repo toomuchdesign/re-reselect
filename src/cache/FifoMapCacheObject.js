@@ -23,7 +23,4 @@ export default class FifoMapCacheObject {
   clear() {
     this._cache.clear();
   }
-  isCacheKeyValid() {
-    return true;
-  }
 }

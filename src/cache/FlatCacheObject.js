@@ -14,4 +14,7 @@ export default class FlatCacheObject {
   clear() {
     this._cache = {};
   }
+  isValidCacheKey(cacheKey) {
+    return typeof cacheKey === 'string' || typeof cacheKey === 'number';
+  }
 }

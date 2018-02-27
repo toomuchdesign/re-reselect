@@ -9,12 +9,9 @@ export default class FlatMapCacheObject {
     return this._cache.get(key);
   }
   remove(key) {
-    delete this._cache.delete(key);
+    this._cache.delete(key);
   }
   clear() {
     this._cache.clear();
-  }
-  isCacheKeyValid() {
-    return true;
   }
 }

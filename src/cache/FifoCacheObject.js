@@ -31,4 +31,7 @@ export default class FifoCacheObject {
     this._cache = {};
     this._cacheOrdering = [];
   }
+  isValidCacheKey(cacheKey) {
+    return typeof cacheKey === 'string' || typeof cacheKey === 'number';
+  }
 }

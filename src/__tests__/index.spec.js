@@ -3,9 +3,17 @@ import {createSelector} from 'reselect';
 import createCachedSelector, {FlatCacheObject} from '../index';
 
 let resultFunc;
+let consoleWarnSpy;
+
+beforeAll(() => {
+  consoleWarnSpy = jest
+    .spyOn(global.console, 'warn')
+    .mockImplementation(() => {});
+});
 
 beforeEach(() => {
   resultFunc = jest.fn();
+  consoleWarnSpy.mockReset();
 });
 
 function selectorWithMockedResultFunc() {
@@ -32,53 +40,66 @@ describe('createCachedSelector', () => {
   });
 
   describe('cacheKey validity check', () => {
-    it('Should return "undefined" if resolver does not return a string or number', () => {
-      const cachedSelector = selectorWithMockedResultFunc();
-      const results = [
-        cachedSelector('foo', {}),
-        cachedSelector('foo', []),
-        cachedSelector('foo', null),
-        cachedSelector('foo', undefined),
-      ];
+    describe('cacheObject.isValidCacheKey not available', () => {
+      it('Should accept any value', () => {
+        const cacheObjectMock = {
+          get: jest.fn(() => () => 'foo'),
+        };
+        const values = [{}, [], null, undefined, 12, 'bar'];
 
-      expect(resultFunc).toHaveBeenCalledTimes(0);
+        const cachedSelector = createCachedSelector(resultFunc)(
+          arg1 => arg1, // cacheKey
+          {
+            cacheObject: cacheObjectMock,
+          }
+        );
 
-      results.forEach(result => expect(result).toBe(undefined));
+        values.forEach((value, index) => {
+          cachedSelector(value);
+          expect(cacheObjectMock.get).toHaveBeenCalledTimes(index + 1);
+          expect(cacheObjectMock.get).toHaveBeenLastCalledWith(value);
+        });
+      });
     });
 
-    it('Should allow resolver function to return keys of type number', () => {
-      const cachedSelector = selectorWithMockedResultFunc();
-      const firstCall = cachedSelector('foo', 1);
-      const secondCall = cachedSelector('foo', 1);
+    describe('cacheObject.isValidCacheKey returns "true"', () => {
+      it('Should call cache.get method', () => {
+        const cacheObjectMock = new FlatCacheObject();
+        cacheObjectMock.isValidCacheKey = jest.fn(() => true);
+        cacheObjectMock.get = jest.fn();
 
-      expect(resultFunc).toHaveBeenCalledTimes(1);
+        const cachedSelector = createCachedSelector(resultFunc)(arg1 => arg1, {
+          cacheObject: cacheObjectMock,
+        });
+
+        cachedSelector('foo');
+
+        expect(cacheObjectMock.get).toHaveBeenCalledTimes(1);
+        // Receive cacheKey and reselect selector as arguments
+        expect(cacheObjectMock.get).toHaveBeenCalledWith('foo');
+      });
     });
 
-    it('Should run a custom cacheKey check when cacheObject.isCacheKeyValid provides one', () => {
-      const cacheObject = new FlatCacheObject();
-      cacheObject.isCacheKeyValid = jest.fn(() => true);
-      cacheObject.set = jest.fn();
+    describe('cacheObject.isValidCacheKey returns "false"', () => {
+      it('Should return "undefined" and call "console.warn"', () => {
+        const cacheObjectMock = new FlatCacheObject();
+        cacheObjectMock.isValidCacheKey = jest.fn(() => false);
+        cacheObjectMock.get = jest.fn();
 
-      const cachedSelector = createCachedSelector(resultFunc)(
-        (arg1, arg2) => arg2,
-        {
-          cacheObject: cacheObject,
-        }
-      );
+        const cachedSelector = createCachedSelector(resultFunc)(arg1 => arg1, {
+          cacheObject: cacheObjectMock,
+        });
 
-      cachedSelector('foo', {});
+        const actual = cachedSelector('foo');
 
-      expect(cacheObject.isCacheKeyValid).toHaveBeenCalledTimes(1);
-      expect(cacheObject.set).toHaveBeenCalledTimes(1);
-      // Receive cacheKey and reselect selector as arguments
-      expect(cacheObject.set).toHaveBeenCalledWith({}, expect.any(Function));
+        expect(actual).toBe(undefined);
+        expect(cacheObjectMock.get).not.toHaveBeenCalled();
+        expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
   it('Should accept a "selectorCreator" function as 2° argument', () => {
-    const consoleWarnSpy = jest
-      .spyOn(global.console, 'warn')
-      .mockImplementation(() => {});
     const cachedSelector = createCachedSelector(resultFunc)(
       (arg1, arg2) => arg2,
       createSelector
@@ -88,23 +109,14 @@ describe('createCachedSelector', () => {
     cachedSelector('foo', 'bar');
     cachedSelector('foo', 'bar');
     expect(resultFunc).toHaveBeenCalledTimes(1);
-
-    consoleWarnSpy.mockReset();
-    consoleWarnSpy.mockRestore();
   });
 
   it('Should cast a deprecation warning when "selectorCreator" is provided as 2° argument', () => {
-    const consoleWarnSpy = jest
-      .spyOn(global.console, 'warn')
-      .mockImplementation(() => {});
     const cachedSelector = createCachedSelector(
       resultFunc
     )(() => {}, createSelector);
 
-    expect(consoleWarnSpy).toHaveBeenCalled();
-
-    consoleWarnSpy.mockReset();
-    consoleWarnSpy.mockRestore();
+    expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
   });
 
   it('Should accept an options object', () => {

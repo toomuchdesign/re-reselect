@@ -38,4 +38,7 @@ export default class LruCacheObject {
       this._cacheOrdering.splice(index, 1);
     }
   }
+  isValidCacheKey(cacheKey) {
+    return typeof cacheKey === 'string' || typeof cacheKey === 'number';
+  }
 }

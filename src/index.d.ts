@@ -633,7 +633,7 @@ export class FlatMapCacheObject implements ICacheObject {
   get (key: any): any;
   remove (key: any): void;
   clear (): void;
-  isCacheKeyValid (): boolean;
+  isValidCacheKey (): boolean;
 }
 
 export class FifoMapCacheObject implements ICacheObject {
@@ -642,5 +642,5 @@ export class FifoMapCacheObject implements ICacheObject {
   get (key: any): any;
   remove (key: any): void;
   clear (): void;
-  isCacheKeyValid (): boolean;
+  isValidCacheKey (): boolean;
 }

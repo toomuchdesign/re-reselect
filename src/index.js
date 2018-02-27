@@ -2,10 +2,6 @@ import {createSelector} from 'reselect';
 import FlatCacheObject from './cache/FlatCacheObject';
 
 const defaultCacheCreator = FlatCacheObject;
-const defaultCacheKeyValidator = cacheKey => {
-  // By default avoid implicit cache entries conversions like "[object Object]" or "1,2,3"
-  return typeof cacheKey === 'string' || typeof cacheKey === 'number';
-};
 
 export default function createCachedSelector(...funcs) {
   return (resolver, options = {}) => {
@@ -25,13 +21,13 @@ export default function createCachedSelector(...funcs) {
       selectorCreator = options.selectorCreator || createSelector;
     }
 
-    const isCacheKeyValid = cache.isCacheKeyValid || defaultCacheKeyValidator;
+    const isValidCacheKey = cache.isValidCacheKey || (() => true);
 
     // Application receives this function
     const selector = function(...args) {
       const cacheKey = resolver(...args);
 
-      if (isCacheKeyValid(cacheKey)) {
+      if (isValidCacheKey(cacheKey)) {
         let cacheResponse = cache.get(cacheKey);
 
         if (cacheResponse === undefined) {
@@ -41,6 +37,9 @@ export default function createCachedSelector(...funcs) {
 
         return cacheResponse(...args);
       }
+      console.warn(
+        `[re-reselect] Invalid cache key "${cacheKey}" has been returned by resolver function.`
+      );
       return undefined;
     };
 

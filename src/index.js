@@ -2,6 +2,7 @@ import {createSelector} from 'reselect';
 import FlatCacheObject from './cache/FlatCacheObject';
 
 const defaultCacheCreator = FlatCacheObject;
+const defaultCacheKeyValidator = () => true;
 
 export default function createCachedSelector(...funcs) {
   return (resolver, options = {}) => {
@@ -21,7 +22,7 @@ export default function createCachedSelector(...funcs) {
       selectorCreator = options.selectorCreator || createSelector;
     }
 
-    const isValidCacheKey = cache.isValidCacheKey || (() => true);
+    const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
 
     // Application receives this function
     const selector = function(...args) {

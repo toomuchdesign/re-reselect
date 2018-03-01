@@ -1,43 +1,24 @@
-import FlatCacheObject from '../FlatCacheObject';
-
-function fillCache(cache, entries = []) {
-  entries.forEach(entry => cache.set(entry, entry));
-  return cache;
-}
+import CacheObject from '../FlatCacheObject';
+import testBasicBehavior from '../__util__/testBasicBehavior';
 
 describe('FlatCacheObject', () => {
-  it('Should return cached value', () => {
-    const cache = new FlatCacheObject();
-    const actual = () => {};
+  testBasicBehavior(CacheObject);
 
-    cache.set('foo', actual);
-    const expected = cache.get('foo');
+  describe('isValidCacheKey', () => {
+    it('Should accept only numbers and string', () => {
+      const cache = new CacheObject();
+      const validValues = [1, 1.2, -5, 'foo', '12'];
+      const invalidValues = [{}, [], null, undefined, new Map()];
 
-    expect(actual).toBe(expected);
-  });
+      validValues.forEach(value => {
+        const actual = cache.isValidCacheKey(value);
+        expect(actual).toBe(true);
+      });
 
-  it('Should remove a single item', () => {
-    const cache = new FlatCacheObject();
-    const entries = [1, 2, 3, 4, 5];
-    fillCache(cache, entries);
-
-    cache.remove(3);
-
-    expect(cache.get(3)).toBe(undefined);
-    [1, 2, 4, 5].forEach(entry => {
-      expect(cache.get(entry)).toBe(entry);
-    });
-  });
-
-  it('Should clear the cache', () => {
-    const cache = new FlatCacheObject();
-    const entries = [1, 2, 3, 4, 5];
-    fillCache(cache, entries);
-
-    cache.clear();
-
-    [1, 2, 3, 4, 5].forEach(entry => {
-      expect(cache.get(entry)).toBe(undefined);
+      invalidValues.forEach(value => {
+        const actual = cache.isValidCacheKey(value);
+        expect(actual).toBe(false);
+      });
     });
   });
 });

@@ -67,6 +67,9 @@
     "coverageReporters": [
       "text",
       "lcov"
+    ],
+    "coveragePathIgnorePatterns": [
+      "__util__"
     ]
   }
 }

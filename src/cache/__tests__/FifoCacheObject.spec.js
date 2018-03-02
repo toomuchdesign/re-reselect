@@ -1,11 +1,12 @@
 import CacheObject from '../FifoCacheObject';
-import * as validateCacheSize from '../util/validateCacheSize';
 import testBasicBehavior from '../__util__/testBasicBehavior';
 import testFifoBehavior from '../__util__/testFifoBehavior';
+import testCacheSizeValidation from '../__util__/testCacheSizeValidation';
 
 describe('FifoCacheObject', () => {
   testBasicBehavior(CacheObject, {cacheSize: 10});
   testFifoBehavior(CacheObject);
+  testCacheSizeValidation(CacheObject);
 
   describe('isValidCacheKey', () => {
     it('Should accept only numbers and string', () => {

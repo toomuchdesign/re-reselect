@@ -1,5 +1,4 @@
 import fillCacheWith from './fillCacheWith';
-import * as validateCacheSize from '../util/validateCacheSize';
 
 function testFifoBehavior(CacheObject) {
   describe('FIFO cache behavior', () => {
@@ -34,15 +33,6 @@ function testFifoBehavior(CacheObject) {
       [2, 4, 5, 6, 7].forEach(entry => {
         expect(cache.get(entry)).toBe(entry);
       });
-    });
-
-    // @TODO Test the feature, not implementation
-    it('Should validate `cacheSize` parameter', () => {
-      const spy = jest.spyOn(validateCacheSize, 'default');
-      new CacheObject({cacheSize: 5});
-
-      expect(spy).toHaveBeenCalledWith(5);
-      spy.mockRestore();
     });
   });
 }

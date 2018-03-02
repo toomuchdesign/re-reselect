@@ -1,11 +1,13 @@
 import CacheObject from '../FifoMapCacheObject';
 import testFifoBehavior from '../__util__/testFifoBehavior';
 import testBasicBehavior from '../__util__/testBasicBehavior';
+import testCacheSizeValidation from '../__util__/testCacheSizeValidation';
 import fillCacheWith from '../__util__/fillCacheWith';
 
 describe('FifoMapCacheObject', () => {
   testBasicBehavior(CacheObject, {cacheSize: 10});
   testFifoBehavior(CacheObject);
+  testCacheSizeValidation(CacheObject);
 
   it('Should handle any kind of cache key', () => {
     const cache = new CacheObject({cacheSize: 5});

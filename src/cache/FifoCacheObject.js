@@ -1,4 +1,5 @@
 import validateCacheSize from './util/validateCacheSize';
+import isStringOrNumber from './util/isStringOrNumber';
 
 export default class FifoCacheObject {
   constructor({cacheSize} = {}) {
@@ -32,6 +33,6 @@ export default class FifoCacheObject {
     this._cacheOrdering = [];
   }
   isValidCacheKey(cacheKey) {
-    return typeof cacheKey === 'string' || typeof cacheKey === 'number';
+    return isStringOrNumber(cacheKey);
   }
 }

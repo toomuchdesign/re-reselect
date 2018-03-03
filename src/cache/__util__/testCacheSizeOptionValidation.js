@@ -1,4 +1,4 @@
-function testCacheSizeValidation(CacheObject) {
+function testCacheSizeOptionValidation(CacheObject) {
   describe('cacheSize option validation', () => {
     it('Should throw error if not defined', () => {
       expect(() => {
@@ -24,4 +24,4 @@ function testCacheSizeValidation(CacheObject) {
   });
 }
 
-export default testCacheSizeValidation;
+export default testCacheSizeOptionValidation;

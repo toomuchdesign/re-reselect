@@ -1,3 +1,5 @@
+import isStringOrNumber from './util/isStringOrNumber';
+
 export default class FlatCacheObject {
   constructor() {
     this._cache = {};
@@ -15,6 +17,6 @@ export default class FlatCacheObject {
     this._cache = {};
   }
   isValidCacheKey(cacheKey) {
-    return typeof cacheKey === 'string' || typeof cacheKey === 'number';
+    return isStringOrNumber(cacheKey);
   }
 }

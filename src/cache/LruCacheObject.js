@@ -1,4 +1,5 @@
 import validateCacheSize from './util/validateCacheSize';
+import isStringOrNumber from './util/isStringOrNumber';
 
 export default class LruCacheObject {
   constructor({cacheSize} = {}) {
@@ -39,6 +40,6 @@ export default class LruCacheObject {
     }
   }
   isValidCacheKey(cacheKey) {
-    return typeof cacheKey === 'string' || typeof cacheKey === 'number';
+    return isStringOrNumber(cacheKey);
   }
 }

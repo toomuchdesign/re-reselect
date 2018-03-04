@@ -603,6 +603,7 @@ export interface ICacheObject {
   get (key: any): any;
   remove (key: any): void;
   clear (): void;
+  isValidCacheKey?(): boolean;
 }
 
 export class FlatCacheObject implements ICacheObject {

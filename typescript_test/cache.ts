@@ -4,6 +4,7 @@ import createCachedSelector,{
   LruCacheObject,
   FlatMapCacheObject,
   FifoMapCacheObject,
+  LruMapCacheObject,
 } from '../src/index';
 
 type State = {foo: string};
@@ -129,6 +130,35 @@ function testFifoMapCacheObject () {
 
   // Exposes the interface
   const cacheObject = new FifoMapCacheObject({ cacheSize: 10 });
+  cacheObject.set('foo', () => {});
+  cacheObject.set(1, () => {});
+  cacheObject.set({}, () => {});
+  const result1: any = cacheObject.get('foo');
+  const result2: any = cacheObject.get(2);
+  const result3: any = cacheObject.get({});
+  cacheObject.remove('foo');
+  cacheObject.remove(1);
+  cacheObject.remove({});
+  cacheObject.clear();
+}
+
+
+function testLruMapCacheObject () {
+  // Accepts this cache object as an option
+  createCachedSelector(
+    fooSelector,
+    combinerSelector,
+  )(
+    fooSelector, {
+      cacheObject: new LruMapCacheObject({ cacheSize: 10 })
+    }
+  );
+
+  // typings:expect-error
+  new LruMapCacheObject();
+
+  // Exposes the interface
+  const cacheObject = new LruMapCacheObject({ cacheSize: 10 });
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
   cacheObject.set({}, () => {});

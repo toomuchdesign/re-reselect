@@ -644,3 +644,11 @@ export class FifoMapCacheObject implements ICacheObject {
   clear (): void;
   isValidCacheKey (): boolean;
 }
+
+export class LruMapCacheObject implements ICacheObject {
+  constructor (options: { cacheSize: number });
+  set (key: any, selectorFn: any): void;
+  get (key: any): any;
+  remove (key: any): void;
+  clear (): void;
+}

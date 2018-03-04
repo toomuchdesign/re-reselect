@@ -1,11 +1,28 @@
 # Change log
 
+## 2.0.0
+### Breaking Changes
+- `cacheKey` values no more restricted by default to `number` or `string`
+- `cacheKey` validation delegated to `cacheObject`'s `isValidCacheKey` method
+- `selectorCreator` argument removed in favour of `options` object
+- `console.warn` when `resolverFunction` returns invalid `cacheKey`
+- `cacheObject` export names renamed *(the 3 old ones are deprecated)*:
+  - `FlatCacheObject` -> `FlatObjectCache`
+  - `FifoCacheObject` -> `FifoObjectCache`
+  - `LruCacheObject` -> `LruObjectCache`
+
+### New Features
+- Added 3 new `cacheObject` implementations using `ES Map` objects accepting any value as `cacheKey`:
+  - `FlatMapCache`
+  - `FifoMapCache`
+  - `LruMapCache`
+
 ## 1.0.1
 - Remove wrong line at the beginning of the docs
 
 ## 1.0.0
 ### Breaking Changes
-- `selectorCreator` argument is deprecated in favor of an option object
+- `selectorCreator` argument is deprecated in favour of an option object
 
 ### New Features
 - Accept an option object to provide `cacheObject` and `selectorCreator` options

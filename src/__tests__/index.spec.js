@@ -99,24 +99,12 @@ describe('createCachedSelector', () => {
     });
   });
 
-  it('Should accept a "selectorCreator" function as 2° argument', () => {
-    const cachedSelector = createCachedSelector(resultFunc)(
-      (arg1, arg2) => arg2,
-      createSelector
-    );
-
-    expect(resultFunc).toHaveBeenCalledTimes(0);
-    cachedSelector('foo', 'bar');
-    cachedSelector('foo', 'bar');
-    expect(resultFunc).toHaveBeenCalledTimes(1);
-  });
-
-  it('Should cast a deprecation warning when "selectorCreator" is provided as 2° argument', () => {
-    const cachedSelector = createCachedSelector(
-      resultFunc
-    )(() => {}, createSelector);
-
-    expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
+  it('Should throw an error when a function is provided as 2° argument', () => {
+    expect(() => {
+      const cachedSelector = createCachedSelector(
+        resultFunc
+      )(() => {}, createSelector);
+    }).toThrow(/Second argument "options" must be an object/);
   });
 
   it('Should accept an options object', () => {

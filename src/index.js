@@ -6,22 +6,15 @@ const defaultCacheKeyValidator = () => true;
 
 export default function createCachedSelector(...funcs) {
   return (resolver, options = {}) => {
-    let cache;
-    let selectorCreator;
-
-    // Allow "options" to be provided as a "selectorCreator" for backward compatibility
-    // @TODO Remove "options" as a function in next breaking release
+    // @NOTE Versions 0.x ad 1.x accepted "options" as a function
     if (typeof options === 'function') {
-      console.warn(
-        '[re-reselect] Deprecation warning: "selectorCreator" argument is discouraged and will be removed in the upcoming major release. Please use "options.selectorCreator" instead.'
+      throw new Error(
+        '[re-reselect] Second argument "options" must be an object. Please use "options.selectorCreator" to provide a custom selectorCreator.'
       );
-      cache = new defaultCacheCreator();
-      selectorCreator = options;
-    } else {
-      cache = options.cacheObject || new defaultCacheCreator();
-      selectorCreator = options.selectorCreator || createSelector;
     }
 
+    const cache = options.cacheObject || new defaultCacheCreator();
+    const selectorCreator = options.selectorCreator || createSelector;
     const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
 
     // Application receives this function

@@ -610,6 +610,7 @@ export class FlatCacheObject implements ICacheObject {
   get (key: string|number): any;
   remove (key: string|number): void;
   clear (): void;
+  isValidCacheKey (): boolean;
 }
 
 export class FifoCacheObject implements ICacheObject {
@@ -618,6 +619,7 @@ export class FifoCacheObject implements ICacheObject {
   get (key: string|number): any;
   remove (key: string|number): void;
   clear (): void;
+  isValidCacheKey (): boolean;
 }
 
 export class LruCacheObject implements ICacheObject {
@@ -626,6 +628,7 @@ export class LruCacheObject implements ICacheObject {
   get (key: string|number): any;
   remove (key: string|number): void;
   clear (): void;
+  isValidCacheKey (): boolean;
 }
 
 export class FlatMapCacheObject implements ICacheObject {
@@ -633,7 +636,6 @@ export class FlatMapCacheObject implements ICacheObject {
   get (key: any): any;
   remove (key: any): void;
   clear (): void;
-  isValidCacheKey (): boolean;
 }
 
 export class FifoMapCacheObject implements ICacheObject {
@@ -642,7 +644,6 @@ export class FifoMapCacheObject implements ICacheObject {
   get (key: any): any;
   remove (key: any): void;
   clear (): void;
-  isValidCacheKey (): boolean;
 }
 
 export class LruMapCacheObject implements ICacheObject {

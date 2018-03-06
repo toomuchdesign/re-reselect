@@ -1,7 +1,7 @@
 import {createSelector} from 'reselect';
-import FlatCacheObject from './cache/FlatCacheObject';
+import FlatObjectCache from './cache/FlatObjectCache';
 
-const defaultCacheCreator = FlatCacheObject;
+const defaultCacheCreator = FlatObjectCache;
 const defaultCacheKeyValidator = () => true;
 
 export default function createCachedSelector(...funcs) {
@@ -59,6 +59,11 @@ export default function createCachedSelector(...funcs) {
   };
 }
 
-export {FlatCacheObject};
-export {default as FifoCacheObject} from './cache/FifoCacheObject';
-export {default as LruCacheObject} from './cache/LruCacheObject';
+// @TODO export with deprecation notice previous cache objects:
+// FlatCacheObject, FifoCacheObject, LruCacheObject
+export {FlatObjectCache};
+export {default as FifoObjectCache} from './cache/FifoObjectCache';
+export {default as LruObjectCache} from './cache/LruObjectCache';
+export {default as FlatMapCache} from './cache/FlatMapCache';
+export {default as FifoMapCache} from './cache/FifoMapCache';
+export {default as LruMapCache} from './cache/LruMapCache';

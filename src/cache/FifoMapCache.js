@@ -1,6 +1,6 @@
 import validateCacheSize from './util/validateCacheSize';
 
-export default class FifoMapCacheObject {
+export default class FifoMapCache {
   constructor({cacheSize} = {}) {
     validateCacheSize(cacheSize);
     this._cache = new Map();

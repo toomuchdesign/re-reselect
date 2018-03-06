@@ -1,29 +1,29 @@
 import createCachedSelector,{
-  FlatCacheObject,
-  FifoCacheObject,
-  LruCacheObject,
-  FlatMapCacheObject,
-  FifoMapCacheObject,
-  LruMapCacheObject,
+  FlatObjectCache,
+  FifoObjectCache,
+  LruObjectCache,
+  FlatMapCache,
+  FifoMapCache,
+  LruMapCache,
 } from '../src/index';
 
 type State = {foo: string};
 const fooSelector = (state: State) => state.foo;
 const combinerSelector = (foo: string) => foo;
 
-function testFlatCacheObject () {
+function testFlatObjectCache () {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
     combinerSelector,
   )(
     fooSelector, {
-      cacheObject: new FlatCacheObject()
+      cacheObject: new FlatObjectCache()
     }
   );
 
   // Exposes the interface
-  const cacheObject = new FlatCacheObject();
+  const cacheObject = new FlatObjectCache();
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
   // typings:expect-error
@@ -35,22 +35,22 @@ function testFlatCacheObject () {
   cacheObject.clear();
 }
 
-function testFifoCacheObject () {
+function testFifoObjectCache () {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
     combinerSelector,
   )(
     fooSelector, {
-      cacheObject: new FifoCacheObject({ cacheSize: 10 })
+      cacheObject: new FifoObjectCache({ cacheSize: 10 })
     }
   );
 
   // typings:expect-error
-  new FifoCacheObject();
+  new FifoObjectCache();
 
   // Exposes the interface
-  const cacheObject = new FifoCacheObject({ cacheSize: 10 });
+  const cacheObject = new FifoObjectCache({ cacheSize: 10 });
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
   // typings:expect-error
@@ -62,22 +62,22 @@ function testFifoCacheObject () {
   cacheObject.clear();
 }
 
-function testLruCacheObject () {
+function testLruObjectCache () {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
     combinerSelector,
   )(
     fooSelector, {
-      cacheObject: new LruCacheObject({ cacheSize: 10 })
+      cacheObject: new LruObjectCache({ cacheSize: 10 })
     }
   );
 
   // typings:expect-error
-  new LruCacheObject();
+  new LruObjectCache();
 
   // Exposes the interface
-  const cacheObject = new LruCacheObject({ cacheSize: 10 });
+  const cacheObject = new LruObjectCache({ cacheSize: 10 });
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
   // typings:expect-error
@@ -89,47 +89,19 @@ function testLruCacheObject () {
   cacheObject.clear();
 }
 
-function testFlatMapCacheObject () {
+function testFlatMapCache () {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
     combinerSelector,
   )(
     fooSelector, {
-      cacheObject: new FlatMapCacheObject()
+      cacheObject: new FlatMapCache()
     }
   );
 
   // Exposes the interface
-  const cacheObject = new FlatMapCacheObject();
-  cacheObject.set('foo', () => {});
-  cacheObject.set(1, () => {});
-  cacheObject.set({}, () => {});
-  const result1: any = cacheObject.get('foo');
-  const result2: any = cacheObject.get(2);
-  const result3: any = cacheObject.get({});
-  cacheObject.remove('foo');
-  cacheObject.remove(1);
-  cacheObject.remove({});
-  cacheObject.clear();
-}
-
-function testFifoMapCacheObject () {
-  // Accepts this cache object as an option
-  createCachedSelector(
-    fooSelector,
-    combinerSelector,
-  )(
-    fooSelector, {
-      cacheObject: new FifoMapCacheObject({ cacheSize: 10 })
-    }
-  );
-
-  // typings:expect-error
-  new FifoMapCacheObject();
-
-  // Exposes the interface
-  const cacheObject = new FifoMapCacheObject({ cacheSize: 10 });
+  const cacheObject = new FlatMapCache();
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
   cacheObject.set({}, () => {});
@@ -142,23 +114,51 @@ function testFifoMapCacheObject () {
   cacheObject.clear();
 }
 
-
-function testLruMapCacheObject () {
+function testFifoMapCache () {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
     combinerSelector,
   )(
     fooSelector, {
-      cacheObject: new LruMapCacheObject({ cacheSize: 10 })
+      cacheObject: new FifoMapCache({ cacheSize: 10 })
     }
   );
 
   // typings:expect-error
-  new LruMapCacheObject();
+  new FifoMapCache();
 
   // Exposes the interface
-  const cacheObject = new LruMapCacheObject({ cacheSize: 10 });
+  const cacheObject = new FifoMapCache({ cacheSize: 10 });
+  cacheObject.set('foo', () => {});
+  cacheObject.set(1, () => {});
+  cacheObject.set({}, () => {});
+  const result1: any = cacheObject.get('foo');
+  const result2: any = cacheObject.get(2);
+  const result3: any = cacheObject.get({});
+  cacheObject.remove('foo');
+  cacheObject.remove(1);
+  cacheObject.remove({});
+  cacheObject.clear();
+}
+
+
+function testLruMapCache () {
+  // Accepts this cache object as an option
+  createCachedSelector(
+    fooSelector,
+    combinerSelector,
+  )(
+    fooSelector, {
+      cacheObject: new LruMapCache({ cacheSize: 10 })
+    }
+  );
+
+  // typings:expect-error
+  new LruMapCache();
+
+  // Exposes the interface
+  const cacheObject = new LruMapCache({ cacheSize: 10 });
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
   cacheObject.set({}, () => {});

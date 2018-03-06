@@ -606,7 +606,7 @@ export interface ICacheObject {
   isValidCacheKey?(): boolean;
 }
 
-export class FlatCacheObject implements ICacheObject {
+export class FlatObjectCache implements ICacheObject {
   set (key: string|number, selectorFn: any): void;
   get (key: string|number): any;
   remove (key: string|number): void;
@@ -614,7 +614,7 @@ export class FlatCacheObject implements ICacheObject {
   isValidCacheKey (): boolean;
 }
 
-export class FifoCacheObject implements ICacheObject {
+export class FifoObjectCache implements ICacheObject {
   constructor (options: { cacheSize: number });
   set (key: string|number, selectorFn: any): void;
   get (key: string|number): any;
@@ -623,7 +623,7 @@ export class FifoCacheObject implements ICacheObject {
   isValidCacheKey (): boolean;
 }
 
-export class LruCacheObject implements ICacheObject {
+export class LruObjectCache implements ICacheObject {
   constructor (options: { cacheSize: number });
   set (key: string|number, selectorFn: any): void;
   get (key: string|number): any;
@@ -632,14 +632,14 @@ export class LruCacheObject implements ICacheObject {
   isValidCacheKey (): boolean;
 }
 
-export class FlatMapCacheObject implements ICacheObject {
+export class FlatMapCache implements ICacheObject {
   set (key: any, selectorFn: any): void;
   get (key: any): any;
   remove (key: any): void;
   clear (): void;
 }
 
-export class FifoMapCacheObject implements ICacheObject {
+export class FifoMapCache implements ICacheObject {
   constructor (options: { cacheSize: number });
   set (key: any, selectorFn: any): void;
   get (key: any): any;
@@ -647,7 +647,7 @@ export class FifoMapCacheObject implements ICacheObject {
   clear (): void;
 }
 
-export class LruMapCacheObject implements ICacheObject {
+export class LruMapCache implements ICacheObject {
   constructor (options: { cacheSize: number });
   set (key: any, selectorFn: any): void;
   get (key: any): any;

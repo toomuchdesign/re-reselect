@@ -1,8 +1,8 @@
-import CacheObject from '../FlatMapCacheObject';
+import {FlatMapCache as CacheObject} from '../../index';
 import testBasicBehavior from '../__util__/testBasicBehavior';
 import testMapCacheKeyBehavior from '../__util__/testMapCacheKeyBehavior';
 
-describe('FlatMapCacheObject', () => {
+describe('FlatMapCache', () => {
   testBasicBehavior(CacheObject);
   testMapCacheKeyBehavior(CacheObject);
 });

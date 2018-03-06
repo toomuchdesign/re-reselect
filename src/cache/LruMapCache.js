@@ -1,6 +1,6 @@
 import validateCacheSize from './util/validateCacheSize';
 
-export default class LruMapCacheObject {
+export default class LruMapCache {
   constructor({cacheSize} = {}) {
     validateCacheSize(cacheSize);
     this._cache = new Map();

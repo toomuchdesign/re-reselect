@@ -1,6 +1,6 @@
 /* eslint comma-dangle: 0 */
 import {createSelector} from 'reselect';
-import createCachedSelector, {FlatCacheObject} from '../index';
+import createCachedSelector, {FlatObjectCache} from '../index';
 
 let resultFunc;
 let consoleWarnSpy;
@@ -64,7 +64,7 @@ describe('createCachedSelector', () => {
 
     describe('cacheObject.isValidCacheKey returns "true"', () => {
       it('Should call cache.get method', () => {
-        const cacheObjectMock = new FlatCacheObject();
+        const cacheObjectMock = new FlatObjectCache();
         cacheObjectMock.isValidCacheKey = jest.fn(() => true);
         cacheObjectMock.get = jest.fn();
 
@@ -82,7 +82,7 @@ describe('createCachedSelector', () => {
 
     describe('cacheObject.isValidCacheKey returns "false"', () => {
       it('Should return "undefined" and call "console.warn"', () => {
-        const cacheObjectMock = new FlatCacheObject();
+        const cacheObjectMock = new FlatObjectCache();
         cacheObjectMock.isValidCacheKey = jest.fn(() => false);
         cacheObjectMock.get = jest.fn();
 
@@ -111,7 +111,7 @@ describe('createCachedSelector', () => {
     const cachedSelector = createCachedSelector(resultFunc)(
       (arg1, arg2) => arg2,
       {
-        cacheObject: new FlatCacheObject(),
+        cacheObject: new FlatObjectCache(),
         selectorCreator: createSelector,
       }
     );

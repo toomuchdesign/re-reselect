@@ -1,4 +1,4 @@
-export default class FlatMapCacheObject {
+export default class FlatMapCache {
   constructor() {
     this._cache = new Map();
   }

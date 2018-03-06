@@ -1,6 +1,6 @@
 import isStringOrNumber from './util/isStringOrNumber';
 
-export default class FlatCacheObject {
+export default class FlatObjectCache {
   constructor() {
     this._cache = {};
   }

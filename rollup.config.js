@@ -5,30 +5,34 @@ let pkg = require('./package.json');
 let external = Object.keys(pkg.peerDependencies);
 
 let plugins = [
-  babel(),
+  babel({
+    exclude: 'node_modules/**',
+  }),
 ];
 
 const config = {
-  entry: 'src/index.js',
+  input: 'src/index.js',
   external: external,
   plugins: plugins,
-  exports: 'named',
-  targets: [
+  output: [
     {
-      dest: pkg.main,
+      file: pkg.main,
       format: 'cjs',
-      sourceMap: true,
+      sourcemap: true,
+      exports: 'named',
     },
     {
-      dest: pkg.module,
+      file: pkg.module,
       format: 'es',
-      sourceMap: true,
+      sourcemap: true,
+      exports: 'named',
     },
     {
-      dest: 'dist/index.js',
+      file: 'dist/index.js',
       format: 'umd',
-      sourceMap: true,
-      moduleName: 'Re-reselect',
+      sourcemap: true,
+      exports: 'named',
+      name: 'Re-reselect',
       globals: {
         reselect: 'Reselect',
       },
@@ -36,4 +40,4 @@ const config = {
   ],
 };
 
-export default config
+export default config;

@@ -3,6 +3,7 @@
 Let's pretend we are building an application displaying statistic **data about any country** of planet earth.
 
 ### With reselect only
+
 ```js
 import { createSelector } from reselect;
 
@@ -51,10 +52,10 @@ const makeGetCountryData = country => {
     world => extractData(world, country),
   );
 }
-
 ```
 
 ### With re-reselect
+
 ```js
 import createCachedSelector from re-reselect;
 
@@ -74,5 +75,4 @@ const afghanistanAgain = getCountryData(state, 'afghanistan');
 
 // No selector factories and memoization preserved among different components
 // afghanistan === afghanistanAgain
-
 ```

@@ -101,9 +101,8 @@ describe('createCachedSelector', () => {
 
   it('Should throw an error when a function is provided as 2° argument', () => {
     expect(() => {
-      const cachedSelector = createCachedSelector(
-        resultFunc
-      )(() => {}, createSelector);
+      const cachedSelector = createCachedSelector(resultFunc)(() => {},
+      createSelector);
     }).toThrow(/Second argument "options" must be an object/);
   });
 

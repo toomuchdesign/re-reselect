@@ -1,4 +1,4 @@
-import { createSelectorCreator, defaultMemoize } from 'reselect';
+import {createSelectorCreator, defaultMemoize} from 'reselect';
 import createCachedSelector from '../src/index';
 
 function testSelector() {
@@ -6,10 +6,8 @@ function testSelector() {
 
   const selector = createCachedSelector(
     (state: State) => state.foo,
-    (foo) => foo,
-  )(
-    (state: State) => state.foo,
-  );
+    foo => foo
+  )((state: State) => state.foo);
 
   const result: string = selector({foo: 'bar'});
   // typings:expect-error
@@ -35,22 +33,18 @@ function testSelector() {
     (state: {foo: string}) => state.foo,
     (state: {bar: number}) => state.bar,
     (foo, bar) => 1
-  )(
-    (state: State) => state.foo,
-  );
+  )((state: State) => state.foo);
 }
 
 function testNestedSelector() {
-  type State = {foo: string, bar: number, baz: boolean};
+  type State = {foo: string; bar: number; baz: boolean};
 
   const selector = createCachedSelector(
     createCachedSelector(
       (state: State) => state.foo,
       (state: State) => state.bar,
-      (foo, bar) => ({foo, bar}),
-    )(
-      (state: State) => state.foo,
-    ),
+      (foo, bar) => ({foo, bar})
+    )((state: State) => state.foo),
     (state: State) => state.baz,
     ({foo, bar}, baz) => {
       const foo1: string = foo;
@@ -64,21 +58,16 @@ function testNestedSelector() {
       const baz1: boolean = baz;
       // typings:expect-error
       const baz2: string = baz;
-    },
-  )(
-    (state: State) => state.bar,
-  )
+    }
+  )((state: State) => state.bar);
 }
 
 function testInvalidTypeInCombinator() {
-  type State = {foo: string, bar: number, baz: boolean};
+  type State = {foo: string; bar: number; baz: boolean};
 
   // typings:expect-error
-  createCachedSelector(
-    (state: State) => state.foo,
-    (foo: number) => foo,
-  )(
-    (state: State) => foo,
+  createCachedSelector((state: State) => state.foo, (foo: number) => foo)(
+    (state: State) => foo
   );
 
   // typings:expect-error
@@ -87,9 +76,7 @@ function testInvalidTypeInCombinator() {
     state => state.bar,
     state => state.baz,
     (foo: string, bar: number, baz: boolean, fizz: string) => {}
-  )(
-    (state: State) => foo,
-  );
+  )((state: State) => foo);
 }
 
 function testParametricSelector() {
@@ -99,10 +86,8 @@ function testParametricSelector() {
   const selector = createCachedSelector(
     (state: State) => state.foo,
     (state: never, props: Props) => props.bar,
-    (foo, bar) => ({foo, bar}),
-  )(
-    (state: never, props: Props) => props.bar,
-  );
+    (foo, bar) => ({foo, bar})
+  )((state: never, props: Props) => props.bar);
 
   const result = selector({foo: 'fizz'}, {bar: 42});
   const foo: string = result.foo;
@@ -113,8 +98,12 @@ function testParametricSelector() {
   // typings:expect-error
   selector({foo: 'fizz'}, {bar: 'baz'});
 
-  const matchingSelectors = selector.getMatchingSelector({foo: 'fizz'}, {bar: 42});
-  const resultFunc: (foo: string, bar: number) => object = matchingSelectors.resultFunc;
+  const matchingSelectors = selector.getMatchingSelector(
+    {foo: 'fizz'},
+    {bar: 42}
+  );
+  const resultFunc: (foo: string, bar: number) => object =
+    matchingSelectors.resultFunc;
 
   // typings:expect-error
   selector.getMatchingSelector({foo: 'fizz'}, {bar: 'fuzz'});
@@ -126,30 +115,34 @@ function testParametricSelector() {
   selector.clearCache();
 
   const selector2 = createCachedSelector(
-    (state) => state.foo,
-    (state) => state.foo,
-    (state) => state.foo,
-    (state) => state.foo,
-    (state) => state.foo,
+    state => state.foo,
+    state => state.foo,
+    state => state.foo,
+    state => state.foo,
+    state => state.foo,
     (state: State, props: Props) => props.bar,
     (foo1, foo2, foo3, foo4, foo5, bar) => ({
-      foo1, foo2, foo3, foo4, foo5, bar,
-    }),
-  )(
-    (state: never, props: Props) => props.bar,
-  );;
+      foo1,
+      foo2,
+      foo3,
+      foo4,
+      foo5,
+      bar,
+    })
+  )((state: never, props: Props) => props.bar);
 
   selector2({foo: 'fizz'}, {bar: 42});
 }
 
 function testArrayArgument() {
-  const selector = createCachedSelector([
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: never, props: {bar: number}) => props.bar,
-  ], (foo1, foo2, bar) => ({foo1, foo2, bar}))(
-    (state: never, props: {bar: number}) => props.bar,
-  );
+  const selector = createCachedSelector(
+    [
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: never, props: {bar: number}) => props.bar,
+    ],
+    (foo1, foo2, bar) => ({foo1, foo2, bar})
+  )((state: never, props: {bar: number}) => props.bar);
 
   const ret = selector({foo: 'fizz'}, {bar: 42});
   const foo1: string = ret.foo1;
@@ -157,94 +150,108 @@ function testArrayArgument() {
   const bar: number = ret.bar;
 
   // typings:expect-error
-  createCachedSelector([
-    (state: {foo: string}) => state.foo,
-  ])(
-    (state: {foo: string}) => state.foo,
+  createCachedSelector([(state: {foo: string}) => state.foo])(
+    (state: {foo: string}) => state.foo
   );
 
   // typings:expect-error
-  createCachedSelector([
-    (state: {foo: string}) => state.foo,
-    (state: {bar: number}) => state.bar,
-  ], (foo, bar) => {})(
-    (state: {foo: string}) => state.foo,
-  );
+  createCachedSelector(
+    [(state: {foo: string}) => state.foo, (state: {bar: number}) => state.bar],
+    (foo, bar) => {}
+  )((state: {foo: string}) => state.foo);
 
   // typings:expect-error
-  createCachedSelector([
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-  ], (foo: string, bar: number) => {})(
-    (state: {foo: string}) => state.foo,
-  );
+  createCachedSelector(
+    [(state: {foo: string}) => state.foo, (state: {foo: string}) => state.foo],
+    (foo: string, bar: number) => {}
+  )((state: {foo: string}) => state.foo);
 
-  createCachedSelector([
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-  ], (foo1: string, foo2: string, foo3: string, foo4: string, foo5: string,
-      foo6: string, foo7: string, foo8: string, foo9: string, foo10: string) => {
-  })(
-    (state: {foo: string}) => state.foo,
-  );
-
-  // typings:expect-error
-  createCachedSelector([
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-  ], (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8: number, foo9, foo10) => {
-
-  })(
-    (state: {foo: string}) => state.foo,
-  );
+  createCachedSelector(
+    [
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+    ],
+    (
+      foo1: string,
+      foo2: string,
+      foo3: string,
+      foo4: string,
+      foo5: string,
+      foo6: string,
+      foo7: string,
+      foo8: string,
+      foo9: string,
+      foo10: string
+    ) => {}
+  )((state: {foo: string}) => state.foo);
 
   // typings:expect-error
-  createCachedSelector([
-    (state: {foo: string}) => state.foo,
-    state => state.foo,
-    state => state.foo,
-    state => state.foo,
-    state => state.foo,
-    state => state.foo,
-    state => state.foo,
-    state => state.foo,
-    1,
-  ], (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9) => {})(
-    state => state.foo,
-  );
+  createCachedSelector(
+    [
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+    ],
+    (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8: number, foo9, foo10) => {}
+  )((state: {foo: string}) => state.foo);
 
-  const selector2 = createCachedSelector([
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-  ], (foo1: string, foo2: string, foo3: string, foo4: string, foo5: string,
-      foo6: string, foo7: string, foo8: string, foo9: string) => {
-    return {foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9};
-  })(
-    (state: {foo: string}) => state.foo,
-  );
+  // typings:expect-error
+  createCachedSelector(
+    [
+      (state: {foo: string}) => state.foo,
+      state => state.foo,
+      state => state.foo,
+      state => state.foo,
+      state => state.foo,
+      state => state.foo,
+      state => state.foo,
+      state => state.foo,
+      1,
+    ],
+    (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9) => {}
+  )(state => state.foo);
+
+  const selector2 = createCachedSelector(
+    [
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+    ],
+    (
+      foo1: string,
+      foo2: string,
+      foo3: string,
+      foo4: string,
+      foo5: string,
+      foo6: string,
+      foo7: string,
+      foo8: string,
+      foo9: string
+    ) => {
+      return {foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9};
+    }
+  )((state: {foo: string}) => state.foo);
 
   {
     const ret = selector2({foo: 'fizz'});
@@ -264,22 +271,32 @@ function testArrayArgument() {
   // typings:expect-error
   selector2({foo: 'fizz'}, {bar: 42});
 
-  const parametric = createCachedSelector([
-    (state: never, props: {bar: number}) => props.bar,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-    (state: {foo: string}) => state.foo,
-  ], (bar: number, foo1: string, foo2: string, foo3: string, foo4: string,
-      foo5: string, foo6: string, foo7: string, foo8: string) => {
-    return {foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, bar};
-  })(
-    (state: never, props: {bar: number}) => props.bar,
-  );
+  const parametric = createCachedSelector(
+    [
+      (state: never, props: {bar: number}) => props.bar,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+      (state: {foo: string}) => state.foo,
+    ],
+    (
+      bar: number,
+      foo1: string,
+      foo2: string,
+      foo3: string,
+      foo4: string,
+      foo5: string,
+      foo6: string,
+      foo7: string,
+      foo8: string
+    ) => {
+      return {foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, bar};
+    }
+  )((state: never, props: {bar: number}) => props.bar);
 
   // typings:expect-error
   parametric({foo: 'fizz'});
@@ -301,54 +318,41 @@ function testArrayArgument() {
 }
 
 function testResolver() {
-  type State = {foo: string, obj: { bar: string } };
+  type State = {foo: string; obj: {bar: string}};
 
   const selector = createCachedSelector(
     (state: State) => state.foo,
     (state: never, arg1: number) => arg1,
     (state: never, arg1: number, arg2: number) => arg1 + arg2,
     (foo, arg1, sum) => ({foo, arg1, sum})
-  )(
-    (state: never, arg1: number, arg2: number) => arg1 + arg2
-  );
+  )((state: never, arg1: number, arg2: number) => arg1 + arg2);
 
-  selector({foo: 'fizz', obj: { bar: 'bar' } }, 1, 2);
+  selector({foo: 'fizz', obj: {bar: 'bar'}}, 1, 2);
 
   const selector2 = createCachedSelector(
     (state: State) => state.obj,
     obj => obj
-  )(
-    (state: never, obj) => obj
-  );
+  )((state: never, obj) => obj);
 }
 
-function testCustomSelectorCreator () {
+function testCustomSelectorCreator() {
   type State = {foo: string};
 
   const selector1 = createCachedSelector(
     (state: State) => state.foo,
-    (foo) => foo,
-  )(
-    (state: State) => state.foo,
-    createSelectorCreator(defaultMemoize)
-  );
+    foo => foo
+  )((state: State) => state.foo, createSelectorCreator(defaultMemoize));
 
   const selector2 = createCachedSelector(
     (state: State) => state.foo,
-    (foo) => foo,
-  )(
-    (state: State) => state.foo,
-    {
-      selectorCreator: createSelectorCreator(defaultMemoize)
-    }
-  );
+    foo => foo
+  )((state: State) => state.foo, {
+    selectorCreator: createSelectorCreator(defaultMemoize),
+  });
 
   // typings:expect-error
   const selectorFailing = createCachedSelector(
     (state: State) => state.foo,
-    (foo) => foo,
-  )(
-    (state: State) => state.foo,
-    (): void => {}
-  );
+    foo => foo
+  )((state: State) => state.foo, (): void => {});
 }

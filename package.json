@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
+  "browser": "dist/index.js",
   "typings": "src/index.d.ts",
   "files": [
     "dist",

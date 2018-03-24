@@ -4,9 +4,9 @@ import FlatObjectCache from './cache/FlatObjectCache';
 const defaultCacheCreator = FlatObjectCache;
 const defaultCacheKeyValidator = () => true;
 
-export default function createCachedSelector(...funcs) {
+function createCachedSelector(...funcs) {
   return (resolver, options = {}) => {
-    // @NOTE Versions 0.x ad 1.x accepted "options" as a function
+    // @NOTE Versions 0.x/1.x accepted "options" as a function
     if (typeof options === 'function') {
       throw new Error(
         '[re-reselect] Second argument "options" must be an object. Please use "options.selectorCreator" to provide a custom selectorCreator.'
@@ -59,11 +59,18 @@ export default function createCachedSelector(...funcs) {
   };
 }
 
-// @TODO export with deprecation notice previous cache objects:
-// FlatCacheObject, FifoCacheObject, LruCacheObject
+export default createCachedSelector;
+
+// Cache objects
 export {FlatObjectCache};
 export {default as FifoObjectCache} from './cache/FifoObjectCache';
 export {default as LruObjectCache} from './cache/LruObjectCache';
 export {default as FlatMapCache} from './cache/FlatMapCache';
 export {default as FifoMapCache} from './cache/FifoMapCache';
 export {default as LruMapCache} from './cache/LruMapCache';
+
+// Deprecated cache objects exports
+// @TODO remove in next major release
+export {FlatObjectCache as FlatCacheObject};
+export {default as FifoCacheObject} from './cache/FifoObjectCache';
+export {default as LruCacheObject} from './cache/LruMapCache';

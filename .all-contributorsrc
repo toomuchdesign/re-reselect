@@ -150,6 +150,15 @@
       "contributions": [
         "example"
       ]
+    },
+    {
+      "login": "ianobermiller",
+      "name": "Ian Obermiller",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/897931?v=4",
+      "profile": "http://ianobermiller.com",
+      "contributions": [
+        "review"
+      ]
     }
   ]
 }

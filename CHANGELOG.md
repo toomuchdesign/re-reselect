@@ -8,7 +8,7 @@
 * `cacheKey` validation delegated to `cacheObject`'s `isValidCacheKey` method
 * `selectorCreator` argument removed in favour of `options` object
 * `console.warn` when `resolverFunction` returns invalid `cacheKey`
-* `cacheObject` export names renamed _(the 3 old ones are deprecated)_:
+* `cacheObject` export names renamed _(old ones are deprecated)_:
   * `FlatCacheObject` -> `FlatObjectCache`
   * `FifoCacheObject` -> `FifoObjectCache`
   * `LruCacheObject` -> `LruObjectCache`

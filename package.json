@@ -26,7 +26,7 @@
     "postversion": "git push && git push --tags",
     "prepublish": "npm test && npm run compile",
     "precommit": "lint-staged",
-    "prettier": "prettier --single-quote --trailing-comma es5 --no-bracket-spacing --write",
+    "prettier": "prettier --write",
     "format": "npm run prettier \"{,{examples,src,typescript_test}/**/}*.{js,ts,md}\""
   },
   "keywords": [

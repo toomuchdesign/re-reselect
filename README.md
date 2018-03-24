@@ -19,6 +19,7 @@ Useful to:
 * **share selectors** with props across multiple components (see [reselect example](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components) and [re-reselect solution][example-2])
 * **instantiate** selectors **on runtime**
 
+<!-- prettier-ignore -->
 ```js
 import createCachedSelector from 're-reselect';
 
@@ -37,15 +38,21 @@ const cachedSelector = createCachedSelector(
   (A, B, someArg) => expensiveComputation(A, B, someArg)
 )(
   /*
-             * Now it comes the re-reselect caching part:
-             * declare a resolver function, used as mapping cache key.
-             * It takes the same arguments as the generated selector
-             * and must return a string or number (the cache key).
-             *
-             * A new selector will be cached for each different returned key
-             *
-             * In this example the second argument of the selector is used as cache key
-             */
+   * Now it comes the re-reselect caching step: "resolverFunction".
+   *
+   * resolverFunction takes the same arguments
+   * as the final generated selector and returns a "cacheKey" value.
+   *
+   * "cacheKey" values identify a single reselect selector instance stored in the cache (1:1)
+   *
+   * "cacheKey" values type are by default string/number
+   * but can be any value depending on the cache implementation (see further).
+   *
+   * A single reselect selector instance will be responsible
+   * for computing data for a single "cacheKey" (1:1).
+   *
+   * In this example the second argument of the selector is used as "cacheKey".
+   */
   (state, someArg) => someArg
 );
 
@@ -219,20 +226,21 @@ The **cache key** is defined by the output of the `resolverFunction`.
 
 A few good examples and [a bonus](https://github.com/toomuchdesign/re-reselect/issues/3):
 
+<!-- prettier-ignore -->
 ```js
 // Basic usage: use a single argument as cache key
 createCachedSelector(
-  ...
+  // ...
 )((state, arg1, arg2, arg3) => arg3)
 
 // Use multiple arguments and chain them into a string
 createCachedSelector(
-  ...
+  // ...
 )((state, arg1, arg2, arg3) => `${arg1}:${arg3}`)
 
 // Extract properties from an object
 createCachedSelector(
-  ...
+  // ...
 )((state, props) => `${props.a}:${props.b}`)
 ```
 
@@ -309,12 +317,13 @@ The resolver idea is inspired by [Lodash's .memoize](https://lodash.com/docs/4.1
 
 An optional custom [strategy object](https://sourcemaking.com/design_patterns/strategy) to handle the caching behaviour. It must adhere to the following interface:
 
-```js
+```ts
 interface ICacheObject {
   set(key: string | number, selectorFn: Function): void;
   get(key: string | number): Function;
   remove(key: string | number): void;
   clear(): void;
+  isValidCacheKey?(key: any): boolean; // optional
 }
 ```
 
@@ -325,18 +334,14 @@ interface ICacheObject {
 * [`LruCacheObject`](src/cache/LruCacheObject.js) ([least recently used cache](https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_.28LRU.29))
 
 ```js
-import createCachedSelector, { LruCacheObject, FifoCacheObject } from re-reselect;
+import createCachedSelector, {LruObjectCache, LruMapCache} from 're-reselect';
 
-createCachedSelector(
+createCachedSelector()(resolverFunction, {
   // ...
-)(
-  resolverFunction,
-  {
-    cacheObject: new LruCacheObject({ cacheSize: 5 }),
-    // or:
-    // cacheObject: new FifoCacheObject({ cacheSize: 5 }),
-  }
-)
+  cacheObject: new LruObjectCache({cacheSize: 5}),
+  // or:
+  // cacheObject: new LruMapCache({ cacheSize: 5 }),
+});
 ```
 
 The default cache strategy, `FlatCache` doesn't limit cache.
@@ -378,6 +383,7 @@ Get `resultFunc` for easily [test composed selectors](https://github.com/reactjs
 * Flow type definitions?
 * Improve TS tests readability
 * More examples
+* Remove `prettier`'s ignore comments when [this](https://github.com/prettier/prettier/issues/4080) is released
 
 ## Contributors
 

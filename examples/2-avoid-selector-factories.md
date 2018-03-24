@@ -6,6 +6,7 @@ Using `re-reselect` you can directly declare `getVisibleTodos` selector. Since `
 
 #### `selectors/todoSelectors.js`
 
+<!-- prettier-ignore -->
 ```js
 import createCachedSelector from 're-reselect';
 
@@ -28,9 +29,9 @@ const getVisibleTodos = createCachedSelector(
   }
 )(
   /*
-                     * Re-reselect resolver function.
-                     * Cache/call a new selector for each different "listId"
-                     */
+   * Re-reselect resolver function.
+   * Cache/call a new selector for each different "listId"
+   */
   (state, props) => props.listId
 );
 

@@ -1,7 +1,7 @@
 {
   "name": "re-reselect",
   "version": "1.0.1",
-  "description": "Memoize selectors and avoid recalculation between calls with different inputs",
+  "description": "Enhance Reselect selectors with deeper memoization and cache management",
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",

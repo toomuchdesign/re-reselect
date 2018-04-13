@@ -72,5 +72,6 @@
     "coveragePathIgnorePatterns": [
       "__util__"
     ]
-  }
+  },
+  "sideEffects": false
 }

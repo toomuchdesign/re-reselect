@@ -19,6 +19,7 @@
   * `FlatMapCache`
   * `FifoMapCache`
   * `LruMapCache`
+* Add a `sideEffects: false` flag for Webpack 4
 
 ## 1.0.1
 

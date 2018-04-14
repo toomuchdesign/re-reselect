@@ -12,7 +12,7 @@
 
 `re-reselect` **selectors work as normal** `reselect` **selectors** but they are able to determine when **creating a new selector or querying a cached one** on the fly, depending on the supplied arguments.
 
-![Reselect and re-reselect](examples/reselect-and-re-reselect.png?raw=true "Reselect and re-reselect")
+![Reselect and re-reselect][reselect-and-re-reselect-sketch]
 
 Useful to:
 
@@ -25,12 +25,11 @@ Useful to:
 ```js
 import createCachedSelector from 're-reselect';
 
+// Normal reselect routine: declare "inputSelectors" and "resultFunc"
 const selectorA = state => state.a;
 const selectorB = state => state.b;
 
 const cachedSelector = createCachedSelector(
-  // Declare "inputSelectors" and "resultFunc" like a normal reselect selector:
-
   // inputSelectors
   selectorA,
   selectorB,
@@ -39,43 +38,21 @@ const cachedSelector = createCachedSelector(
   // resultFunc
   (A, B, someArg) => expensiveComputation(A, B, someArg)
 )(
-  /*
-   * Now it comes re-reselect caching step: "resolverFunction".
-   *
-   * "resolverFunction" takes the same arguments
-   * as the final generated selector and returns a "cacheKey".
-   *
-   * "cacheKey" identify a single reselect selector instance stored in cache (1:1)
-   *
-   * The same reselect selector instance will be used
-   * for computing data for the same "cacheKey" (1:1).
-   *
-   * In this example the second selector's argument is used as "cacheKey".
-   */
+  // Instruct re-reselect to use "someArg" as cacheKey
   (state, someArg) => someArg
 );
 
-// Now you are ready to call the cached selector like a normal selector:
-
-/*
- * Call selector with "foo" and with "bar":
- * 2 reselect selectors are created, called and cached behind the scenes.
- * Selectors return their computed result.
- */
+// Use the cached selector like a normal selector:
 const fooResult = cachedSelector(state, 'foo');
 const barResult = cachedSelector(state, 'bar');
 
-/*
- * Call selector with "foo" again:
- * "foo" hits the cache, now: the selector cached under "foo" cacheKey
- * is retrieved, called again and result is returned.
- */
+// 2 reselect selectors were created, called and cached behind the scenes
+
 const fooResultAgain = cachedSelector(state, 'foo');
 
-/*
- * Note that fooResult === fooResultAgain.
- * Cache was not invalidated by "cachedSelector(state, 'bar')" call
- */
+// fooResult === fooResultAgain
+// Cache was not invalidated by calling "cachedSelector(state, 'bar')"
+// "expensiveComputation" totally called twice
 ```
 
 ## Table of contents
@@ -86,7 +63,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
   * [Other viable solutions](#other-viable-solutions)
 * [FAQ](#faq)
   * [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
-  * [How do I use multiple inputs to set the cache key?](#how-do-i-use-multiple-inputs-to-set-the-cache-key)
+  * [How do I use multiple inputs to set the cacheKey?](#how-do-i-use-multiple-inputs-to-set-the-cache-key)
   * [How do I limit the cache size?](#how-do-i-limit-the-cache-size)
   * [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
   * [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
@@ -118,11 +95,11 @@ getPieceOfData(state, itemId, 'dataB', otherArg);
 getPieceOfData(state, itemId, 'dataC', otherArg);
 ```
 
-What happens, here? `getPieceOfData` **selector cache is invalidated** on each call because of the changing 3rd `'dataX'` argument.
+What happens, here? `getPieceOfData` **selector cache is invalidated** on each call because of the different 3rd `'dataX'` argument.
 
 ### Re-reselect solution
 
-`re-reselect` selectors keep a private collection of `reselect` selectors and store/retrieve them by `cacheKey`.
+`re-reselect` selectors keep a **cache of `reselect` selectors** and store/retrieve them by `cacheKey`.
 
 <!-- Please note that part of this lines are repeated in #api chapter -->
 
@@ -130,9 +107,14 @@ What happens, here? `getPieceOfData` **selector cache is invalidated** on each c
 
 `cacheKey` is the output of `resolverFunction`, declared at selector initialization.
 
-`resolverFunction` is a custom function receiving the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`, `otherArgs`) and returning a `cacheKey`.
+`resolverFunction` is a **custom function** which:
 
-Back to the example, `re-reselect` retrieves data by querying one of the cached selectors and using the 3rd argument as `cacheKey`:
+* takes the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`, `otherArgs`)
+* returns a `cacheKey`.
+
+Note that the **same `reselect` selector instance** stored in cache will be used for computing data for the **same `cacheKey`** (1:1).
+
+Back to the example, `re-reselect` retrieves data by **querying one of the cached selectors** using the 3rd argument as `cacheKey`:
 
 <!-- prettier-ignore -->
 ```js
@@ -141,23 +123,22 @@ const getPieceOfData = createCachedSelector(
   (state, itemId) => itemId,
   (state, itemId, dataType) => dataType,
   (state, itemId, dataType, otherArg) => otherArg,
-  (state, itemId, dataType, otherArg) =>
-    expensiveComputation(state, itemId, dataType, otherArg)
+  (state, itemId, dataType, otherArg) => expensiveComputation(state, itemId, dataType, otherArg)
 )(
-  (state, itemId, dataType) => dataType // Memoize by dataType
+  (state, itemId, dataType) => dataType // Use dataType as cacheKey
 );
 ```
 
-`createCachedSelector` returns a selector with the same interface as a normal `reselect` selector.
+`createCachedSelector` returns a selector with the **same signature as a normal `reselect` selector**.
 
 But now, **each time the selector is called**, the following happens behind the scenes:
 
-1.  Execute `resolverFunction` to evaluate the `cacheKey` for this call
-2.  Retrieve the `reselect` selector stored under `cacheKey` from cache
-3.  Return cached selector just found or create a new one if no selector was found
-4.  Call returned selector with provided arguments
+1.  **Evaluate the `cacheKey`** for current call by executing `resolverFunction`
+2.  **Retrieve** from cache the **`reselect` selector** stored under the given `cacheKey`
+3.  **Return found selector or create a new one** if no selector was found
+4.  **Call returned selector** with provided arguments
 
-**Re-reselect** stays completely optional and uses **your installed reselect** library under the hoods (`reselect` is declared as a **peer dependency**).
+**Re-reselect** stays completely optional and consumes **your installed reselect** module (`reselect` is declared as **peer dependency**).
 
 ### Other viable solutions
 
@@ -169,8 +150,8 @@ Easy, but doesn't scale. See ["join similar selectors" example][example-1].
 
 Fine, but has a few downsides:
 
-* Bloat your selectors module by exposing both `get` selectors and `makeGet` selector factories
-* Need to import/call selector factory instead of directly using selector
+* Bloats your selectors module by exposing both `get` selectors and `makeGet` selector factories
+* Needs to import/call selector factory instead of directly using selector
 * Two different instances given the same arguments, will individually store and recompute the same result (read [this](https://github.com/reactjs/reselect/pull/213))
 
 #### 3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector
@@ -194,7 +175,7 @@ Given your `reselect` selectors:
 import {createSelector} from 'reselect';
 
 export const getMyData = createSelector(
-  selectorA, // eg: selectors receive: (state, arg1, arg2)
+  selectorA,
   selectorB,
   selectorC,
   (A, B, C) => doSomethingWith(A, B, C)
@@ -208,12 +189,12 @@ export const getMyData = createSelector(
 import createCachedSelector from 're-reselect';
 
 export const getMyData = createCachedSelector(
-  selectorA, // eg: selectors receive: (state, arg1, arg2)
+  selectorA,
   selectorB,
   selectorC,
   (A, B, C) => doSomethingWith(A, B, C)
 )(
-  (state, arg1, arg2) => arg2 // Use arg2 as cacheKey
+  (arg1, arg2) => arg2 // Use arg2 as cacheKey
 );
 ```
 
@@ -223,7 +204,7 @@ Voilà, `getMyData` is ready for use!
 const myData = getMyData(state, 'foo', 'bar');
 ```
 
-### How do I use multiple inputs to set the cache key?
+### How do I use multiple inputs to set the cacheKey?
 
 `cacheKey` is the return value of `resolverFunction`.
 
@@ -263,7 +244,7 @@ You can also write **your own cache strategy**!
 
 ### How to share a selector across multiple components while passing in props and retaining memoization?
 
-[This example][example-2] shows how `re-reselect` would solve the scenario described in [Reselect docs][reselect-sharing-selectors].
+[This example][example-2] shows how `re-reselect` would solve the scenario described in [reselect docs][reselect-sharing-selectors].
 
 ### How do I test a re-reselect selector?
 
@@ -283,18 +264,19 @@ Once you get a selector instance you can call [its public methods][reselect-sele
 ```js
 import createCachedSelector from 're-reselect';
 
-export const getMyData = createCachedSelector(selectorA, selectorB, (A, B) =>
-  doSomethingWith(A, B)
+export const getMyData = createCachedSelector(
+  selectorA,
+  selectorB,
+  (A, B) => doSomethingWith(A, B)
 )(
-  (state, arg1) => arg1 // Use arg1 as cacheKey
+  (state, arg1) => arg1 // cacheKey
 );
 
-// ...
-// Call the selector to retrieve data
+// Call your selector
 const myFooData = getMyData(state, 'foo');
 const myBarData = getMyData(state, 'bar');
 
-// Call getMatchingSelector to retrieve the selectors
+// Call getMatchingSelector method to retrieve underlying reselect selectors
 // which generated "myFooData" and "myBarData" results
 const myFooDataSelector = getMyData.getMatchingSelector(state, 'foo');
 const myBarDataSelector = getMyData.getMatchingSelector(state, 'bar');
@@ -331,20 +313,20 @@ The `resolverFunction` idea comes from [Lodash's .memoize][lodash-memoize].
 
 #### options.cacheObject
 
-An optional custom [strategy object](https://sourcemaking.com/design_patterns/strategy) to handle the caching behaviour.
+An optional custom [strategy object][docs-strategy-object] to handle the caching behaviour.
 
 Default cache: `FlatObjectCache`.
 
 `re-reselect` provides **6 ready to use cache object constructors**:
 
-|                       name                        | accepted cacheKey |               type               |          storage          |
-| :-----------------------------------------------: | :---------------: | :------------------------------: | :-----------------------: |
-| [`FlatObjectCache`](src/cache/FlatObjectCache.js) | `number` `string` |          flat unlimited          |         JS object         |
-| [`FifoObjectCache`](src/cache/FifoObjectCache.js) | `number` `string` | [first in first out][fifo-cache] |         JS object         |
-|  [`LruObjectCache`](src/cache/LruObjectCache.js)  | `number` `string` | [least recently used][lru-cache] |         JS object         |
-|    [`FlatMapCache`](src/cache/FlatMapCache.js)    |        any        |          flat unlimited          | [Map object][mozilla-map] |
-|    [`FifoMapCache`](src/cache/FifoMapCache.js)    |        any        | [first in first out][fifo-cache] | [Map object][mozilla-map] |
-|     [`LruMapCache`](src/cache/LruMapCache.js)     |        any        | [least recently used][lru-cache] | [Map object][mozilla-map] |
+|                       name                        | accepted cacheKey |                 type                  |            storage             |
+| :-----------------------------------------------: | :---------------: | :-----------------------------------: | :----------------------------: |
+| [`FlatObjectCache`](src/cache/FlatObjectCache.js) | `number` `string` |            flat unlimited             |           JS object            |
+| [`FifoObjectCache`](src/cache/FifoObjectCache.js) | `number` `string` | [first in first out][docs-fifo-cache] |           JS object            |
+|  [`LruObjectCache`](src/cache/LruObjectCache.js)  | `number` `string` | [least recently used][docs-lru-cache] |           JS object            |
+|    [`FlatMapCache`](src/cache/FlatMapCache.js)    |        any        |            flat unlimited             | [Map object][docs-mozilla-map] |
+|    [`FifoMapCache`](src/cache/FifoMapCache.js)    |        any        | [first in first out][docs-fifo-cache] | [Map object][docs-mozilla-map] |
+|     [`LruMapCache`](src/cache/LruMapCache.js)     |        any        | [least recently used][docs-lru-cache] | [Map object][docs-mozilla-map] |
 
 <!-- prettier-ignore -->
 ```js
@@ -382,7 +364,7 @@ interface ICacheObject {
 
 #### options.selectorCreator
 
-`selectorCreator` is an optional function describing a [custom selectors][reselect-create-selector-creator]. By default it uses `reselect`'s `createSelector`.
+An optional function describing a [custom selectors][reselect-create-selector-creator]. By default it uses `reselect`'s `createSelector`.
 
 #### Returns
 
@@ -415,11 +397,10 @@ Get `resultFunc` for easily [test composed selectors][reselect-test-selectors].
 * Flow type definitions?
 * Improve TS tests readability
 * More examples
-* Remove `prettier`'s ignore comments when [this](https://github.com/prettier/prettier/issues/4080) is released
 
 ## Contributors
 
-Thanks to you all ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
+Thanks to you all ([emoji key][docs-all-contributors]):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 
@@ -443,9 +424,12 @@ Thanks to you all ([emoji key](https://github.com/kentcdodds/all-contributors#em
 [coveralls]: https://coveralls.io/github/toomuchdesign/re-reselect?branch=master
 [npm-badge]: https://img.shields.io/npm/dm/re-reselect.svg
 [npm]: https://www.npmjs.com/package/re-reselect
+[reselect-and-re-reselect-sketch]: examples/reselect-and-re-reselect.png?raw=true
 [example-1]: examples/1-join-selectors.md
 [example-2]: examples/2-avoid-selector-factories.md
 [example-3]: examples/3-cache-api-calls.md
-[fifo-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#First_In_First_Out_.28FIFO.29
-[lru-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_.28LRU.29
-[mozilla-map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+[docs-fifo-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#First_In_First_Out_.28FIFO.29
+[docs-lru-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_.28LRU.29
+[docs-mozilla-map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+[docs-strategy-object]: https://sourcemaking.com/design_patterns/strategy
+[docs-all-contributors]: https://github.com/kentcdodds/all-contributors#emoji-key

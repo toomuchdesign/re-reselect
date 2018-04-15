@@ -8,7 +8,7 @@
 
 **Switching between different arguments** using standard `reselect` selectors causes **cache invalidation** since default `reselect` cache has a **limit of one**.
 
-`re-reselect` **stores different calls as new** `reselect` **selectors** so that computed/memoized values are retained.
+`re-reselect` **forwards different calls to different** `reselect` **selectors** stored in cache, so that computed/memoized values are retained.
 
 `re-reselect` **selectors work as normal** `reselect` **selectors** but they are able to determine when **creating a new selector or querying a cached one** on the fly, depending on the supplied arguments.
 
@@ -16,7 +16,7 @@
 
 Useful to:
 
-* **reduce selectors recalculation** when a selector is sequentially **called with one/few different arguments** ([example][example-1])
+* **retain selector's cache** when sequentially **called with one/few different arguments** ([example][example-1])
 * **join similar selectors** into one
 * **share selectors** with props across multiple components (see [reselect example][reselect-sharing-selectors] and [re-reselect solution][example-2])
 * **instantiate** selectors **on runtime**
@@ -27,19 +27,19 @@ import createCachedSelector from 're-reselect';
 
 // Normal reselect routine: declare "inputSelectors" and "resultFunc"
 const selectorA = state => state.a;
-const selectorB = state => state.b;
+const selectorB = (state, itemName) => state.items[itemName];
 
 const cachedSelector = createCachedSelector(
   // inputSelectors
   selectorA,
   selectorB,
-  (state, someArg) => someArg,
 
   // resultFunc
-  (A, B, someArg) => expensiveComputation(A, B, someArg)
+  (A, B) => expensiveComputation(A, B)
 )(
-  // Instruct re-reselect to use "someArg" as cacheKey
-  (state, someArg) => someArg
+  // resolverFunction
+  // Instruct re-reselect to use "itemName" as cacheKey
+  (state, itemName) => itemName
 );
 
 // Use the cached selector like a normal selector:
@@ -90,9 +90,9 @@ I found myself wrapping a library of data elaboration (quite heavy stuff) with r
 On each store update, I had to repeatedly call the selector in order to retrieve all the pieces of data needed by my UI. Like this:
 
 ```js
-getPieceOfData(state, itemId, 'dataA', otherArg);
-getPieceOfData(state, itemId, 'dataB', otherArg);
-getPieceOfData(state, itemId, 'dataC', otherArg);
+getPieceOfData(state, itemId, 'dataA');
+getPieceOfData(state, itemId, 'dataB');
+getPieceOfData(state, itemId, 'dataC');
 ```
 
 What happens, here? `getPieceOfData` **selector cache is invalidated** on each call because of the different 3rd `'dataX'` argument.
@@ -109,12 +109,12 @@ What happens, here? `getPieceOfData` **selector cache is invalidated** on each c
 
 `resolverFunction` is a **custom function** which:
 
-* takes the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`, `otherArgs`)
+* takes the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`)
 * returns a `cacheKey`.
 
 Note that the **same `reselect` selector instance** stored in cache will be used for computing data for the **same `cacheKey`** (1:1).
 
-Back to the example, `re-reselect` retrieves data by **querying one of the cached selectors** using the 3rd argument as `cacheKey`:
+Back to the example, `re-reselect` retrieves data by **querying one of the cached selectors** using the 3rd argument as `cacheKey`, allowing cache invalidation only when `state` or `itemId` change (but not `dataType`):
 
 <!-- prettier-ignore -->
 ```js
@@ -122,8 +122,7 @@ const getPieceOfData = createCachedSelector(
   state => state,
   (state, itemId) => itemId,
   (state, itemId, dataType) => dataType,
-  (state, itemId, dataType, otherArg) => otherArg,
-  (state, itemId, dataType, otherArg) => expensiveComputation(state, itemId, dataType, otherArg)
+  (state, itemId, dataType) => expensiveComputation(state, itemId, dataType)
 )(
   (state, itemId, dataType) => dataType // Use dataType as cacheKey
 );
@@ -150,7 +149,7 @@ Easy, but doesn't scale. See ["join similar selectors" example][example-1].
 
 Fine, but has a few downsides:
 
-* Bloats your selectors module by exposing both `get` selectors and `makeGet` selector factories
+* Bloats your code by exposing both `get` selectors and `makeGet` selector factories
 * Needs to import/call selector factory instead of directly using selector
 * Two different instances given the same arguments, will individually store and recompute the same result (read [this](https://github.com/reactjs/reselect/pull/213))
 
@@ -182,7 +181,7 @@ export const getMyData = createSelector(
 );
 ```
 
-...it becomes:
+...add `resolverFunction` in the second function call:
 
 <!-- prettier-ignore -->
 ```js
@@ -194,7 +193,7 @@ export const getMyData = createCachedSelector(
   selectorC,
   (A, B, C) => doSomethingWith(A, B, C)
 )(
-  (arg1, arg2) => arg2 // Use arg2 as cacheKey
+  (state, arg1, arg2) => arg2 // Use arg2 as cacheKey
 );
 ```
 

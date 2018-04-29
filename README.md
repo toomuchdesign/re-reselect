@@ -75,6 +75,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
   * [reReselectInstance`.removeMatchingSelector`](#rereselectinstanceremovematchingselectorselectorarguments)
   * [reReselectInstance`.clearCache`](#rereselectinstanceclearcache)
   * [reReselectInstance`.resultFunc`](#rereselectinstanceresultfunc)
+  * [reReselectInstance`.cache`](#rereselectinstancecache)
 
 ## Installation
 
@@ -390,6 +391,10 @@ Clear whole `reReselectInstance` cache.
 ### reReselectInstance`.resultFunc`
 
 Get `resultFunc` for easily [test composed selectors][reselect-test-selectors].
+
+### reReselectInstance`.cache`
+
+Get cacheObject instance being used by the selector (for advanced caching operations like [this](https://github.com/toomuchdesign/re-reselect/issues/40)).
 
 ## Todo's
 

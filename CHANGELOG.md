@@ -1,5 +1,11 @@
 # Change log
 
+## 2.1.0
+
+### New Features
+
+* Expose `cache` property
+
 ## 2.0.0
 
 ### Breaking Changes

@@ -175,12 +175,23 @@ describe('createCachedSelector', () => {
     });
   });
 
-  describe('resultFunc', () => {
+  describe('resultFunc property', () => {
     it('Should point to provided result function', () => {
       const cachedSelector = createCachedSelector(() => {}, resultFunc)(
         (arg1, arg2) => arg2
       );
       expect(cachedSelector.resultFunc).toBe(resultFunc);
+    });
+  });
+
+  describe('cache property', () => {
+    it('Should point to currently used cacheObject', () => {
+      const currentCacheObject = new FlatObjectCache();
+      const cachedSelector = createCachedSelector(resultFunc)(arg1 => arg1, {
+        cacheObject: currentCacheObject,
+      });
+
+      expect(cachedSelector.cache).toBe(currentCacheObject);
     });
   });
 });

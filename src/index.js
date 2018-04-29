@@ -55,6 +55,8 @@ function createCachedSelector(...funcs) {
 
     selector.resultFunc = funcs[funcs.length - 1];
 
+    selector.cache = cache;
+
     return selector;
   };
 }

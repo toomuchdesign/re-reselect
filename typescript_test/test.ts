@@ -25,6 +25,8 @@ function testSelector() {
 
   selector.clearCache();
 
+  selector.cache;
+
   // typings:expect-error
   selector({foo: 'bar'}, {prop: 'value'});
 
@@ -113,6 +115,8 @@ function testParametricSelector() {
   selector.removeMatchingSelector({foo: 'fizz'});
 
   selector.clearCache();
+
+  selector.cache;
 
   const selector2 = createCachedSelector(
     state => state.foo,

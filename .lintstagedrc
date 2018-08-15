@@ -1,4 +1,4 @@
 {
-  "**/*.{js,ts}": ["npm run prettier", "npm t", "git add"],
-  "**/*.md": ["npm run prettier", "git add"],
+  "**/*.{js,ts}": ["prettier --write", "npm t", "git add"],
+  "**/*.md": ["prettier --write", "git add"],
 }

@@ -1,4 +1,4 @@
-import {LruObjectCache as CacheObject} from '../../index';
+import {LruObjectCache as CacheObject} from '../../../src/index';
 import testBasicBehavior from '../__util__/testBasicBehavior';
 import testLruBehavior from '../__util__/testLruBehavior';
 import testCacheSizeOptionValidation from '../__util__/testCacheSizeOptionValidation';

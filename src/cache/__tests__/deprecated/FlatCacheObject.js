@@ -1,4 +1,4 @@
-import {FlatCacheObject as CacheObject} from '../../../index';
+import {FlatCacheObject as CacheObject} from '../../../../src/index';
 
 describe('FlatCacheObject (deprecated)', () => {
   it('Should return "FlatObjectCache" class', () => {

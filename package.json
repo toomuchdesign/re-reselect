@@ -14,17 +14,17 @@
     "src"
   ],
   "scripts": {
-    "test": "npm run test:typescript && npm run test:js -- --coverage",
-    "test:js": "jest",
+    "test": "npm run test:typescript && jest",
     "test:typescript": "typings-tester --dir typescript_test",
+    "test:bundles": "jest --config ./jest/es.config.js && jest --config ./jest/lib.config.js && jest --config ./jest/dist.config.js",
     "clean": "rimraf dist es lib",
     "compile": "npm run clean && cross-env BABEL_ENV=rollup rollup -c",
     "contrib:add": "all-contributors add",
     "contrib:generate": "all-contributors generate",
-    "preversion": "npm test",
+    "preversion": "npm run prepublish",
     "version": "git add package.json",
     "postversion": "git push && git push --tags",
-    "prepublish": "npm test && npm run compile",
+    "prepublish": "npm test -- --coverage && npm run compile && npm run test:bundles",
     "precommit": "lint-staged",
     "format": "prettier --write \"**/*.{js,ts,json,md}\""
   },

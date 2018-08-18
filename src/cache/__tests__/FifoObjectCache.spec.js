@@ -1,4 +1,4 @@
-import {FifoObjectCache as CacheObject} from '../../index';
+import {FifoObjectCache as CacheObject} from '../../../src/index';
 import testBasicBehavior from '../__util__/testBasicBehavior';
 import testFifoBehavior from '../__util__/testFifoBehavior';
 import testCacheSizeOptionValidation from '../__util__/testCacheSizeOptionValidation';

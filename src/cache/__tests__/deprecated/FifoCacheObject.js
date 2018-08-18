@@ -1,4 +1,4 @@
-import {FifoCacheObject as CacheObject} from '../../../index';
+import {FifoCacheObject as CacheObject} from '../../../../src/index';
 
 describe('FifoCacheObject (deprecated)', () => {
   it('Should return "FifoObjectCache" class', () => {

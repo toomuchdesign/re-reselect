@@ -1,4 +1,4 @@
-import {LruCacheObject as CacheObject} from '../../../index';
+import {LruCacheObject as CacheObject} from '../../../../src/index';
 
 describe('LruCacheObject (deprecated)', () => {
   it('Should return "LruMapCache" class', () => {

@@ -1,6 +1,6 @@
 /* eslint comma-dangle: 0 */
 import {createSelector} from 'reselect';
-import createCachedSelector, {FlatObjectCache} from '../index';
+import createCachedSelector, {FlatObjectCache} from '../../src/index';
 
 let resultFunc;
 let consoleWarnSpy;

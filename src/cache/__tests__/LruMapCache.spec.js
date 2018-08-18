@@ -1,4 +1,4 @@
-import {LruMapCache as CacheObject} from '../../index';
+import {LruMapCache as CacheObject} from '../../../src/index';
 import testBasicBehavior from '../__util__/testBasicBehavior';
 import testLruBehavior from '../__util__/testLruBehavior';
 import testCacheSizeOptionValidation from '../__util__/testCacheSizeOptionValidation';

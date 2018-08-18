@@ -1,4 +1,4 @@
-import {FifoMapCache as CacheObject} from '../../index';
+import {FifoMapCache as CacheObject} from '../../../src/index';
 import testFifoBehavior from '../__util__/testFifoBehavior';
 import testBasicBehavior from '../__util__/testBasicBehavior';
 import testCacheSizeOptionValidation from '../__util__/testCacheSizeOptionValidation';

@@ -8,5 +8,6 @@ before_install:
 script:
   - npm test -- --coverage
   - npm run compile
+  - npm run test:bundles
 after_success:
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js

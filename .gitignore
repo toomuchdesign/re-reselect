@@ -15,6 +15,7 @@ coverage
 !.gitignore
 !.lintstagedrc
 !.npmignore
+!.prettierignore
 !.prettierrc
 !.travis.yml
 !.github

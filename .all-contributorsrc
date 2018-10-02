@@ -159,6 +159,16 @@
       "contributions": [
         "review"
       ]
+    },
+    {
+      "login": "lukyth",
+      "name": "Kanitkorn Sujautra",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/7040242?v=4",
+      "profile": "https://github.com/lukyth",
+      "contributions": [
+        "doc"
+      ]
     }
-  ]
+  ],
+  "repoType": "github"
 }

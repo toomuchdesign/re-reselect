@@ -1,6 +1,6 @@
 ## Avoid selector factories
 
-This example shows how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-components): **_how to share a selector across multiple components while passing in props and retaining memoization?_**
+This example shows how `re-reselect` would solve the scenario described in [Reselect docs](https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances): **_how to share a selector across multiple components while passing in props and retaining memoization?_**
 
 Using `re-reselect` you can directly declare `getVisibleTodos` selector. Since `re-reselect` handles selectors instantiation transparently, there is no need to declare a `makeGetVisibleTodos` factory.
 

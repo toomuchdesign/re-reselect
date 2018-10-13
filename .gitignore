@@ -10,7 +10,7 @@ coverage
 
 # Trailing dotted files
 !.all-contributorsrc
-!.babelrc
+!.babelrc.js
 !.editorconfig
 !.gitignore
 !.lintstagedrc

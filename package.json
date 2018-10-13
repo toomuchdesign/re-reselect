@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "test": "npm run test:typescript && jest",
-    "test:typescript": "typings-tester --dir typescript_test",
+    "test:typescript": "typings-tester --config typescript_test/tsconfig.json --dir typescript_test",
     "test:bundles": "jest --config ./jest/es.config.js && jest --config ./jest/lib.config.js && jest --config ./jest/dist.config.js",
     "clean": "rimraf dist es lib",
     "compile": "npm run clean && rollup -c",
@@ -72,6 +72,5 @@
     ],
     "testEnvironment": "node"
   },
-  "sideEffects": false,
-  "dependencies": {}
+  "sideEffects": false
 }

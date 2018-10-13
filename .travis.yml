@@ -1,8 +1,8 @@
 language: node_js
 node_js:
-  - "4"
   - "6"
   - "8"
+  - "10"
 before_install:
   - if [[ `npm -v` < 5.3 ]]; then npm install -g npm@5.3.x; fi
 script:

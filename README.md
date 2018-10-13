@@ -16,10 +16,10 @@
 
 Useful to:
 
-- **retain selector's cache** when sequentially **called with one/few different arguments** ([example][example-1])
-- **join similar selectors** into one
-- **share selectors** with props across multiple components (see [reselect example][reselect-sharing-selectors] and [re-reselect solution][example-2])
-- **instantiate** selectors **on runtime**
+* **retain selector's cache** when sequentially **called with one/few different arguments** ([example][example-1])
+* **join similar selectors** into one
+* **share selectors** with props across multiple components (see [reselect example][reselect-sharing-selectors] and [re-reselect solution][example-2])
+* **instantiate** selectors **on runtime**
 
 <!-- prettier-ignore -->
 ```js
@@ -57,25 +57,25 @@ const fooResultAgain = cachedSelector(state, 'foo');
 
 ## Table of contents
 
-- [Installation](#installation)
-- [Why? + example](#why--example)
-  - [Re-reselect solution](#re-reselect-solution)
-  - [Other viable solutions](#other-viable-solutions)
-- [FAQ](#faq)
-  - [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
-  - [How do I use multiple inputs to set the cacheKey?](#how-do-i-use-multiple-inputs-to-set-the-cachekey)
-  - [How do I limit the cache size?](#how-do-i-limit-the-cache-size)
-  - [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
-  - [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
-- [Examples](#examples)
-- [API](#api)
-  - [`reReselect`](#rereselectreselects-createselector-argumentsresolverfunction--cacheobject-selectorcreator-)
-  - [reReselectInstance`()`](#rereselectinstanceselectorarguments)
-  - [reReselectInstance`.getMatchingSelector`](#rereselectinstancegetmatchingselectorselectorarguments)
-  - [reReselectInstance`.removeMatchingSelector`](#rereselectinstanceremovematchingselectorselectorarguments)
-  - [reReselectInstance`.clearCache`](#rereselectinstanceclearcache)
-  - [reReselectInstance`.resultFunc`](#rereselectinstanceresultfunc)
-  - [reReselectInstance`.cache`](#rereselectinstancecache)
+* [Installation](#installation)
+* [Why? + example](#why--example)
+  * [Re-reselect solution](#re-reselect-solution)
+  * [Other viable solutions](#other-viable-solutions)
+* [FAQ](#faq)
+  * [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
+  * [How do I use multiple inputs to set the cacheKey?](#how-do-i-use-multiple-inputs-to-set-the-cachekey)
+  * [How do I limit the cache size?](#how-do-i-limit-the-cache-size)
+  * [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
+  * [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
+* [Examples](#examples)
+* [API](#api)
+  * [`reReselect`](#rereselectreselects-createselector-argumentsresolverfunction--cacheobject-selectorcreator-)
+  * [reReselectInstance`()`](#rereselectinstanceselectorarguments)
+  * [reReselectInstance`.getMatchingSelector`](#rereselectinstancegetmatchingselectorselectorarguments)
+  * [reReselectInstance`.removeMatchingSelector`](#rereselectinstanceremovematchingselectorselectorarguments)
+  * [reReselectInstance`.clearCache`](#rereselectinstanceclearcache)
+  * [reReselectInstance`.resultFunc`](#rereselectinstanceresultfunc)
+  * [reReselectInstance`.cache`](#rereselectinstancecache)
 
 ## Installation
 
@@ -110,8 +110,8 @@ What happens, here? `getPieceOfData` **selector cache is invalidated** on each c
 
 `resolverFunction` is a **custom function** which:
 
-- takes the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`)
-- returns a `cacheKey`.
+* takes the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`)
+* returns a `cacheKey`.
 
 Note that the **same `reselect` selector instance** stored in cache will be used for computing data for the **same `cacheKey`** (1:1).
 
@@ -150,9 +150,9 @@ Easy, but doesn't scale. See ["join similar selectors" example][example-1].
 
 Fine, but has a few downsides:
 
-- Bloats your code by exposing both `get` selectors and `makeGet` selector factories
-- Needs to import/call selector factory instead of directly using selector
-- Two different instances given the same arguments, will individually store and recompute the same result (read [this](https://github.com/reactjs/reselect/pull/213))
+* Bloats your code by exposing both `get` selectors and `makeGet` selector factories
+* Needs to import/call selector factory instead of directly using selector
+* Two different instances given the same arguments, will individually store and recompute the same result (read [this](https://github.com/reactjs/reselect/pull/213))
 
 #### 3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector
 
@@ -160,9 +160,9 @@ This is what `re-reselect` actually does! :-) It's quite verbose (since has to b
 
 ## Examples
 
-- [Join similar selectors][example-1]
-- [Avoid selector factories][example-2]
-- [Cache API calls][example-3]
+* [Join similar selectors][example-1]
+* [Avoid selector factories][example-2]
+* [Cache API calls][example-3]
 
 ## FAQ
 
@@ -256,9 +256,9 @@ Each **re-reselect** selector exposes a `getMatchingSelector` method which retur
 
 Once you get a selector instance you can call [its public methods][reselect-selectors-methods] like:
 
-- `resultFunc`
-- `recomputations`
-- `resetRecomputations`
+* `resultFunc`
+* `recomputations`
+* `resetRecomputations`
 
 <!-- prettier-ignore -->
 ```js
@@ -300,8 +300,8 @@ import createCachedSelector from 're-reselect';
 
 **Re-reselect** accepts reselect's original [`createSelector` arguments][reselect-create-selector] and returns a new function which accepts **2 arguments**:
 
-- `resolverFunction`
-- `options { cacheObject, selectorCreator }` _(optional)_
+* `resolverFunction`
+* `options { cacheObject, selectorCreator }` _(optional)_
 
 #### resolverFunction
 
@@ -398,20 +398,21 @@ Get cacheObject instance being used by the selector (for advanced caching operat
 
 ## Todo's
 
-- Flow type definitions?
-- Improve TS tests readability
-- More examples
+* Flow type definitions?
+* Improve TS tests readability
+* More examples
 
 ## Contributors
 
 Thanks to you all ([emoji key][docs-all-contributors]):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+
 <!-- prettier-ignore -->
 | [<img src="https://avatars3.githubusercontent.com/u/4573549?v=4" width="100px;"/><br /><sub><b>Andrea Carraro</b></sub>](http://www.andreacarraro.it)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign "Code") [📖](https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign "Documentation") [🚇](#infra-toomuchdesign "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign "Tests") [👀](#review-toomuchdesign "Reviewed Pull Requests") | [<img src="https://avatars2.githubusercontent.com/u/830824?v=4" width="100px;"/><br /><sub><b>Stepan Burguchev</b></sub>](https://github.com/xsburg)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=xsburg "Code") [👀](#review-xsburg "Reviewed Pull Requests") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=xsburg "Tests") | [<img src="https://avatars3.githubusercontent.com/u/693493?v=4" width="100px;"/><br /><sub><b>Mitch Robb</b></sub>](https://olslash.github.io/)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=olslash "Code") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=olslash "Tests") | [<img src="https://avatars3.githubusercontent.com/u/1128559?v=4" width="100px;"/><br /><sub><b>Stephane Rufer</b></sub>](https://github.com/rufman)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=rufman "Code") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=rufman "Tests") | [<img src="https://avatars0.githubusercontent.com/u/2788860?v=4" width="100px;"/><br /><sub><b>Tracy Mullen</b></sub>](https://github.com/spiffysparrow)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow "Code") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow "Tests") | [<img src="https://avatars1.githubusercontent.com/u/4211838?v=4" width="100px;"/><br /><sub><b>Sushain Cherivirala</b></sub>](https://www.skc.name)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=sushain97 "Code") | [<img src="https://avatars0.githubusercontent.com/u/6316590?v=4" width="100px;"/><br /><sub><b>Steve Mao</b></sub>](https://twitter.com/MaoStevemao)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=stevemao "Documentation") |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | [<img src="https://avatars2.githubusercontent.com/u/1428826?v=4" width="100px;"/><br /><sub><b>Gaurav Lahoti</b></sub>](https://github.com/Dante-101)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3ADante-101 "Bug reports") | [<img src="https://avatars3.githubusercontent.com/u/13602053?v=4" width="100px;"/><br /><sub><b>Lon</b></sub>](http://lon.im)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3Acnlon "Bug reports") | [<img src="https://avatars2.githubusercontent.com/u/5492495?v=4" width="100px;"/><br /><sub><b>bratushka</b></sub>](https://github.com/bratushka)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=bratushka "Code") | [<img src="https://avatars3.githubusercontent.com/u/615381?v=4" width="100px;"/><br /><sub><b>Anders D. Johnson</b></sub>](https://andrz.me)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=AndersDJohnson "Documentation") | [<img src="https://avatars3.githubusercontent.com/u/8556724?v=4" width="100px;"/><br /><sub><b>Július Retzer</b></sub>](https://github.com/wormyy)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=wormyy "Documentation") | [<img src="https://avatars3.githubusercontent.com/u/10407025?v=4" width="100px;"/><br /><sub><b>Maarten Schumacher</b></sub>](https://github.com/maartenschumacher)<br />[🤔](#ideas-maartenschumacher "Ideas, Planning, & Feedback") | [<img src="https://avatars2.githubusercontent.com/u/664238?v=4" width="100px;"/><br /><sub><b>Alexander Jarvis</b></sub>](https://github.com/alexanderjarvis)<br />[🤔](#ideas-alexanderjarvis "Ideas, Planning, & Feedback") |
-| [<img src="https://avatars1.githubusercontent.com/u/514026?v=4" width="100px;"/><br /><sub><b>Gregg B</b></sub>](https://github.com/greggb)<br />[💡](#example-greggb "Examples") | [<img src="https://avatars0.githubusercontent.com/u/897931?v=4" width="100px;"/><br /><sub><b>Ian Obermiller</b></sub>](http://ianobermiller.com)<br />[👀](#review-ianobermiller "Reviewed Pull Requests") | [<img src="https://avatars3.githubusercontent.com/u/7040242?v=4" width="100px;"/><br /><sub><b>Kanitkorn Sujautra</b></sub>](https://github.com/lukyth)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=lukyth "Documentation") |
+| [<img src="https://avatars1.githubusercontent.com/u/514026?v=4" width="100px;"/><br /><sub><b>Gregg B</b></sub>](https://github.com/greggb)<br />[💡](#example-greggb "Examples") | [<img src="https://avatars0.githubusercontent.com/u/897931?v=4" width="100px;"/><br /><sub><b>Ian Obermiller</b></sub>](http://ianobermiller.com)<br />[👀](#review-ianobermiller "Reviewed Pull Requests") | [<img src="https://avatars3.githubusercontent.com/u/7040242?v=4" width="100px;"/><br /><sub><b>Kanitkorn Sujautra</b></sub>](https://github.com/lukyth)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=lukyth "Documentation") | [<img src="https://avatars2.githubusercontent.com/u/6233440?v=4" width="100px;"/><br /><sub><b>Brian Kraus</b></sub>](https://github.com/suark)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=suark "Documentation") |
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 

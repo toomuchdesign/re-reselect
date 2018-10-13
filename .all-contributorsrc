@@ -168,6 +168,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "suark",
+      "name": "Brian Kraus",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6233440?v=4",
+      "profile": "https://github.com/suark",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "repoType": "github"

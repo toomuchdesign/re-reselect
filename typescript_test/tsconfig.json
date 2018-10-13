@@ -2,6 +2,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "noImplicitAny": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "lib": [
+      "es6"
+    ]
   }
 }

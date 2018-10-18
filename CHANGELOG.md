@@ -1,5 +1,18 @@
 # Change log
 
+## 2.2.0
+
+* Fix cache object's `isValidCacheKey` method TS type definition
+
+### New Features
+
+* Upgrade to babel 7
+* Update dev dependencies
+
+### Breaking Changes
+
+`Babel 7` in `loose` mode [doesn't add anymore `classCallCheck` utility to transpiled ES classes](https://babeljs.io/blog/2018/08/27/7.0.0#output-options). Cache object classes instantiated by mistake without new operator will now fail silently.
+
 ## 2.1.0
 
 ### New Features

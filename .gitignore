@@ -13,7 +13,6 @@ coverage
 !.babelrc.js
 !.editorconfig
 !.gitignore
-!.lintstagedrc
 !.npmignore
 !.npmrc
 !.prettierignore

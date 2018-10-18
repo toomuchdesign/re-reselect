@@ -25,14 +25,19 @@
     "version": "git add package.json",
     "postversion": "git push && git push --tags",
     "prepublish": "npm test -- --coverage && npm run compile && npm run test:bundles",
-    "precommit": "lint-staged",
     "format": "prettier --write \"**/*.{js,ts,json,md}\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "keywords": [
     "react",
     "redux",
     "reselect",
-    "memoize"
+    "memoize",
+    "cache"
   ],
   "repository": {
     "type": "git",
@@ -46,13 +51,13 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
-    "all-contributors-cli": "^4.11.1",
+    "all-contributors-cli": "^5.4.1",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^22.4.3",
-    "coveralls": "^3.0.1",
-    "husky": "^0.14.3",
-    "jest": "^22.4.3",
-    "lint-staged": "^4.0.3",
+    "babel-jest": "^23.6.0",
+    "coveralls": "^3.0.2",
+    "husky": "^1.1.2",
+    "jest": "^23.6.0",
+    "lint-staged": "^7.3.0",
     "prettier": "^1.11.1",
     "reselect": ">1.0.0",
     "rimraf": "^2.6.1",
@@ -71,5 +76,16 @@
     ],
     "testEnvironment": "node"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "lint-staged": {
+    "**/*.{js,ts}": [
+      "prettier --write",
+      "npm t -- .",
+      "git add"
+    ],
+    "**/*.md": [
+      "prettier --write",
+      "git add"
+    ]
+  }
 }

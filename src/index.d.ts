@@ -1534,33 +1534,35 @@ export interface ICacheObject {
   get(key: any): any;
   remove(key: any): void;
   clear(): void;
-  isValidCacheKey?(): boolean;
+  isValidCacheKey?(key: any): boolean;
 }
 
+type ObjectCacheKey = string | number;
+
 export class FlatObjectCache implements ICacheObject {
-  set(key: string | number, selectorFn: any): void;
-  get(key: string | number): any;
-  remove(key: string | number): void;
+  set(key: ObjectCacheKey, selectorFn: any): void;
+  get(key: ObjectCacheKey): any;
+  remove(key: ObjectCacheKey): void;
   clear(): void;
-  isValidCacheKey(): boolean;
+  isValidCacheKey(key: ObjectCacheKey): boolean;
 }
 
 export class FifoObjectCache implements ICacheObject {
   constructor(options: {cacheSize: number});
-  set(key: string | number, selectorFn: any): void;
-  get(key: string | number): any;
-  remove(key: string | number): void;
+  set(key: ObjectCacheKey, selectorFn: any): void;
+  get(key: ObjectCacheKey): any;
+  remove(key: ObjectCacheKey): void;
   clear(): void;
-  isValidCacheKey(): boolean;
+  isValidCacheKey(key: ObjectCacheKey): boolean;
 }
 
 export class LruObjectCache implements ICacheObject {
   constructor(options: {cacheSize: number});
-  set(key: string | number, selectorFn: any): void;
-  get(key: string | number): any;
-  remove(key: string | number): void;
+  set(key: ObjectCacheKey, selectorFn: any): void;
+  get(key: ObjectCacheKey): any;
+  remove(key: ObjectCacheKey): void;
   clear(): void;
-  isValidCacheKey(): boolean;
+  isValidCacheKey(key: ObjectCacheKey): boolean;
 }
 
 export class FlatMapCache implements ICacheObject {

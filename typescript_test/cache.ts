@@ -28,6 +28,8 @@ function testFlatObjectCache() {
   cacheObject.remove('foo');
   cacheObject.remove(1);
   cacheObject.clear();
+
+  cacheObject.isValidCacheKey(1);
 }
 
 function testFifoObjectCache() {
@@ -50,6 +52,8 @@ function testFifoObjectCache() {
   cacheObject.remove('foo');
   cacheObject.remove(1);
   cacheObject.clear();
+
+  cacheObject.isValidCacheKey(1);
 }
 
 function testLruObjectCache() {
@@ -72,6 +76,8 @@ function testLruObjectCache() {
   cacheObject.remove('foo');
   cacheObject.remove(1);
   cacheObject.clear();
+
+  cacheObject.isValidCacheKey(1);
 }
 
 function testFlatMapCache() {

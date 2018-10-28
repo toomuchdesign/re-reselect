@@ -11,7 +11,9 @@
     "dist",
     "es",
     "lib",
-    "src"
+    "src",
+    "!__tests__",
+    "!__util__"
   ],
   "scripts": {
     "test": "npm run test:typescript && jest",

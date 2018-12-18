@@ -65,8 +65,8 @@
     "rimraf": "^2.6.1",
     "rollup": "^0.66.6",
     "rollup-plugin-babel": "^4.0.3",
-    "typescript": "^2.7.2",
-    "typings-tester": "^0.2.2"
+    "typescript": "^3.2.2",
+    "typings-tester": "^0.3.2"
   },
   "jest": {
     "coverageReporters": [

@@ -40,7 +40,6 @@ function testSelector() {
   // typings:expect-error
   selector({foo: 'bar'}, {prop: 'value'});
 
-  // typings:expect-error
   createCachedSelector(
     (state: {foo: string}) => state.foo,
     (state: {bar: number}) => state.bar,
@@ -168,13 +167,11 @@ function testArrayArgument() {
     (state: {foo: string}) => state.foo
   );
 
-  // typings:expect-error
   createCachedSelector(
     [(state: {foo: string}) => state.foo, (state: {bar: number}) => state.bar],
     (foo, bar) => {}
   )((state: {foo: string}) => state.foo);
 
-  // typings:expect-error
   createCachedSelector(
     [(state: {foo: string}) => state.foo, (state: {foo: string}) => state.foo],
     (foo: string, bar: number) => {}
@@ -219,9 +216,9 @@ function testArrayArgument() {
       (state: {foo: string}) => state.foo,
       (state: {foo: string}) => state.foo,
       (state: {foo: string}) => state.foo,
-      (state: {foo: string}) => state.foo,
+      (state: {bar: number}) => state.bar,
     ],
-    (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8: number, foo9, foo10) => {}
+    (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8: number, foo9, bar) => {}
   )((state: {foo: string}) => state.foo);
 
   // typings:expect-error

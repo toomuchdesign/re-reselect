@@ -13,6 +13,15 @@ function createCachedSelector(...funcs) {
       );
     }
 
+    let recomputations = 0;
+    const resultFunc = funcs.pop();
+    const dependencies = Array.isArray(funcs[0]) ? funcs[0] : [...funcs];
+    const resultFuncWithRecomputations = (...args) => {
+      recomputations++;
+      return resultFunc(...args);
+    };
+    funcs.push(resultFuncWithRecomputations);
+
     const cache = options.cacheObject || new defaultCacheCreator();
     const selectorCreator = options.selectorCreator || createSelector;
     const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
@@ -53,9 +62,15 @@ function createCachedSelector(...funcs) {
       cache.clear();
     };
 
-    selector.resultFunc = funcs[funcs.length - 1];
+    selector.resultFunc = resultFunc;
+
+    selector.dependencies = dependencies;
 
     selector.cache = cache;
+
+    selector.recomputations = () => recomputations;
+
+    selector.resetRecomputations = () => (recomputations = 0);
 
     return selector;
   };

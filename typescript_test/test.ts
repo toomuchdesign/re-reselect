@@ -13,6 +13,9 @@ function testSelector() {
   // typings:expect-error
   const num: number = selector({foo: 'bar'});
 
+  const recomputations: number = selector.recomputations();
+  selector.resetRecomputations();
+
   const matchingSelectors = selector.getMatchingSelector({foo: 'bar'});
   const resultFunc: (foo: string) => string = matchingSelectors.resultFunc;
 

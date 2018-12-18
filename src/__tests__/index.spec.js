@@ -2,7 +2,7 @@
 import {createSelector} from 'reselect';
 import createCachedSelector, {FlatObjectCache} from '../../src/index';
 
-let resultFunc;
+const resultFunc = () => undefined;
 let consoleWarnSpy;
 
 beforeAll(() => {
@@ -12,12 +12,11 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  resultFunc = jest.fn();
   consoleWarnSpy.mockReset();
 });
 
 function selectorWithMockedResultFunc() {
-  return createCachedSelector(resultFunc)(
+  return createCachedSelector([], () => undefined)(
     (arg1, arg2) => arg2 // Resolver
   );
 }
@@ -28,7 +27,7 @@ describe('createCachedSelector', () => {
     const firstCall = cachedSelector('foo', 'bar');
     const secondCallWithSameResolver = cachedSelector('foo', 'bar');
 
-    expect(resultFunc).toHaveBeenCalledTimes(1);
+    expect(cachedSelector.recomputations()).toBe(1);
   });
 
   it('Should create 2 selectors when resolver function returns different values', () => {
@@ -36,7 +35,38 @@ describe('createCachedSelector', () => {
     const firstCallResult = cachedSelector('foo', 'bar');
     const secondCallWithDifferentResolver = cachedSelector('foo', 'moo');
 
-    expect(resultFunc).toHaveBeenCalledTimes(2);
+    expect(cachedSelector.recomputations()).toBe(2);
+  });
+
+  it('Should create only 2 selectors and produce 2 recomputations when resolver function returns different values', () => {
+    const cachedSelector = selectorWithMockedResultFunc();
+    const firstCallResult = cachedSelector('foo', 'bar');
+    const secondCallResult = cachedSelector('foo', 'moo');
+    const thirdCallResult = cachedSelector('foo', 'bar');
+    const fourthCallResult = cachedSelector('foo', 'moo');
+
+    expect(cachedSelector.recomputations()).toBe(2);
+  });
+
+  it('Should reset recomputations', () => {
+    const cachedSelector = selectorWithMockedResultFunc();
+    const firstCallResult = cachedSelector('foo', 'bar');
+
+    expect(cachedSelector.recomputations()).toBe(1);
+    cachedSelector.resetRecomputations();
+    expect(cachedSelector.recomputations()).toBe(0);
+  });
+
+  it('Should export dependencies', () => {
+    const dependency1 = state => state.a;
+    const dependency2 = state => state.a;
+
+    const cachedSelector = createCachedSelector(
+      dependency1,
+      dependency2,
+      () => {}
+    )(arg1 => arg1);
+    expect(cachedSelector.dependencies).toEqual([dependency1, dependency2]);
   });
 
   describe('cacheKey validity check', () => {
@@ -115,10 +145,10 @@ describe('createCachedSelector', () => {
       }
     );
 
-    expect(resultFunc).toHaveBeenCalledTimes(0);
+    expect(cachedSelector.recomputations()).toBe(0);
     cachedSelector('foo', 'bar');
     cachedSelector('foo', 'bar');
-    expect(resultFunc).toHaveBeenCalledTimes(1);
+    expect(cachedSelector.recomputations()).toBe(1);
   });
 
   describe('getMatchingSelector()', () => {

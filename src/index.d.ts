@@ -30,7 +30,6 @@ export type OutputCachedSelector<S, R, C> = (
   getMatchingSelector: (state: S, ...args: any[]) => OutputSelector<S, R, C>;
   removeMatchingSelector: (state: S, ...args: any[]) => void;
   clearCache: () => void;
-  resultFunc: C;
   cache: ICacheObject;
 };
 
@@ -67,7 +66,6 @@ export type OutputParametricCachedSelector<S, P, R, C> = (
   ) => OutputParametricSelector<S, P, R, C>;
   removeMatchingSelector: (state: S, props: P, ...args: any[]) => void;
   clearCache: () => void;
-  resultFunc: C;
   cache: ICacheObject;
 };
 

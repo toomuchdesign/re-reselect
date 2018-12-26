@@ -13,9 +13,11 @@ function createCachedSelector(...funcs) {
       );
     }
 
+    // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
     let recomputations = 0;
     const resultFunc = funcs.pop();
     const dependencies = Array.isArray(funcs[0]) ? funcs[0] : [...funcs];
+
     const resultFuncWithRecomputations = (...args) => {
       recomputations++;
       return resultFunc(...args);

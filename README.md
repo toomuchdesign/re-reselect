@@ -57,25 +57,37 @@ const fooResultAgain = cachedSelector(state, 'foo');
 
 ## Table of contents
 
-* [Installation](#installation)
-* [Why? + example](#why--example)
-  * [Re-reselect solution](#re-reselect-solution)
-  * [Other viable solutions](#other-viable-solutions)
-* [FAQ](#faq)
-  * [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
-  * [How do I use multiple inputs to set the cacheKey?](#how-do-i-use-multiple-inputs-to-set-the-cachekey)
-  * [How do I limit the cache size?](#how-do-i-limit-the-cache-size)
-  * [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
-  * [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
-* [Examples](#examples)
-* [API](#api)
-  * [`reReselect`](#rereselectreselects-createselector-argumentsresolverfunction--cacheobject-selectorcreator-)
-  * [reReselectInstance`()`](#rereselectinstanceselectorarguments)
-  * [reReselectInstance`.getMatchingSelector`](#rereselectinstancegetmatchingselectorselectorarguments)
-  * [reReselectInstance`.removeMatchingSelector`](#rereselectinstanceremovematchingselectorselectorarguments)
-  * [reReselectInstance`.clearCache`](#rereselectinstanceclearcache)
-  * [reReselectInstance`.resultFunc`](#rereselectinstanceresultfunc)
-  * [reReselectInstance`.cache`](#rereselectinstancecache)
+* [Re-reselect](#re-reselect)
+  * [Table of contents](#table-of-contents)
+  * [Installation](#installation)
+  * [Why? + example](#why--example)
+    * [Re-reselect solution](#re-reselect-solution)
+    * [Other viable solutions](#other-viable-solutions)
+      * [1- Declare a different selector for each different call](#1--declare-a-different-selector-for-each-different-call)
+      * [2- Declare a `makeGetPieceOfData` selector factory as explained in [Reselect docs][reselect-sharing-selectors]](#2--declare-a-makegetpieceofdata-selector-factory-as-explained-in-reselect-docsreselect-sharing-selectors)
+      * [3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector](#3--wrap-your-makegetpieceofdata-selector-factory-into-a-memoizer-function-and-call-the-returning-memoized-selector)
+  * [Examples](#examples)
+  * [FAQ](#faq)
+    * [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
+    * [How do I use multiple inputs to set the cacheKey?](#how-do-i-use-multiple-inputs-to-set-the-cachekey)
+    * [How do I limit the cache size?](#how-do-i-limit-the-cache-size)
+    * [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
+    * [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
+  * [API](#api)
+    * [reReselect([reselect's createSelector arguments])(resolverFunction, { cacheObject, selectorCreator })](#rereselectreselects-createselector-argumentsresolverfunction--cacheobject-selectorcreator)
+      * [resolverFunction](#resolverfunction)
+      * [options.cacheObject](#optionscacheobject)
+        * [Custom cache strategy object](#custom-cache-strategy-object)
+      * [options.selectorCreator](#optionsselectorcreator)
+      * [Returns](#returns)
+    * [reReselectInstance(selectorArguments)](#rereselectinstanceselectorarguments)
+    * [reReselectInstance`.getMatchingSelector(selectorArguments)`](#rereselectinstancegetmatchingselectorselectorarguments)
+    * [reReselectInstance`.removeMatchingSelector(selectorArguments)`](#rereselectinstanceremovematchingselectorselectorarguments)
+    * [reReselectInstance`.clearCache()`](#rereselectinstanceclearcache)
+    * [reReselectInstance`.resultFunc`](#rereselectinstanceresultfunc)
+    * [reReselectInstance`.cache`](#rereselectinstancecache)
+  * [Todo's](#todos)
+  * [Contributors](#contributors)
 
 ## Installation
 
@@ -398,7 +410,7 @@ Get cacheObject instance being used by the selector (for advanced caching operat
 
 ## Todo's
 
-* Flow type definitions?
+* Consider introducing typings for `selector.dependencies` method
 * Improve TS tests readability
 * More examples
 

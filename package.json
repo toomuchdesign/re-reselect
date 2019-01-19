@@ -26,7 +26,7 @@
     "preversion": "npm run prepublish",
     "version": "git add package.json",
     "postversion": "git push && git push --tags",
-    "prepublish": "npm test -- --coverage && npm run compile && npm run test:bundles",
+    "prepublish": "npm run compile && npm test -- --coverage && npm run test:bundles",
     "format": "prettier --write \"**/*.{js,ts,json,md}\""
   },
   "husky": {

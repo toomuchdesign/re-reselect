@@ -18,6 +18,6 @@
 
 ### Specifications
 
-* Version:
-* Platform:
-* Subsystem:
+- Version:
+- Platform:
+- Subsystem:

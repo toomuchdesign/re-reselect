@@ -5,7 +5,7 @@ import createCachedSelector, {
   FlatMapCache,
   FifoMapCache,
   LruMapCache,
-} from '../src/index';
+} from '../lib/index';
 
 type State = {foo: string};
 const fooSelector = (state: State) => state.foo;

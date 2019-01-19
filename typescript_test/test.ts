@@ -13,8 +13,18 @@ function testSelector() {
   // typings:expect-error
   const num: number = selector({foo: 'bar'});
 
+  const recomputations: number = selector.recomputations();
+  selector.resetRecomputations();
+
+  // typings:expect-error
+  // @NOTE selector.dependencies typings still to be implemented
+  const dependencies: Array<(state: State) => string> = selector.dependencies;
+
   const matchingSelectors = selector.getMatchingSelector({foo: 'bar'});
-  const resultFunc: (foo: string) => string = matchingSelectors.resultFunc;
+  const matchingSelectorsResultFunc: (foo: string) => string =
+    matchingSelectors.resultFunc;
+
+  const resultFunc: (foo: string) => string = selector.resultFunc;
 
   // typings:expect-error
   selector.getMatchingSelector('foo');
@@ -103,7 +113,7 @@ function testParametricSelector() {
     {foo: 'fizz'},
     {bar: 42}
   );
-  const resultFunc: (foo: string, bar: number) => object =
+  const matchingSelectorsResultFunc: (foo: string, bar: number) => object =
     matchingSelectors.resultFunc;
 
   // typings:expect-error

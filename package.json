@@ -86,6 +86,7 @@
   "lint-staged": {
     "**/*.{js,ts}": [
       "prettier --write",
+      "npm run compile:typescript",
       "npm t -- .",
       "git add"
     ],

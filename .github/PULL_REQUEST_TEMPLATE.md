@@ -18,5 +18,5 @@
 
 ### Please check if the PR fulfills these requirements:
 
-* [ ] Tests for the changes have been added
-* [ ] Docs have been added / updated
+- [ ] Tests for the changes have been added
+- [ ] Docs have been added / updated

@@ -433,8 +433,6 @@ Reset `recomputations` count.
 
 ## Todo's
 
-- Introduce typings for heterogeneous selectors. See [this](https://github.com/reduxjs/reselect/pull/274) and [this](https://github.com/toomuchdesign/re-reselect/pull/63).
-- Consider introducing typings for `selector.dependencies` method
 - Improve TS tests readability
 - More examples
 

@@ -1,8 +1,35 @@
 import {createSelector} from 'reselect';
 
 export type Selector<S, R> = (state: S) => R;
+export type ParametricSelector<S, P, R> = (
+  state: S,
+  props: P,
+  ...args: any[]
+) => R;
 
 export type Resolver<S> = (state: S, ...args: any[]) => any;
+export type ParametricResolver<S, P> = (
+  state: S,
+  props: P,
+  ...args: any[]
+) => any;
+
+export type OutputSelector<S, R, C, D> = Selector<S, R> & {
+  resultFunc: C;
+  dependencies: D;
+  recomputations: () => number;
+  resetRecomputations: () => number;
+};
+export type OutputParametricSelector<S, P, R, C, D> = ParametricSelector<
+  S,
+  P,
+  R
+> & {
+  resultFunc: C;
+  dependencies: D;
+  recomputations: () => number;
+  resetRecomputations: () => number;
+};
 
 export type CreateSelectorInstance = typeof createSelector;
 
@@ -17,13 +44,6 @@ type Options =
     }
   | CreateSelectorInstance;
 
-export type OutputSelector<S, R, C, D> = Selector<S, R> & {
-  resultFunc: C;
-  dependencies: D;
-  recomputations: () => number;
-  resetRecomputations: () => number;
-};
-
 export type OutputCachedSelector<S, R, C, D> = (
   resolver: Resolver<S>,
   optionsOrSelectorCreator?: Options
@@ -32,29 +52,6 @@ export type OutputCachedSelector<S, R, C, D> = (
   removeMatchingSelector: (state: S, ...args: any[]) => void;
   clearCache: () => void;
   cache: ICacheObject;
-};
-
-export type ParametricSelector<S, P, R> = (
-  state: S,
-  props: P,
-  ...args: any[]
-) => R;
-
-export type ParametricResolver<S, P> = (
-  state: S,
-  props: P,
-  ...args: any[]
-) => any;
-
-export type OutputParametricSelector<S, P, R, C, D> = ParametricSelector<
-  S,
-  P,
-  R
-> & {
-  resultFunc: C;
-  dependencies: D;
-  recomputations: () => number;
-  resetRecomputations: () => number;
 };
 
 export type OutputParametricCachedSelector<S, P, R, C, D> = (
@@ -70,6 +67,10 @@ export type OutputParametricCachedSelector<S, P, R, C, D> = (
   clearCache: () => void;
   cache: ICacheObject;
 };
+
+/*
+ * Homogeneous selectors, parameter types
+ */
 
 /* one selector */
 export default function createCachedSelector<S, R1, T>(
@@ -993,7 +994,9 @@ export default function createCachedSelector<
   ]
 >;
 
-/* array argument */
+/*
+ * Homogeneous selectors, array argument
+ */
 
 /* one selector */
 export default function createCachedSelector<S, R1, T>(
@@ -1951,7 +1954,9 @@ export default function createCachedSelector<
   ]
 >;
 
-/* heterogeneous selector parameter types */
+/*
+ * Heterogeneous selectors, parameter types
+ */
 
 /* one selector */
 export default function createCachedSelector<S1, R1, T>(
@@ -3126,7 +3131,9 @@ export default function createCachedSelector<
   ]
 >;
 
-/* array argument */
+/*
+ * Heterogeneous selectors, array argument
+ */
 
 /* one selector */
 export default function createCachedSelector<S1, R1, T>(
@@ -4336,8 +4343,9 @@ export default function createCachedSelector<
   ]
 >;
 
-/* any number of uniform selectors */
-
+/*
+ * Any number of uniform selectors
+ */
 export default function createCachedSelector<S, R, T>(
   selectors: Selector<S, R>[],
   combiner: (...res: R[]) => T
@@ -4353,6 +4361,9 @@ export default function createCachedSelector<S, P, R, T>(
   ParametricSelector<S, P, R>[]
 >;
 
+/*
+ * Cache objects
+ */
 export interface ICacheObject {
   set(key: any, selectorFn: any): void;
   get(key: any): any;

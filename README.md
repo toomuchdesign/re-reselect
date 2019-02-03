@@ -37,7 +37,7 @@ const cachedSelector = createCachedSelector(
   // resultFunc
   (A, B) => expensiveComputation(A, B)
 )(
-  // resolverFunction
+  // keySelector
   // Instruct re-reselect to use "itemName" as cacheKey
   (state, itemName) => itemName
 );
@@ -75,8 +75,8 @@ const fooResultAgain = cachedSelector(state, 'foo');
     - [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
       - [Testing `reselect` selectors stored in the cache](#testing-reselect-selectors-stored-in-the-cache)
   - [API](#api)
-    - [reReselect([reselect's createSelector arguments])(resolverFunction, { cacheObject, selectorCreator })](#rereselectreselects-createselector-argumentsresolverfunction--cacheobject-selectorcreator)
-      - [resolverFunction](#resolverfunction)
+    - [reReselect([reselect's createSelector arguments])(keySelector, { cacheObject, selectorCreator })](#rereselectreselects-createselector-argumentskeyselector--cacheobject-selectorcreator-)
+      - [keySelector](#keyselector)
       - [options.cacheObject](#optionscacheobject)
         - [Custom cache strategy object](#custom-cache-strategy-object)
       - [options.selectorCreator](#optionsselectorcreator)
@@ -122,9 +122,9 @@ What happens, here? `getPieceOfData` **selector cache is invalidated** on each c
 
 `cacheKey` is by default a `string` or `number` but can be anything depending on the chosen cache strategy (see [`cacheObject` option](#optionscacheobject)).
 
-`cacheKey` is the output of `resolverFunction`, declared at selector initialization.
+`cacheKey` is the output of `keySelector`, declared at selector initialization.
 
-`resolverFunction` is a **custom function** which:
+`keySelector` is a **custom function** which:
 
 - takes the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`)
 - returns a `cacheKey`.
@@ -149,7 +149,7 @@ const getPieceOfData = createCachedSelector(
 
 But now, **each time the selector is called**, the following happens behind the scenes:
 
-1.  **Evaluate the `cacheKey`** for current call by executing `resolverFunction`
+1.  **Evaluate the `cacheKey`** for current call by executing `keySelector`
 2.  **Retrieve** from cache the **`reselect` selector** stored under the given `cacheKey`
 3.  **Return found selector or create a new one** if no selector was found
 4.  **Call returned selector** with provided arguments
@@ -198,7 +198,7 @@ export const getMyData = createSelector(
 );
 ```
 
-...add `resolverFunction` in the second function call:
+...add `keySelector` in the second function call:
 
 <!-- prettier-ignore -->
 ```js
@@ -222,9 +222,9 @@ const myData = getMyData(state, 'foo', 'bar');
 
 ### How do I use multiple inputs to set the cacheKey?
 
-`cacheKey` is the return value of `resolverFunction`.
+`cacheKey` is the return value of `keySelector`.
 
-`resolverFunction` receives the same arguments of your `inputSelectors` and (by default) **must return a `string` or `number`.**
+`keySelector` receives the same arguments of your `inputSelectors` and (by default) **must return a `string` or `number`.**
 
 A few good examples and [a bonus](https://github.com/toomuchdesign/re-reselect/issues/3):
 
@@ -319,20 +319,20 @@ import reReselect from 're-reselect';
 import createCachedSelector from 're-reselect';
 ```
 
-### reReselect([reselect's createSelector arguments])(resolverFunction, { cacheObject, selectorCreator })
+### reReselect([reselect's createSelector arguments])(keySelector, { cacheObject, selectorCreator })
 
 **Re-reselect** accepts reselect's original [`createSelector` arguments][reselect-create-selector] and returns a new function which accepts **2 arguments**:
 
-- `resolverFunction`
+- `keySelector`
 - `options { cacheObject, selectorCreator }` _(optional)_
 
-#### resolverFunction
+#### keySelector
 
-`resolverFunction` is a custom function receiving the same arguments as your selectors (and `inputSelectors`) and **returning a `cacheKey`**.
+`keySelector` is a custom function receiving the same arguments as your selectors (and `inputSelectors`) and **returning a `cacheKey`**.
 
 `cacheKey` is **by default a `string` or `number`** but can be anything depending on the chosen cache strategy (see [`cacheObject` option](#optionscacheobject)).
 
-The `resolverFunction` idea comes from [Lodash's .memoize][lodash-memoize].
+The `keySelector` idea comes from [Lodash's .memoize][lodash-memoize].
 
 #### options.cacheObject
 
@@ -358,7 +358,7 @@ import createCachedSelector, {LruObjectCache, LruMapCache} from 're-reselect';
 createCachedSelector(
   // ...
 )(
-  resolverFunction,
+  keySelector,
   {
     cacheObject: new LruObjectCache({cacheSize: 5}),
     // or:

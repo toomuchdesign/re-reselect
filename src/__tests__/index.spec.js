@@ -15,24 +15,24 @@ beforeEach(() => {
 
 function selectorWithMockedResultFunc() {
   return createCachedSelector([], resultFuncMock)(
-    (arg1, arg2) => arg2 // Resolver
+    (arg1, arg2) => arg2 // keySelector
   );
 }
 
 describe('createCachedSelector', () => {
   describe('"recomputations" property and cached selectors', () => {
-    describe('Resolver returns the same value', () => {
+    describe('keySelector returns the same value', () => {
       it('Should create and use the same cached selector', () => {
         const cachedSelector = selectorWithMockedResultFunc();
         const firstCall = cachedSelector('foo', 'bar');
-        const secondCallWithSameResolver = cachedSelector('foo', 'bar');
+        const secondCallWithSamekeySelector = cachedSelector('foo', 'bar');
 
         expect(createSelectorSpy).toHaveBeenCalledTimes(1);
         expect(cachedSelector.recomputations()).toBe(1);
       });
     });
 
-    describe('Resolver returns 2 different values', () => {
+    describe('keySelector returns 2 different values', () => {
       it('Should create 2 selectors only and produce 2 recomputations', () => {
         const cachedSelector = selectorWithMockedResultFunc();
         const firstCallResult = cachedSelector('foo', 'bar');

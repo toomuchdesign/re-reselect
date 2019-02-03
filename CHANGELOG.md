@@ -7,6 +7,7 @@
 - Update TypeScript typings
   - Introduce typings for heterogeneous selectors
   - Introduce typings for any number of uniform selectors
+  - Rename "resolver" as "keySelector"
 
 ### New Features
 

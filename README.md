@@ -1,8 +1,9 @@
 # Re-reselect
 
 [![Build status][ci-badge]][ci]
-[![Coveralls][coveralls-badge]][coveralls]
-[![Npm][npm-badge]][npm]
+[![Npm version][npm-version-badge]][npm]
+[![Npm downloads][npm-downloads-badge]][npm]
+[![Test coverage report][coveralls-badge]][coveralls]
 
 `re-reselect` is a lightweight wrapper around **[Reselect][reselect]** meant to enhance selectors with **deeper memoization** and **cache management**.
 
@@ -462,8 +463,9 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [ci]: https://travis-ci.org/toomuchdesign/re-reselect
 [coveralls-badge]: https://coveralls.io/repos/github/toomuchdesign/re-reselect/badge.svg?branch=master
 [coveralls]: https://coveralls.io/github/toomuchdesign/re-reselect?branch=master
-[npm-badge]: https://img.shields.io/npm/dm/re-reselect.svg
 [npm]: https://www.npmjs.com/package/re-reselect
+[npm-version-badge]: https://img.shields.io/npm/v/re-reselect.svg
+[npm-downloads-badge]: https://img.shields.io/npm/dm/re-reselect.svg
 [reselect-and-re-reselect-sketch]: examples/reselect-and-re-reselect.png?raw=true
 [example-1]: examples/1-join-selectors.md
 [example-2]: examples/2-avoid-selector-factories.md

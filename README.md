@@ -67,6 +67,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
       - [1- Declare a different selector for each different call](#1--declare-a-different-selector-for-each-different-call)
       - [2- Declare a `makeGetPieceOfData` selector factory as explained in Reselect docs](#2--declare-a-makegetpieceofdata-selector-factory-as-explained-in-reselect-docs)
       - [3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector](#3--wrap-your-makegetpieceofdata-selector-factory-into-a-memoizer-function-and-call-the-returning-memoized-selector)
+      - [4- Use Redux-Views](#4--Use-Redux-Views)
   - [Examples](#examples)
   - [FAQ](#faq)
     - [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
@@ -174,6 +175,10 @@ The solution suggested in [Reselect docs][reselect-sharing-selectors] is fine, b
 #### 3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector
 
 This is what `re-reselect` actually does! :-) It's quite verbose (since has to be repeated for each selector), **that's why re-reselect is here**.
+
+#### 4- Use Redux-Views
+
+[Redux-Views](https://github.com/josepot/redux-views) solves the same problem, but uses a very different approach. Instead of enhancing `reselect`, `redux-views` is an all-in-one solution that tries to make the experience of working with shared selectors (almost) transparent for the user.
 
 ## Examples
 

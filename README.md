@@ -92,6 +92,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
     - [reReselectInstance`.resultFunc`](#rereselectinstanceresultfunc)
     - [reReselectInstance`.recomputations()`](#rereselectinstancerecomputations)
     - [reReselectInstance`.resetRecomputations()`](#rereselectinstanceresetrecomputations)
+  - [About re-reselect](#about-re-reselect)
   - [Todo's](#todos)
   - [Contributors](#contributors)
 
@@ -436,6 +437,17 @@ Return the number of times the selector's result function has been recomputed.
 ### reReselectInstance`.resetRecomputations()`
 
 Reset `recomputations` count.
+
+## About re-reselect
+
+- [Re-reselect your whole redux state](https://patrickdesjardins.com/blog/re-reselect-your-whole-redux-state)
+- [Understanding reselect and re-reselect](http://alexnitta.com/understanding-reselect-and-re-reselect/)
+- [Advanced Redux patterns: selectors](https://blog.brainsandbeards.com/advanced-redux-patterns-selectors-cb9f88381d74)
+- [Be selective with your state](https://medium.com/riipen-engineering/be-selective-with-your-state-8f1be76cb9f4)
+- [A swift developer’s React Native experience](https://swiftwithjustin.co/2018/06/24/a-swift-developers-react-native-experience)
+- [5 key Redux libraries to improve code reuse](https://blog.logrocket.com/5-redux-libraries-to-improve-code-reuse-9f93eaceaa83)
+- [Rematch's docs](https://github.com/rematch/rematch/blob/1.1.0/plugins/select/README.md#re-reselect)
+- [Redux re-reselect playground](https://codesandbox.io/s/135rwqj2jj)
 
 ## Todo's
 

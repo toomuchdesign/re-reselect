@@ -1,8 +1,9 @@
 # Re-reselect
 
 [![Build status][ci-badge]][ci]
-[![Coveralls][coveralls-badge]][coveralls]
-[![Npm][npm-badge]][npm]
+[![Npm version][npm-version-badge]][npm]
+[![Npm downloads][npm-downloads-badge]][npm]
+[![Test coverage report][coveralls-badge]][coveralls]
 
 `re-reselect` is a lightweight wrapper around **[Reselect][reselect]** meant to enhance selectors with **deeper memoization** and **cache management**.
 
@@ -37,7 +38,7 @@ const cachedSelector = createCachedSelector(
   // resultFunc
   (A, B) => expensiveComputation(A, B)
 )(
-  // resolverFunction
+  // keySelector
   // Instruct re-reselect to use "itemName" as cacheKey
   (state, itemName) => itemName
 );
@@ -75,8 +76,8 @@ const fooResultAgain = cachedSelector(state, 'foo');
     - [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
       - [Testing `reselect` selectors stored in the cache](#testing-reselect-selectors-stored-in-the-cache)
   - [API](#api)
-    - [reReselect([reselect's createSelector arguments])(resolverFunction, { cacheObject, selectorCreator })](#rereselectreselects-createselector-argumentsresolverfunction--cacheobject-selectorcreator)
-      - [resolverFunction](#resolverfunction)
+    - [reReselect([reselect's createSelector arguments])(keySelector, { cacheObject, selectorCreator })](#rereselectreselects-createselector-argumentskeyselector--cacheobject-selectorcreator-)
+      - [keySelector](#keyselector)
       - [options.cacheObject](#optionscacheobject)
         - [Custom cache strategy object](#custom-cache-strategy-object)
       - [options.selectorCreator](#optionsselectorcreator)
@@ -90,6 +91,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
     - [reReselectInstance`.resultFunc`](#rereselectinstanceresultfunc)
     - [reReselectInstance`.recomputations()`](#rereselectinstancerecomputations)
     - [reReselectInstance`.resetRecomputations()`](#rereselectinstanceresetrecomputations)
+  - [About re-reselect](#about-re-reselect)
   - [Todo's](#todos)
   - [Contributors](#contributors)
 
@@ -122,9 +124,9 @@ What happens, here? `getPieceOfData` **selector cache is invalidated** on each c
 
 `cacheKey` is by default a `string` or `number` but can be anything depending on the chosen cache strategy (see [`cacheObject` option](#optionscacheobject)).
 
-`cacheKey` is the output of `resolverFunction`, declared at selector initialization.
+`cacheKey` is the output of `keySelector`, declared at selector initialization.
 
-`resolverFunction` is a **custom function** which:
+`keySelector` is a **custom function** which:
 
 - takes the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`)
 - returns a `cacheKey`.
@@ -149,7 +151,7 @@ const getPieceOfData = createCachedSelector(
 
 But now, **each time the selector is called**, the following happens behind the scenes:
 
-1.  **Evaluate the `cacheKey`** for current call by executing `resolverFunction`
+1.  **Evaluate the `cacheKey`** for current call by executing `keySelector`
 2.  **Retrieve** from cache the **`reselect` selector** stored under the given `cacheKey`
 3.  **Return found selector or create a new one** if no selector was found
 4.  **Call returned selector** with provided arguments
@@ -198,7 +200,7 @@ export const getMyData = createSelector(
 );
 ```
 
-...add `resolverFunction` in the second function call:
+...add `keySelector` in the second function call:
 
 <!-- prettier-ignore -->
 ```js
@@ -222,9 +224,9 @@ const myData = getMyData(state, 'foo', 'bar');
 
 ### How do I use multiple inputs to set the cacheKey?
 
-`cacheKey` is the return value of `resolverFunction`.
+`cacheKey` is the return value of `keySelector`.
 
-`resolverFunction` receives the same arguments of your `inputSelectors` and (by default) **must return a `string` or `number`.**
+`keySelector` receives the same arguments of your `inputSelectors` and (by default) **must return a `string` or `number`.**
 
 A few good examples and [a bonus](https://github.com/toomuchdesign/re-reselect/issues/3):
 
@@ -319,20 +321,20 @@ import reReselect from 're-reselect';
 import createCachedSelector from 're-reselect';
 ```
 
-### reReselect([reselect's createSelector arguments])(resolverFunction, { cacheObject, selectorCreator })
+### reReselect([reselect's createSelector arguments])(keySelector, { cacheObject, selectorCreator })
 
 **Re-reselect** accepts reselect's original [`createSelector` arguments][reselect-create-selector] and returns a new function which accepts **2 arguments**:
 
-- `resolverFunction`
+- `keySelector`
 - `options { cacheObject, selectorCreator }` _(optional)_
 
-#### resolverFunction
+#### keySelector
 
-`resolverFunction` is a custom function receiving the same arguments as your selectors (and `inputSelectors`) and **returning a `cacheKey`**.
+`keySelector` is a custom function receiving the same arguments as your selectors (and `inputSelectors`) and **returning a `cacheKey`**.
 
 `cacheKey` is **by default a `string` or `number`** but can be anything depending on the chosen cache strategy (see [`cacheObject` option](#optionscacheobject)).
 
-The `resolverFunction` idea comes from [Lodash's .memoize][lodash-memoize].
+The `keySelector` idea comes from [Lodash's .memoize][lodash-memoize].
 
 #### options.cacheObject
 
@@ -358,7 +360,7 @@ import createCachedSelector, {LruObjectCache, LruMapCache} from 're-reselect';
 createCachedSelector(
   // ...
 )(
-  resolverFunction,
+  keySelector,
   {
     cacheObject: new LruObjectCache({cacheSize: 5}),
     // or:
@@ -431,10 +433,19 @@ Return the number of times the selector's result function has been recomputed.
 
 Reset `recomputations` count.
 
+## About re-reselect
+
+- [Re-reselect your whole redux state](https://patrickdesjardins.com/blog/re-reselect-your-whole-redux-state)
+- [Understanding reselect and re-reselect](http://alexnitta.com/understanding-reselect-and-re-reselect/)
+- [Advanced Redux patterns: selectors](https://blog.brainsandbeards.com/advanced-redux-patterns-selectors-cb9f88381d74)
+- [Be selective with your state](https://medium.com/riipen-engineering/be-selective-with-your-state-8f1be76cb9f4)
+- [A swift developer’s React Native experience](https://swiftwithjustin.co/2018/06/24/a-swift-developers-react-native-experience)
+- [5 key Redux libraries to improve code reuse](https://blog.logrocket.com/5-redux-libraries-to-improve-code-reuse-9f93eaceaa83)
+- [Rematch's docs](https://github.com/rematch/rematch/blob/1.1.0/plugins/select/README.md#re-reselect)
+- [Redux re-reselect playground](https://codesandbox.io/s/135rwqj2jj)
+
 ## Todo's
 
-- Introduce typings for heterogeneous selectors. See [this](https://github.com/reduxjs/reselect/pull/274) and [this](https://github.com/toomuchdesign/re-reselect/pull/63).
-- Consider introducing typings for `selector.dependencies` method
 - Improve TS tests readability
 - More examples
 
@@ -443,12 +454,12 @@ Reset `recomputations` count.
 Thanks to you all ([emoji key][docs-all-contributors]):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-
 <!-- prettier-ignore -->
 | [<img src="https://avatars3.githubusercontent.com/u/4573549?v=4" width="100px;"/><br /><sub><b>Andrea Carraro</b></sub>](http://www.andreacarraro.it)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign "Code") [📖](https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign "Documentation") [🚇](#infra-toomuchdesign "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign "Tests") [👀](#review-toomuchdesign "Reviewed Pull Requests") | [<img src="https://avatars2.githubusercontent.com/u/830824?v=4" width="100px;"/><br /><sub><b>Stepan Burguchev</b></sub>](https://github.com/xsburg)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=xsburg "Code") [👀](#review-xsburg "Reviewed Pull Requests") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=xsburg "Tests") | [<img src="https://avatars3.githubusercontent.com/u/693493?v=4" width="100px;"/><br /><sub><b>Mitch Robb</b></sub>](https://olslash.github.io/)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=olslash "Code") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=olslash "Tests") | [<img src="https://avatars3.githubusercontent.com/u/1128559?v=4" width="100px;"/><br /><sub><b>Stephane Rufer</b></sub>](https://github.com/rufman)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=rufman "Code") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=rufman "Tests") | [<img src="https://avatars0.githubusercontent.com/u/2788860?v=4" width="100px;"/><br /><sub><b>Tracy Mullen</b></sub>](https://github.com/spiffysparrow)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow "Code") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow "Tests") | [<img src="https://avatars1.githubusercontent.com/u/4211838?v=4" width="100px;"/><br /><sub><b>Sushain Cherivirala</b></sub>](https://www.skc.name)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=sushain97 "Code") | [<img src="https://avatars0.githubusercontent.com/u/6316590?v=4" width="100px;"/><br /><sub><b>Steve Mao</b></sub>](https://twitter.com/MaoStevemao)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=stevemao "Documentation") |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | [<img src="https://avatars2.githubusercontent.com/u/1428826?v=4" width="100px;"/><br /><sub><b>Gaurav Lahoti</b></sub>](https://github.com/Dante-101)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3ADante-101 "Bug reports") | [<img src="https://avatars3.githubusercontent.com/u/13602053?v=4" width="100px;"/><br /><sub><b>Lon</b></sub>](http://lon.im)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3Acnlon "Bug reports") | [<img src="https://avatars2.githubusercontent.com/u/5492495?v=4" width="100px;"/><br /><sub><b>bratushka</b></sub>](https://github.com/bratushka)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=bratushka "Code") | [<img src="https://avatars3.githubusercontent.com/u/615381?v=4" width="100px;"/><br /><sub><b>Anders D. Johnson</b></sub>](https://andrz.me)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=AndersDJohnson "Documentation") | [<img src="https://avatars3.githubusercontent.com/u/8556724?v=4" width="100px;"/><br /><sub><b>Július Retzer</b></sub>](https://github.com/wormyy)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=wormyy "Documentation") | [<img src="https://avatars3.githubusercontent.com/u/10407025?v=4" width="100px;"/><br /><sub><b>Maarten Schumacher</b></sub>](https://github.com/maartenschumacher)<br />[🤔](#ideas-maartenschumacher "Ideas, Planning, & Feedback") | [<img src="https://avatars2.githubusercontent.com/u/664238?v=4" width="100px;"/><br /><sub><b>Alexander Jarvis</b></sub>](https://github.com/alexanderjarvis)<br />[🤔](#ideas-alexanderjarvis "Ideas, Planning, & Feedback") |
 | [<img src="https://avatars1.githubusercontent.com/u/514026?v=4" width="100px;"/><br /><sub><b>Gregg B</b></sub>](https://github.com/greggb)<br />[💡](#example-greggb "Examples") | [<img src="https://avatars0.githubusercontent.com/u/897931?v=4" width="100px;"/><br /><sub><b>Ian Obermiller</b></sub>](http://ianobermiller.com)<br />[👀](#review-ianobermiller "Reviewed Pull Requests") | [<img src="https://avatars3.githubusercontent.com/u/7040242?v=4" width="100px;"/><br /><sub><b>Kanitkorn Sujautra</b></sub>](https://github.com/lukyth)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=lukyth "Documentation") | [<img src="https://avatars2.githubusercontent.com/u/6233440?v=4" width="100px;"/><br /><sub><b>Brian Kraus</b></sub>](https://github.com/suark)<br />[📖](https://github.com/toomuchdesign/re-reselect/commits?author=suark "Documentation") | [<img src="https://avatars2.githubusercontent.com/u/9800850?v=4" width="100px;"/><br /><sub><b>Mateusz Burzyński</b></sub>](https://github.com/Andarist)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=Andarist "Code") [🚇](#infra-Andarist "Infrastructure (Hosting, Build-Tools, etc)") | [<img src="https://avatars1.githubusercontent.com/u/7252227?v=4" width="100px;"/><br /><sub><b>el-dav</b></sub>](https://github.com/el-dav)<br />[🐛](https://github.com/toomuchdesign/re-reselect/issues?q=author%3Ael-dav "Bug reports") | [<img src="https://avatars3.githubusercontent.com/u/15995890?v=4" width="100px;"/><br /><sub><b>Sergei Grishchenko</b></sub>](https://github.com/sgrishchenko)<br />[💻](https://github.com/toomuchdesign/re-reselect/commits?author=sgrishchenko "Code") [⚠️](https://github.com/toomuchdesign/re-reselect/commits?author=sgrishchenko "Tests") |
+| [<img src="https://avatars3.githubusercontent.com/u/1970156?v=4" width="100px;"/><br /><sub><b>Augustin Riedinger</b></sub>](https://augustin-riedinger.fr)<br />[🤔](#ideas-augnustin "Ideas, Planning, & Feedback") |
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
@@ -464,8 +475,9 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [ci]: https://travis-ci.org/toomuchdesign/re-reselect
 [coveralls-badge]: https://coveralls.io/repos/github/toomuchdesign/re-reselect/badge.svg?branch=master
 [coveralls]: https://coveralls.io/github/toomuchdesign/re-reselect?branch=master
-[npm-badge]: https://img.shields.io/npm/dm/re-reselect.svg
 [npm]: https://www.npmjs.com/package/re-reselect
+[npm-version-badge]: https://img.shields.io/npm/v/re-reselect.svg
+[npm-downloads-badge]: https://img.shields.io/npm/dm/re-reselect.svg
 [reselect-and-re-reselect-sketch]: examples/reselect-and-re-reselect.png?raw=true
 [example-1]: examples/1-join-selectors.md
 [example-2]: examples/2-avoid-selector-factories.md

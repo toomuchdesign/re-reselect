@@ -1,5 +1,19 @@
 # Change log
 
+## 3.0.0
+
+### Breaking Changes
+
+- Update TypeScript typings
+  - Introduce typings for heterogeneous selectors
+  - Introduce typings for any number of uniform selectors
+  - Rename "resolver" as "keySelector"
+
+### New Features
+
+- Update TypeScript typings
+  - Introduce typings for `dependencies` property
+
 ## 2.3.0
 
 ### New Features

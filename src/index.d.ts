@@ -1,8 +1,35 @@
 import {createSelector} from 'reselect';
 
 export type Selector<S, R> = (state: S) => R;
+export type ParametricSelector<S, P, R> = (
+  state: S,
+  props: P,
+  ...args: any[]
+) => R;
 
-export type Resolver<S> = (state: S, ...args: any[]) => any;
+export type KeySelector<S> = (state: S, ...args: any[]) => any;
+export type ParametricKeySelector<S, P> = (
+  state: S,
+  props: P,
+  ...args: any[]
+) => any;
+
+export type OutputSelector<S, R, C, D> = Selector<S, R> & {
+  resultFunc: C;
+  dependencies: D;
+  recomputations: () => number;
+  resetRecomputations: () => number;
+};
+export type OutputParametricSelector<S, P, R, C, D> = ParametricSelector<
+  S,
+  P,
+  R
+> & {
+  resultFunc: C;
+  dependencies: D;
+  recomputations: () => number;
+  resetRecomputations: () => number;
+};
 
 export type CreateSelectorInstance = typeof createSelector;
 
@@ -17,15 +44,8 @@ type Options =
     }
   | CreateSelectorInstance;
 
-export type OutputSelector<S, R, C, D> = Selector<S, R> & {
-  resultFunc: C;
-  dependencies: D;
-  recomputations: () => number;
-  resetRecomputations: () => number;
-};
-
 export type OutputCachedSelector<S, R, C, D> = (
-  resolver: Resolver<S>,
+  keySelector: KeySelector<S>,
   optionsOrSelectorCreator?: Options
 ) => OutputSelector<S, R, C, D> & {
   getMatchingSelector: (state: S, ...args: any[]) => OutputSelector<S, R, C, D>;
@@ -34,31 +54,8 @@ export type OutputCachedSelector<S, R, C, D> = (
   cache: ICacheObject;
 };
 
-export type ParametricSelector<S, P, R> = (
-  state: S,
-  props: P,
-  ...args: any[]
-) => R;
-
-export type ParametricResolver<S, P> = (
-  state: S,
-  props: P,
-  ...args: any[]
-) => any;
-
-export type OutputParametricSelector<S, P, R, C, D> = ParametricSelector<
-  S,
-  P,
-  R
-> & {
-  resultFunc: C;
-  dependencies: D;
-  recomputations: () => number;
-  resetRecomputations: () => number;
-};
-
 export type OutputParametricCachedSelector<S, P, R, C, D> = (
-  resolver: ParametricResolver<S, P>,
+  keySelector: ParametricKeySelector<S, P>,
   optionsOrSelectorCreator?: Options
 ) => OutputParametricSelector<S, P, R, C, D> & {
   getMatchingSelector: (

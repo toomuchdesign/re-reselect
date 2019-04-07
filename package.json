@@ -1,6 +1,6 @@
 {
   "name": "re-reselect",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "Enhance Reselect selectors with deeper memoization and cache management",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -62,7 +62,7 @@
     "lint-staged": "^7.3.0",
     "mkdirp": "^0.5.1",
     "ncp": "^2.0.0",
-    "prettier": "^1.15.3",
+    "prettier": "^1.16.2",
     "reselect": "^4.0.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.66.6",

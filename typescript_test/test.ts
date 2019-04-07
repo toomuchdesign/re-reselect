@@ -228,7 +228,7 @@ function testArrayArgument() {
       // typings:expect-error
       (state: {foo: string}) => state.foo,
     ],
-    (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8: number, foo9, foo10) => {}
+    (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8: number, foo9, bar) => {}
   )((state: {foo: string}) => state.foo);
 
   // typings:expect-error

@@ -5,7 +5,7 @@ const defaultCacheCreator = FlatObjectCache;
 const defaultCacheKeyValidator = () => true;
 
 function createCachedSelector(...funcs) {
-  return (resolver, options = {}) => {
+  return (keySelector, options = {}) => {
     // @NOTE Versions 0.x/1.x accepted "options" as a function
     if (typeof options === 'function') {
       throw new Error(
@@ -30,7 +30,7 @@ function createCachedSelector(...funcs) {
 
     // Application receives this function
     const selector = function(...args) {
-      const cacheKey = resolver(...args);
+      const cacheKey = keySelector(...args);
 
       if (isValidCacheKey(cacheKey)) {
         let cacheResponse = cache.get(cacheKey);
@@ -43,20 +43,20 @@ function createCachedSelector(...funcs) {
         return cacheResponse(...args);
       }
       console.warn(
-        `[re-reselect] Invalid cache key "${cacheKey}" has been returned by resolver function.`
+        `[re-reselect] Invalid cache key "${cacheKey}" has been returned by keySelector function.`
       );
       return undefined;
     };
 
     // Further selector methods
     selector.getMatchingSelector = (...args) => {
-      const cacheKey = resolver(...args);
+      const cacheKey = keySelector(...args);
       // @NOTE It might update cache hit count in LRU-like caches
       return cache.get(cacheKey);
     };
 
     selector.removeMatchingSelector = (...args) => {
-      const cacheKey = resolver(...args);
+      const cacheKey = keySelector(...args);
       cache.remove(cacheKey);
     };
 

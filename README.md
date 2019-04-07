@@ -91,6 +91,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
     - [reReselectInstance`.resultFunc`](#rereselectinstanceresultfunc)
     - [reReselectInstance`.recomputations()`](#rereselectinstancerecomputations)
     - [reReselectInstance`.resetRecomputations()`](#rereselectinstanceresetrecomputations)
+    - [reReselectInstance`.keySelector`](#rereselectinstancekeyselector)
   - [About re-reselect](#about-re-reselect)
   - [Todo's](#todos)
   - [Contributors](#contributors)
@@ -432,6 +433,10 @@ Return the number of times the selector's result function has been recomputed.
 ### reReselectInstance`.resetRecomputations()`
 
 Reset `recomputations` count.
+
+### reReselectInstance`.keySelector`
+
+Get `keySelector` for utility compositions or testing.
 
 ## About re-reselect
 

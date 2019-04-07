@@ -4,7 +4,7 @@ const project = new Project();
 
 const typings = project.addExistingSourceFile('lib/index.d.ts');
 
-for (let i = 2; i < 12; i++) {
+for (let i = 2; i < 13; i++) {
   const [stateTypeParameters, propsTypeParameters, resultTypeParameters] = [
     'S',
     'P',

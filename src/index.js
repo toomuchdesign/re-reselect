@@ -74,6 +74,8 @@ function createCachedSelector(...funcs) {
 
     selector.resetRecomputations = () => (recomputations = 0);
 
+    selector.keySelector = keySelector;
+
     return selector;
   };
 }

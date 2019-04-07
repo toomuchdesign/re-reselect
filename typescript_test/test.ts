@@ -1,5 +1,5 @@
 import {createSelectorCreator, defaultMemoize} from 'reselect';
-import createCachedSelector from '../src/index';
+import createCachedSelector, {KeySelector} from '../src/index';
 
 function testSelector() {
   type State = {foo: string};
@@ -25,6 +25,8 @@ function testSelector() {
     matchingSelectors.resultFunc;
 
   const resultFunc: (foo: string) => string = selector.resultFunc;
+
+  const keySelector: KeySelector<State> = selector.keySelector;
 
   // typings:expect-error
   selector.getMatchingSelector('foo');

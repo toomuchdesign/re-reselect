@@ -238,4 +238,14 @@ describe('createCachedSelector', () => {
       expect(cachedSelector.cache).toBe(currentCacheObject);
     });
   });
+
+  describe('"keySelector" property', () => {
+    it('Should point to provided keySelector', () => {
+      const keySelector = (arg1, arg2) => arg2;
+      const cachedSelector = createCachedSelector(() => {}, resultFuncMock)(
+        keySelector
+      );
+      expect(cachedSelector.keySelector).toBe(keySelector);
+    });
+  });
 });

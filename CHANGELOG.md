@@ -1,5 +1,11 @@
 # Change log
 
+## 3.1.0
+
+### New Features
+
+- Expose `keySelector` property
+
 ## 3.0.0
 
 ### Breaking Changes

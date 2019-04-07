@@ -32,6 +32,26 @@
       ]
     },
     {
+      "login": "sgrishchenko",
+      "name": "Sergei Grishchenko",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/15995890?v=4",
+      "profile": "https://github.com/sgrishchenko",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "Andarist",
+      "name": "Mateusz Burzyński",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/9800850?v=4",
+      "profile": "https://github.com/Andarist",
+      "contributions": [
+        "code",
+        "infra"
+      ]
+    },
+    {
       "login": "olslash",
       "name": "Mitch Robb",
       "avatar_url": "https://avatars3.githubusercontent.com/u/693493?v=4",
@@ -179,32 +199,12 @@
       ]
     },
     {
-      "login": "Andarist",
-      "name": "Mateusz Burzyński",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/9800850?v=4",
-      "profile": "https://github.com/Andarist",
-      "contributions": [
-        "code",
-        "infra"
-      ]
-    },
-    {
       "login": "el-dav",
       "name": "el-dav",
       "avatar_url": "https://avatars1.githubusercontent.com/u/7252227?v=4",
       "profile": "https://github.com/el-dav",
       "contributions": [
         "bug"
-      ]
-    },
-    {
-      "login": "sgrishchenko",
-      "name": "Sergei Grishchenko",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/15995890?v=4",
-      "profile": "https://github.com/sgrishchenko",
-      "contributions": [
-        "code",
-        "test"
       ]
     },
     {

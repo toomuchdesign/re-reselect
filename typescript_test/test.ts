@@ -351,11 +351,6 @@ function testResolver() {
 function testCustomSelectorCreator() {
   type State = {foo: string};
 
-  const selector1 = createCachedSelector(
-    (state: State) => state.foo,
-    foo => foo
-  )((state: State) => state.foo, createSelectorCreator(defaultMemoize));
-
   const selector2 = createCachedSelector(
     (state: State) => state.foo,
     foo => foo

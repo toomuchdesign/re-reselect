@@ -33,19 +33,15 @@ export type OutputParametricSelector<S, P, R, C, D> = ParametricSelector<
 
 export type CreateSelectorInstance = typeof createSelector;
 
-type Options =
-  | {
-      selectorCreator?: CreateSelectorInstance;
-      cacheObject: ICacheObject;
-    }
-  | {
-      selectorCreator: CreateSelectorInstance;
-      cacheObject?: ICacheObject;
-    }
-  | CreateSelectorInstance;
+export type Options = {
+  selectorCreator?: CreateSelectorInstance;
+  cacheObject?: ICacheObject;
+  keySeparator?: string;
+  composeKeySelectors?: boolean;
+};
 
 export type OutputCachedSelector<S, R, C, D> = (
-  keySelector: KeySelector<S>,
+  keySelector?: KeySelector<S>,
   optionsOrSelectorCreator?: Options
 ) => OutputSelector<S, R, C, D> & {
   getMatchingSelector: (state: S, ...args: any[]) => OutputSelector<S, R, C, D>;
@@ -56,7 +52,7 @@ export type OutputCachedSelector<S, R, C, D> = (
 };
 
 export type OutputParametricCachedSelector<S, P, R, C, D> = (
-  keySelector: ParametricKeySelector<S, P>,
+  keySelector?: ParametricKeySelector<S, P>,
   optionsOrSelectorCreator?: Options
 ) => OutputParametricSelector<S, P, R, C, D> & {
   getMatchingSelector: (

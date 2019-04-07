@@ -1,6 +1,9 @@
 /* eslint comma-dangle: 0 */
 import * as reselect from 'reselect';
-import createCachedSelector, {FlatObjectCache} from '../../src/index';
+import createCachedSelector, {
+  FlatObjectCache,
+  FlatMapCache,
+} from '../../src/index';
 
 const createSelectorSpy = jest.spyOn(reselect, 'createSelector');
 const consoleWarnSpy = jest
@@ -243,9 +246,180 @@ describe('createCachedSelector', () => {
     it('Should point to provided keySelector', () => {
       const keySelector = (arg1, arg2) => arg2;
       const cachedSelector = createCachedSelector(() => {}, resultFuncMock)(
-        keySelector
+        keySelector,
+        {
+          composeKeySelectors: false,
+        }
       );
       expect(cachedSelector.keySelector).toBe(keySelector);
+    });
+  });
+
+  describe('composition of key selectors', () => {
+    const state = {
+      [1]: 'first item',
+      [2]: 'second item',
+    };
+
+    const dependency1 = createCachedSelector(
+      state => state,
+      (state, props) => props.id,
+      (state, id) => state[id]
+    )((state, props) => props.id);
+
+    const dependency2 = createCachedSelector(
+      state => state,
+      (state, props) => props.otherId,
+      (state, id) => state[id]
+    )((state, props) => props.otherId);
+
+    it('Should cache result without key selector by composition of input key selectors', () => {
+      const cachedSelector = createCachedSelector(
+        dependency1,
+        dependency2,
+        resultFuncMock
+      )();
+
+      cachedSelector(state, {
+        id: 1,
+        otherId: 2,
+      });
+      cachedSelector(state, {
+        id: 2,
+        otherId: 1,
+      });
+      cachedSelector(state, {
+        id: 1,
+        otherId: 2,
+      });
+      cachedSelector(state, {
+        id: 2,
+        otherId: 1,
+      });
+
+      expect(cachedSelector.recomputations()).toBe(2);
+    });
+
+    it('Should support "composeKeySelectors" option for disable of key selectors composition', () => {
+      const cachedSelector = createCachedSelector(
+        dependency1,
+        dependency2,
+        resultFuncMock
+      )(undefined, {
+        composeKeySelectors: false,
+      });
+
+      cachedSelector(state, {
+        id: 1,
+        otherId: 2,
+      });
+      cachedSelector(state, {
+        id: 2,
+        otherId: 1,
+      });
+      cachedSelector(state, {
+        id: 1,
+        otherId: 2,
+      });
+      cachedSelector(state, {
+        id: 2,
+        otherId: 1,
+      });
+
+      expect(cachedSelector.recomputations()).toBe(4);
+    });
+
+    it('Should be tolerant to non re-reselect dependencies', () => {
+      const cachedSelector = createCachedSelector(
+        () => 123,
+        dependency1,
+        dependency2,
+        resultFuncMock
+      )();
+
+      cachedSelector(state, {
+        id: 1,
+        otherId: 2,
+      });
+      cachedSelector(state, {
+        id: 2,
+        otherId: 1,
+      });
+      cachedSelector(state, {
+        id: 1,
+        otherId: 2,
+      });
+      cachedSelector(state, {
+        id: 2,
+        otherId: 1,
+      });
+
+      expect(cachedSelector.recomputations()).toBe(2);
+    });
+
+    it('Should not try compose key selectors if some key selector returns object', () => {
+      const cachedSelector = createCachedSelector(
+        dependency1,
+        dependency2,
+        resultFuncMock
+      )(undefined, {
+        cacheObject: new FlatMapCache(),
+      });
+
+      const key = {};
+
+      cachedSelector(state, {
+        id: 1,
+        otherId: key,
+      });
+      cachedSelector(state, {
+        id: key,
+        otherId: 1,
+      });
+      cachedSelector(state, {
+        id: 1,
+        otherId: key,
+      });
+      cachedSelector(state, {
+        id: key,
+        otherId: 1,
+      });
+
+      expect(cachedSelector.recomputations()).toBe(4);
+    });
+
+    it('Should support "keySeparator" option for custom key separator', () => {
+      const cachedSelector = createCachedSelector(
+        dependency1,
+        dependency2,
+        resultFuncMock
+      )(undefined, {
+        keySeparator: '|',
+      });
+
+      const key = cachedSelector.keySelector(state, {
+        id: 1,
+        otherId: 2,
+      });
+
+      expect(key).toBe('|1|2');
+    });
+
+    it('Should be possible provide additional key selector', () => {
+      const cachedSelector = createCachedSelector(
+        dependency1,
+        dependency2,
+        (state, props) => props.additionalId,
+        resultFuncMock
+      )((state, props) => props.additionalId);
+
+      const key = cachedSelector.keySelector(state, {
+        id: 1,
+        otherId: 2,
+        additionalId: 666,
+      });
+
+      expect(key).toBe('666:1:2');
     });
   });
 });

@@ -53,7 +53,7 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
-    "all-contributors-cli": "^5.4.1",
+    "all-contributors-cli": "^6.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "coveralls": "^3.0.2",

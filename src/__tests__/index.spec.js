@@ -48,6 +48,22 @@ describe('createCachedSelector', () => {
         expect(cachedSelector.recomputations()).toBe(2);
       });
     });
+
+    describe('keySelector missing', () => {
+      it('Should work without key selector as simple reselect selector', () => {
+        const cachedSelector = createCachedSelector(
+          state => state,
+          resultFuncMock
+        )();
+        const firstCallResult = cachedSelector('foo');
+        const secondCallResult = cachedSelector('foo');
+        const thirdCallResult = cachedSelector('bar');
+        const fourthCallResult = cachedSelector('bar');
+
+        expect(createSelectorSpy).toHaveBeenCalledTimes(1);
+        expect(cachedSelector.recomputations()).toBe(2);
+      });
+    });
   });
 
   describe('cacheKey validity check', () => {
@@ -298,6 +314,26 @@ describe('createKeyComposedSelector', () => {
       });
 
       expect(keyComposedSelector.recomputations()).toBe(2);
+    });
+
+    it('Should work with an array of dependencies', () => {
+      const keyComposedSelector = createKeyComposedSelector(
+        [dependency1, dependency2],
+        (first, second) => ({
+          first,
+          second,
+        })
+      )();
+
+      const actual = keyComposedSelector(state, {
+        id: 1,
+        otherId: 2,
+      });
+
+      expect(actual).toEqual({
+        first: 'first item',
+        second: 'second item',
+      });
     });
 
     it('Should be tolerant to non re-reselect dependencies', () => {

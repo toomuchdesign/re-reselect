@@ -316,26 +316,6 @@ describe('createKeyComposedSelector', () => {
       expect(keyComposedSelector.recomputations()).toBe(2);
     });
 
-    it('Should work with an array of dependencies', () => {
-      const keyComposedSelector = createKeyComposedSelector(
-        [dependency1, dependency2],
-        (first, second) => ({
-          first,
-          second,
-        })
-      )();
-
-      const actual = keyComposedSelector(state, {
-        id: 1,
-        otherId: 2,
-      });
-
-      expect(actual).toEqual({
-        first: 'first item',
-        second: 'second item',
-      });
-    });
-
     it('Should be tolerant to non re-reselect dependencies', () => {
       const keyComposedSelector = createKeyComposedSelector(
         () => 123,
@@ -414,9 +394,7 @@ describe('createKeyComposedSelector', () => {
 
     it('Should be possible provide additional key selector', () => {
       const keyComposedSelector = createKeyComposedSelector(
-        dependency1,
-        dependency2,
-        (state, props) => props.additionalId,
+        [dependency1, dependency2, (state, props) => props.additionalId],
         resultFuncMock
       )((state, props) => props.additionalId);
 

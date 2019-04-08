@@ -1,6 +1,7 @@
 /* eslint comma-dangle: 0 */
 import * as reselect from 'reselect';
 import createCachedSelector, {
+  createKeyComposedSelector,
   FlatObjectCache,
   FlatMapCache,
 } from '../../src/index';
@@ -246,15 +247,14 @@ describe('createCachedSelector', () => {
     it('Should point to provided keySelector', () => {
       const keySelector = (arg1, arg2) => arg2;
       const cachedSelector = createCachedSelector(() => {}, resultFuncMock)(
-        keySelector,
-        {
-          composeKeySelectors: false,
-        }
+        keySelector
       );
       expect(cachedSelector.keySelector).toBe(keySelector);
     });
   });
+});
 
+describe('createKeyComposedSelector', () => {
   describe('composition of key selectors', () => {
     const state = {
       [1]: 'first item',
@@ -274,91 +274,62 @@ describe('createCachedSelector', () => {
     )((state, props) => props.otherId);
 
     it('Should cache result without key selector by composition of input key selectors', () => {
-      const cachedSelector = createCachedSelector(
+      const keyComposedSelector = createKeyComposedSelector(
         dependency1,
         dependency2,
         resultFuncMock
       )();
 
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: 1,
         otherId: 2,
       });
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: 2,
         otherId: 1,
       });
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: 1,
         otherId: 2,
       });
-      cachedSelector(state, {
-        id: 2,
-        otherId: 1,
-      });
-
-      expect(cachedSelector.recomputations()).toBe(2);
-    });
-
-    it('Should support "composeKeySelectors" option for disable of key selectors composition', () => {
-      const cachedSelector = createCachedSelector(
-        dependency1,
-        dependency2,
-        resultFuncMock
-      )(undefined, {
-        composeKeySelectors: false,
-      });
-
-      cachedSelector(state, {
-        id: 1,
-        otherId: 2,
-      });
-      cachedSelector(state, {
-        id: 2,
-        otherId: 1,
-      });
-      cachedSelector(state, {
-        id: 1,
-        otherId: 2,
-      });
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: 2,
         otherId: 1,
       });
 
-      expect(cachedSelector.recomputations()).toBe(4);
+      expect(keyComposedSelector.recomputations()).toBe(2);
     });
 
     it('Should be tolerant to non re-reselect dependencies', () => {
-      const cachedSelector = createCachedSelector(
+      const keyComposedSelector = createKeyComposedSelector(
         () => 123,
         dependency1,
         dependency2,
         resultFuncMock
       )();
 
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: 1,
         otherId: 2,
       });
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: 2,
         otherId: 1,
       });
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: 1,
         otherId: 2,
       });
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: 2,
         otherId: 1,
       });
 
-      expect(cachedSelector.recomputations()).toBe(2);
+      expect(keyComposedSelector.recomputations()).toBe(2);
     });
 
     it('Should not try compose key selectors if some key selector returns object', () => {
-      const cachedSelector = createCachedSelector(
+      const keyComposedSelector = createKeyComposedSelector(
         dependency1,
         dependency2,
         resultFuncMock
@@ -368,28 +339,28 @@ describe('createCachedSelector', () => {
 
       const key = {};
 
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: 1,
         otherId: key,
       });
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: key,
         otherId: 1,
       });
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: 1,
         otherId: key,
       });
-      cachedSelector(state, {
+      keyComposedSelector(state, {
         id: key,
         otherId: 1,
       });
 
-      expect(cachedSelector.recomputations()).toBe(4);
+      expect(keyComposedSelector.recomputations()).toBe(4);
     });
 
     it('Should support "keySeparator" option for custom key separator', () => {
-      const cachedSelector = createCachedSelector(
+      const keyComposedSelector = createKeyComposedSelector(
         dependency1,
         dependency2,
         resultFuncMock
@@ -397,7 +368,7 @@ describe('createCachedSelector', () => {
         keySeparator: '|',
       });
 
-      const key = cachedSelector.keySelector(state, {
+      const key = keyComposedSelector.keySelector(state, {
         id: 1,
         otherId: 2,
       });
@@ -406,14 +377,14 @@ describe('createCachedSelector', () => {
     });
 
     it('Should be possible provide additional key selector', () => {
-      const cachedSelector = createCachedSelector(
+      const keyComposedSelector = createKeyComposedSelector(
         dependency1,
         dependency2,
         (state, props) => props.additionalId,
         resultFuncMock
       )((state, props) => props.additionalId);
 
-      const key = cachedSelector.keySelector(state, {
+      const key = keyComposedSelector.keySelector(state, {
         id: 1,
         otherId: 2,
         additionalId: 666,

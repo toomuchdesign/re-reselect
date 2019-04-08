@@ -3,34 +3,9 @@ import FlatObjectCache from './cache/FlatObjectCache';
 
 const defaultCacheCreator = FlatObjectCache;
 const defaultCacheKeyValidator = () => true;
-const defaultKeySeparator = ':';
-
-const isReReselectSelector = selector => 'getMatchingSelector' in selector;
-const composeKeySelectors = (
-  mainKeySelector,
-  otherKeySelectors,
-  keySeparator
-) =>
-  function() {
-    const mainKey = mainKeySelector.apply(null, arguments);
-    let resultKey = mainKey;
-
-    for (let i = 0, length = otherKeySelectors.length; i < length; i += 1) {
-      const otherKey = otherKeySelectors[i].apply(null, arguments);
-      if (
-        (typeof otherKey === 'object' && otherKey !== null) ||
-        typeof otherKey === 'function'
-      ) {
-        return mainKey;
-      }
-      resultKey += keySeparator + otherKey;
-    }
-
-    return resultKey;
-  };
 
 function createCachedSelector(...funcs) {
-  return (mainKeySelector = () => '', options = {}) => {
+  return (keySelector = () => '', options = {}) => {
     // @NOTE Versions 0.x/1.x accepted "options" as a function
     if (typeof options === 'function') {
       throw new Error(
@@ -51,19 +26,7 @@ function createCachedSelector(...funcs) {
 
     const cache = options.cacheObject || new defaultCacheCreator();
     const selectorCreator = options.selectorCreator || createSelector;
-    const keySeparator = options.keySeparator || defaultKeySeparator;
-    const isComposeKeySelectors =
-      options.composeKeySelectors !== undefined
-        ? options.composeKeySelectors
-        : true;
     const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
-
-    const otherKeySelectors = dependencies
-      .filter(isReReselectSelector)
-      .map(selector => selector.keySelector);
-    const keySelector = isComposeKeySelectors
-      ? composeKeySelectors(mainKeySelector, otherKeySelectors, keySeparator)
-      : mainKeySelector;
 
     // Application receives this function
     const selector = function(...args) {
@@ -118,6 +81,61 @@ function createCachedSelector(...funcs) {
 }
 
 export default createCachedSelector;
+
+const defaultKeySeparator = ':';
+
+const hasKeySelector = selector => 'keySelector' in selector;
+
+const composeKeySelectors = (
+  mainKeySelector,
+  otherKeySelectors,
+  keySeparator
+) =>
+  function() {
+    const mainKey = mainKeySelector.apply(null, arguments);
+    let resultKey = mainKey;
+
+    for (let i = 0, length = otherKeySelectors.length; i < length; i += 1) {
+      const otherKey = otherKeySelectors[i].apply(null, arguments);
+      if (
+        (typeof otherKey === 'object' && otherKey !== null) ||
+        typeof otherKey === 'function'
+      ) {
+        return mainKey;
+      }
+      resultKey += keySeparator + otherKey;
+    }
+
+    return resultKey;
+  };
+
+export function createKeyComposedSelector(...funcs) {
+  return (mainKeySelector = () => '', options = {}) => {
+    const resultFunc = funcs.pop();
+    const dependencies = Array.isArray(funcs[0]) ? funcs[0] : [...funcs];
+
+    const {keySeparator = defaultKeySeparator, ...restOptions} = options;
+
+    const otherKeySelectors = Array.from(
+      new Set(
+        dependencies
+          .filter(hasKeySelector)
+          .map(selector => selector.keySelector)
+      )
+    );
+
+    const keySelector = composeKeySelectors(
+      mainKeySelector,
+      otherKeySelectors,
+      keySeparator
+    );
+
+    return createCachedSelector(...dependencies, resultFunc)(
+      keySelector,
+      restOptions
+    );
+  };
+}
 
 // Cache objects
 export {FlatObjectCache};

@@ -37,7 +37,6 @@ export type Options = {
   selectorCreator?: CreateSelectorInstance;
   cacheObject?: ICacheObject;
   keySeparator?: string;
-  composeKeySelectors?: boolean;
 };
 
 export type OutputCachedSelector<S, R, C, D> = (
@@ -4420,3 +4419,9 @@ export class LruMapCache implements ICacheObject {
   remove(key: any): void;
   clear(): void;
 }
+
+/*
+ * createKeyComposedSelector
+ */
+
+export const createKeyComposedSelector: typeof createCachedSelector;

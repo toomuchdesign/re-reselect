@@ -1,4 +1,5 @@
 import {createSelector} from 'reselect';
+type $Values<T> = T[keyof T];
 
 export type Selector<S, R> = (state: S) => R;
 export type ParametricSelector<S, P, R> = (
@@ -4361,6 +4362,28 @@ export default function createCachedSelector<S, P, R, T>(
   T,
   (...res: R[]) => T,
   ParametricSelector<S, P, R>[]
+>;
+
+/*
+ * createStructuredCachedSelector
+ */
+export function createStructuredCachedSelector<S, T>(
+  selectors: {[K in keyof T]: Selector<S, T[K]>}
+): OutputCachedSelector<
+  S,
+  T,
+  (...args: $Values<T>[]) => T,
+  Selector<S, $Values<T>>[]
+>;
+
+export function createStructuredCachedSelector<S, P, T>(
+  selectors: {[K in keyof T]: ParametricSelector<S, P, T[K]>}
+): OutputParametricCachedSelector<
+  S,
+  P,
+  T,
+  (...args: $Values<T>[]) => T,
+  ParametricSelector<S, P, $Values<T>>[]
 >;
 
 /*

@@ -62,7 +62,7 @@ const fooResultAgain = cachedSelector(state, 'foo');
   - [Table of contents](#table-of-contents)
   - [Installation](#installation)
   - [Why? + example](#why--example)
-    - [Re-reselect solution](#re-reselect-solution)
+    - [re-reselect solution](#re-reselect-solution)
     - [Other viable solutions](#other-viable-solutions)
       - [1- Declare a different selector for each different call](#1--declare-a-different-selector-for-each-different-call)
       - [2- Declare a `makeGetPieceOfData` selector factory as explained in Reselect docs](#2--declare-a-makegetpieceofdata-selector-factory-as-explained-in-reselect-docs)
@@ -76,22 +76,23 @@ const fooResultAgain = cachedSelector(state, 'foo');
     - [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
       - [Testing `reselect` selectors stored in the cache](#testing-reselect-selectors-stored-in-the-cache)
   - [API](#api)
-    - [reReselect([reselect's createSelector arguments])(keySelector, { cacheObject, selectorCreator })](#rereselectreselects-createselector-argumentskeyselector--cacheobject-selectorcreator-)
+    - [createCachedSelector([reselect's createSelector arguments])(keySelector, { cacheObject, selectorCreator })](#createcachedselectorreselects-createselector-argumentskeyselector--cacheobject-selectorcreator-)
+    - [createStructuredCachedSelector([reselect's createStructuredSelector arguments])(keySelector, { cacheObject, selectorCreator })](#createstructuredcachedselectorreselects-createstructuredselector-argumentskeyselector--cacheobject-selectorcreator-)
       - [keySelector](#keyselector)
       - [options.cacheObject](#optionscacheobject)
         - [Custom cache strategy object](#custom-cache-strategy-object)
       - [options.selectorCreator](#optionsselectorcreator)
       - [Returns](#returns)
-    - [reReselectInstance(selectorArguments)](#rereselectinstanceselectorarguments)
-    - [reReselectInstance`.getMatchingSelector(selectorArguments)`](#rereselectinstancegetmatchingselectorselectorarguments)
-    - [reReselectInstance`.removeMatchingSelector(selectorArguments)`](#rereselectinstanceremovematchingselectorselectorarguments)
-    - [reReselectInstance`.cache`](#rereselectinstancecache)
-    - [reReselectInstance`.clearCache()`](#rereselectinstanceclearcache)
-    - [reReselectInstance`.dependencies`](#rereselectinstancedependencies)
-    - [reReselectInstance`.resultFunc`](#rereselectinstanceresultfunc)
-    - [reReselectInstance`.recomputations()`](#rereselectinstancerecomputations)
-    - [reReselectInstance`.resetRecomputations()`](#rereselectinstanceresetrecomputations)
-    - [reReselectInstance`.keySelector`](#rereselectinstancekeyselector)
+    - [selector(selectorArguments)](#selectorselectorarguments)
+    - [selector`.getMatchingSelector(selectorArguments)`](#selectorgetmatchingselectorselectorarguments)
+    - [selector`.removeMatchingSelector(selectorArguments)`](#selectorremovematchingselectorselectorarguments)
+    - [selector`.cache`](#selectorcache)
+    - [selector`.clearCache()`](#selectorclearcache)
+    - [selector`.dependencies`](#selectordependencies)
+    - [selector`.resultFunc`](#selectorresultfunc)
+    - [selector`.recomputations()`](#selectorrecomputations)
+    - [selector`.resetRecomputations()`](#selectorresetrecomputations)
+    - [selector`.keySelector`](#selectorkeyselector)
   - [About re-reselect](#about-re-reselect)
   - [Todo's](#todos)
   - [Contributors](#contributors)
@@ -117,7 +118,7 @@ getPieceOfData(state, itemId, 'dataC');
 
 What happens, here? `getPieceOfData` **selector cache is invalidated** on each call because of the different 3rd `'dataX'` argument.
 
-### Re-reselect solution
+### re-reselect solution
 
 `re-reselect` selectors keep a **cache of `reselect` selectors** and store/retrieve them by `cacheKey`.
 
@@ -157,7 +158,7 @@ But now, **each time the selector is called**, the following happens behind the 
 3.  **Return found selector or create a new one** if no selector was found
 4.  **Call returned selector** with provided arguments
 
-**Re-reselect** stays completely optional and consumes **your installed reselect** module (`reselect` is declared as **peer dependency**).
+**re-reselect** stays completely optional and consumes **your installed reselect** module (`reselect` is declared as **peer dependency**).
 
 ### Other viable solutions
 
@@ -314,17 +315,24 @@ myFooDataSelector.resetRecomputations();
 
 ## API
 
-`Re-reselect` exposes its **cached selector creator** as **default export**.
+### createCachedSelector([reselect's createSelector arguments])(keySelector, { cacheObject, selectorCreator })
 
 ```js
-import reReselect from 're-reselect';
-// or:
 import createCachedSelector from 're-reselect';
 ```
 
-### reReselect([reselect's createSelector arguments])(keySelector, { cacheObject, selectorCreator })
+**createCachedSelector** accepts the same arguments as reselect's [`createSelector` arguments][reselect-create-selector] and returns a new function which accepts **2 arguments**:
 
-**Re-reselect** accepts reselect's original [`createSelector` arguments][reselect-create-selector] and returns a new function which accepts **2 arguments**:
+- `keySelector`
+- `options { cacheObject, selectorCreator }` _(optional)_
+
+### createStructuredCachedSelector([reselect's createStructuredSelector arguments])(keySelector, { cacheObject, selectorCreator })
+
+```js
+import {createStructuredCachedSelector} from 're-reselect';
+```
+
+**createStructuredCachedSelector** accepts the same `{inputSelectors}` as reselect's [`createStructuredSelector`][reselect-create-structured-selector] and returns a new function which accepts **2 arguments**:
 
 - `keySelector`
 - `options { cacheObject, selectorCreator }` _(optional)_
@@ -394,53 +402,53 @@ An optional function describing a [custom selectors][reselect-create-selector-cr
 
 #### Returns
 
-(Function): a `reReselectInstance` selector ready to be used **like a normal reselect selector**.
+(Function): a `selector` instance ready to be used **like a normal reselect selector**.
 
-### reReselectInstance(selectorArguments)
+### selector(selectorArguments)
 
 Retrieve data for given arguments.
 
 > The followings are advanced methods and you won't need them for basic usage!
 
-### reReselectInstance`.getMatchingSelector(selectorArguments)`
+### selector`.getMatchingSelector(selectorArguments)`
 
 Retrieve the selector responding to the given arguments.
 
-### reReselectInstance`.removeMatchingSelector(selectorArguments)`
+### selector`.removeMatchingSelector(selectorArguments)`
 
 Remove from the cache the selector responding to the given arguments.
 
-### reReselectInstance`.cache`
+### selector`.cache`
 
 Get cacheObject instance being used by the selector (for advanced caching operations like [this](https://github.com/toomuchdesign/re-reselect/issues/40)).
 
-### reReselectInstance`.clearCache()`
+### selector`.clearCache()`
 
-Clear whole `reReselectInstance` cache.
+Clear whole `selector` cache.
 
-### reReselectInstance`.dependencies`
+### selector`.dependencies`
 
 Get an array containing the provided `inputSelectors`. Refer to relevant discussion on [Reselect repo][reselect-test-selectors-dependencies].
 
-### reReselectInstance`.resultFunc`
+### selector`.resultFunc`
 
 Get `resultFunc` for easily [testing composed selectors][reselect-test-selectors].
 
-### reReselectInstance`.recomputations()`
+### selector`.recomputations()`
 
 Return the number of times the selector's result function has been recomputed.
 
-### reReselectInstance`.resetRecomputations()`
+### selector`.resetRecomputations()`
 
 Reset `recomputations` count.
 
-### reReselectInstance`.keySelector`
+### selector`.keySelector`
 
 Get `keySelector` for utility compositions or testing.
 
 ## About re-reselect
 
-- [Re-reselect your whole redux state](https://patrickdesjardins.com/blog/re-reselect-your-whole-redux-state)
+- [re-reselect your whole redux state](https://patrickdesjardins.com/blog/re-reselect-your-whole-redux-state)
 - [Understanding reselect and re-reselect](http://alexnitta.com/understanding-reselect-and-re-reselect/)
 - [Advanced Redux patterns: selectors](https://blog.brainsandbeards.com/advanced-redux-patterns-selectors-cb9f88381d74)
 - [Be selective with your state](https://medium.com/riipen-engineering/be-selective-with-your-state-8f1be76cb9f4)
@@ -470,6 +478,7 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [reselect-test-selectors-dependencies]: https://github.com/reduxjs/reselect/issues/76#issuecomment-299194186
 [reselect-selectors-methods]: https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L81
 [reselect-create-selector]: https://github.com/reactjs/reselect/tree/v4.0.0#createselectorinputselectors--inputselectors-resultfunc
+[reselect-create-structured-selector]: https://github.com/reduxjs/reselect/tree/v4.0.0#createstructuredselectorinputselectors-selectorcreator--createselector
 [reselect-create-selector-creator]: https://github.com/reactjs/reselect/tree/v4.0.0#createselectorcreatormemoize-memoizeoptions
 [lodash-memoize]: https://lodash.com/docs/4.17.4#memoize
 [ci-badge]: https://travis-ci.org/toomuchdesign/re-reselect.svg?branch=master

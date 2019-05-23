@@ -82,6 +82,10 @@ function createCachedSelector(...funcs) {
 
 export default createCachedSelector;
 
+export {
+  default as createStructuredCachedSelector,
+} from './createStructuredCachedSelector';
+
 // Cache objects
 export {FlatObjectCache};
 export {default as FifoObjectCache} from './cache/FifoObjectCache';

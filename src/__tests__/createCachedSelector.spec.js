@@ -114,24 +114,47 @@ describe('createCachedSelector', () => {
 
   it('Should throw an error when a function is provided as 2° argument', () => {
     expect(() => {
-      const cachedSelector = createCachedSelector(resultFuncMock)(() => {},
-      reselect.createSelector);
+      createCachedSelector(resultFuncMock)(() => {}, reselect.createSelector);
     }).toThrow(/Second argument "options" must be an object/);
   });
 
-  it('Should accept an options object', () => {
-    const cachedSelector = createCachedSelector(resultFuncMock)(
-      (arg1, arg2) => arg2,
-      {
-        cacheObject: new FlatObjectCache(),
-        selectorCreator: reselect.createSelector,
-      }
-    );
+  describe('options', () => {
+    it('Should accept cacheObject and selectorCreator options', () => {
+      const cachedSelector = createCachedSelector(resultFuncMock)(
+        (arg1, arg2) => arg2,
+        {
+          cacheObject: new FlatObjectCache(),
+          selectorCreator: reselect.createSelector,
+        }
+      );
 
-    expect(cachedSelector.recomputations()).toBe(0);
-    cachedSelector('foo', 'bar');
-    cachedSelector('foo', 'bar');
-    expect(cachedSelector.recomputations()).toBe(1);
+      expect(cachedSelector.recomputations()).toBe(0);
+      cachedSelector('foo', 'bar');
+      cachedSelector('foo', 'bar');
+      expect(cachedSelector.recomputations()).toBe(1);
+    });
+
+    it('Should accept selectorCreator option', () => {
+      const inputSelector = () => {};
+      const resultFunc = () => {};
+      const keySelector = () => {};
+      const generatedKeySelector = () => {};
+      const keySelectorCreatorMock = jest.fn(() => generatedKeySelector);
+
+      const cachedSelector = createCachedSelector(inputSelector, resultFunc)(
+        keySelector,
+        {
+          keySelectorCreator: keySelectorCreatorMock,
+        }
+      );
+
+      expect(keySelectorCreatorMock).toHaveBeenCalledWith({
+        inputSelectors: [inputSelector],
+        resultFunc: resultFunc,
+        keySelector: keySelector,
+      });
+      expect(cachedSelector.keySelector).toBe(generatedKeySelector);
+    });
   });
 
   describe('getMatchingSelector()', () => {

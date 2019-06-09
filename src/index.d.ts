@@ -34,20 +34,25 @@ export type OutputParametricSelector<S, P, R, C, D> = ParametricSelector<
 
 export type CreateSelectorInstance = typeof createSelector;
 
-type Options =
+type Options<S, C, D> =
   | {
       selectorCreator?: CreateSelectorInstance;
-      cacheObject: ICacheObject;
-    }
-  | {
-      selectorCreator: CreateSelectorInstance;
       cacheObject?: ICacheObject;
+      keySelectorCreator?: KeySelectorCreator<S, C, D>;
+    }
+  | CreateSelectorInstance;
+
+type ParametricOptions<S, P, C, D> =
+  | {
+      selectorCreator?: CreateSelectorInstance;
+      cacheObject?: ICacheObject;
+      keySelectorCreator?: ParametricKeySelectorCreator<S, P, C, D>;
     }
   | CreateSelectorInstance;
 
 export type OutputCachedSelector<S, R, C, D> = (
   keySelector: KeySelector<S>,
-  optionsOrSelectorCreator?: Options
+  optionsOrSelectorCreator?: Options<S, C, D>
 ) => OutputSelector<S, R, C, D> & {
   getMatchingSelector: (state: S, ...args: any[]) => OutputSelector<S, R, C, D>;
   removeMatchingSelector: (state: S, ...args: any[]) => void;
@@ -58,7 +63,7 @@ export type OutputCachedSelector<S, R, C, D> = (
 
 export type OutputParametricCachedSelector<S, P, R, C, D> = (
   keySelector: ParametricKeySelector<S, P>,
-  optionsOrSelectorCreator?: Options
+  optionsOrSelectorCreator?: ParametricOptions<S, P, C, D>
 ) => OutputParametricSelector<S, P, R, C, D> & {
   getMatchingSelector: (
     state: S,
@@ -4447,3 +4452,18 @@ export class LruMapCache implements ICacheObject {
   remove(key: any): void;
   clear(): void;
 }
+
+/*
+ * Key selector creators
+ */
+export type KeySelectorCreator<S, C, D> = (selectorInputs: {
+  inputSelectors: D;
+  resultFunc: C;
+  keySelector: KeySelector<S>;
+}) => KeySelector<S>;
+
+export type ParametricKeySelectorCreator<S, P, C, D> = (selectorInputs: {
+  inputSelectors: D;
+  resultFunc: C;
+  keySelector: ParametricKeySelector<S, P>;
+}) => ParametricKeySelector<S, P>;

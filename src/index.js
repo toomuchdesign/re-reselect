@@ -5,6 +5,8 @@ export {
   default as createStructuredCachedSelector,
 } from './createStructuredCachedSelector';
 
+export {default as combineKeySelectors} from './combineKeySelectors';
+
 // Cache objects
 export {default as FlatObjectCache} from './cache/FlatObjectCache';
 export {default as FifoObjectCache} from './cache/FifoObjectCache';

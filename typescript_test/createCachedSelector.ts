@@ -330,7 +330,7 @@ function testArrayArgument() {
   }
 }
 
-function testResolver() {
+function testKeySelector() {
   type State = {foo: string; obj: {bar: string}};
 
   const selector = createCachedSelector(
@@ -348,7 +348,7 @@ function testResolver() {
   )((state: never, obj) => obj);
 }
 
-function testCustomSelectorCreator() {
+function testSelectorCreatorOption() {
   type State = {foo: string};
 
   const selector1 = createCachedSelector(
@@ -368,4 +368,30 @@ function testCustomSelectorCreator() {
     (state: State) => state.foo,
     foo => foo
   )((state: State) => state.foo, (): void => {});
+}
+
+function testKeySelectorCreatorOption() {
+  type State = {foo: string};
+  const state = {foo: 'bar'};
+  const inputSelector = (state: State) => state.foo;
+  const resultFunc = (input: string) => input;
+  const keySelector = (state: State) => state.foo;
+
+  const selector = createCachedSelector(
+    inputSelector,
+    inputSelector,
+    resultFunc
+  )(keySelector, {
+    keySelectorCreator: ({inputSelectors, resultFunc, keySelector}) => {
+      const input1 = inputSelectors[0](state);
+      const input2 = inputSelectors[1](state);
+      // typings:expect-error
+      inputSelectors[2];
+
+      const result: string = resultFunc(input1, input2);
+      return keySelector;
+    },
+  });
+
+  const result: string = selector(state);
 }

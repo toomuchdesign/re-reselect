@@ -368,7 +368,7 @@ A custom function receiving the same arguments as your selectors (and `inputSele
 
 `cacheKey` is **by default a `string` or `number`** but can be anything depending on the chosen cache strategy (see [`cacheObject` option](#optionscacheobject)).
 
-The `keySelector` idea comes from [Lodash's .memoize][lodash-memoize].
+The `keySelector` idea comes from [Lodash's .memoize resolver][lodash-memoize].
 
 ### options
 
@@ -385,6 +385,23 @@ Type: `function`<br />
 Default: `reselect`'s [`createSelector`][reselect-create-selector]
 
 An optional function describing a [custom version of createSelector][reselect-create-selector-creator].
+
+#### keySelectorCreator
+
+Type: `function`<br />
+Default: `undefined`
+
+An optional function with the following signature returning the [`keySelector`](#keyselector) used by the cached selector.
+
+```typescript
+export type keySelectorCreator = (selectorInputs: {
+  inputSelectors: InputSelector[];
+  resultFunc: ResultFunc;
+  keySelector: KeySelector;
+}) => KeySelector;
+```
+
+This allows to dynamically **generate `keySelectors` on runtime** based on provided `inputSelectors`/`resultFunc` and support [**key selectors composition**](https://github.com/toomuchdesign/re-reselect/pull/73).
 
 ### re-reselect selector instance
 

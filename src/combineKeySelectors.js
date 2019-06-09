@@ -1,4 +1,4 @@
-function combineKeySelectors(inputSelectors = []) {
+function combineKeySelectors({inputSelectors = []}) {
   const keySelectors = inputSelectors
     .filter(entry => entry.hasOwnProperty('keySelector'))
     .map(entry => entry.keySelector);
@@ -14,8 +14,5 @@ function combineKeySelectors(inputSelectors = []) {
       .join(':');
   };
 }
-
-// @TODO Consider whether using class to signal a keySelectorCreator
-combineKeySelectors.keySelectorCreator = true;
 
 export default combineKeySelectors;

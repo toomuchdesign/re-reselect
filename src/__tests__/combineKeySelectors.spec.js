@@ -36,7 +36,9 @@ describe('combineKeySelectors', () => {
         first,
         second,
       })
-    )(combineKeySelectors);
+    )(null, {
+      keySelectorCreator: combineKeySelectors,
+    });
 
     const expectedKeySelector = (state, props) => `${props.foo}:${props.bar}`;
     const actualKeySelector = cachedSelector.keySelector;

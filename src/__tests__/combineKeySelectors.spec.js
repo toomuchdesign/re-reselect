@@ -1,4 +1,4 @@
-import createCachedSelector, {combineKeySelectors} from '../index';
+import createCachedSelector, {combineKeySelectors} from '../../src/index';
 
 const stateMock = {
   1: 'foo-state',

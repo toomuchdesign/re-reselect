@@ -28,6 +28,11 @@ function createCachedSelector(...funcs) {
     const selectorCreator = options.selectorCreator || createSelector;
     const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
 
+    // Support plain keySelectors and keySelectors creators
+    if (keySelector.keySelectorCreator === true) {
+      keySelector = keySelector(dependencies);
+    }
+
     // Application receives this function
     const selector = function(...args) {
       const cacheKey = keySelector(...args);

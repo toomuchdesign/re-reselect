@@ -51,14 +51,13 @@
     "reselect": ">1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
-    "all-contributors-cli": "^6.0.0",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^23.6.0",
-    "coveralls": "^3.0.2",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "all-contributors-cli": "^6.6.1",
+    "babel-jest": "^24.8.0",
+    "coveralls": "^3.0.4",
     "husky": "^1.1.2",
-    "jest": "^23.6.0",
+    "jest": "^24.8.0",
     "lint-staged": "^7.3.0",
     "prettier": "^1.16.2",
     "reselect": "^4.0.0",
@@ -69,6 +68,9 @@
     "typings-tester": "^0.3.2"
   },
   "jest": {
+    "moduleFileExtensions": [
+      "js"
+    ],
     "coverageReporters": [
       "text",
       "lcov"

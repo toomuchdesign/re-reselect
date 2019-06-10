@@ -58,50 +58,27 @@ const fooResultAgain = cachedSelector(state, 'foo');
 
 ## Table of contents
 
-- [Re-reselect](#re-reselect)
-  - [Table of contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Why? + example](#why--example)
-    - [re-reselect solution](#re-reselect-solution)
-    - [Other viable solutions](#other-viable-solutions)
-      - [1- Declare a different selector for each different call](#1--declare-a-different-selector-for-each-different-call)
-      - [2- Declare a `makeGetPieceOfData` selector factory as explained in Reselect docs](#2--declare-a-makegetpieceofdata-selector-factory-as-explained-in-reselect-docs)
-      - [3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector](#3--wrap-your-makegetpieceofdata-selector-factory-into-a-memoizer-function-and-call-the-returning-memoized-selector)
-  - [Examples](#examples)
-  - [FAQ](#faq)
-    - [How do I wrap my existing selector with re-reselect?](#how-do-i-wrap-my-existing-selector-with-re-reselect)
-    - [How do I use multiple inputs to set the cacheKey?](#how-do-i-use-multiple-inputs-to-set-the-cachekey)
-    - [How do I limit the cache size?](#how-do-i-limit-the-cache-size)
-    - [How to share a selector across multiple components while passing in props and retaining memoization?](#how-to-share-a-selector-across-multiple-components-while-passing-in-props-and-retaining-memoization)
-    - [How do I test a re-reselect selector?](#how-do-i-test-a-re-reselect-selector)
-      - [Testing `reselect` selectors stored in the cache](#testing-reselect-selectors-stored-in-the-cache)
-  - [API](#api)
-    - [createCachedSelector([reselect's createSelector arguments])(keySelector, { cacheObject, selectorCreator })](#createcachedselectorreselects-createselector-argumentskeyselector--cacheobject-selectorcreator-)
-    - [createStructuredCachedSelector([reselect's createStructuredSelector arguments])(keySelector, { cacheObject, selectorCreator })](#createstructuredcachedselectorreselects-createstructuredselector-argumentskeyselector--cacheobject-selectorcreator-)
-      - [keySelector](#keyselector)
-      - [options.cacheObject](#optionscacheobject)
-        - [Custom cache strategy object](#custom-cache-strategy-object)
-      - [options.selectorCreator](#optionsselectorcreator)
-      - [Returns](#returns)
-    - [selector(selectorArguments)](#selectorselectorarguments)
-    - [selector`.getMatchingSelector(selectorArguments)`](#selectorgetmatchingselectorselectorarguments)
-    - [selector`.removeMatchingSelector(selectorArguments)`](#selectorremovematchingselectorselectorarguments)
-    - [selector`.cache`](#selectorcache)
-    - [selector`.clearCache()`](#selectorclearcache)
-    - [selector`.dependencies`](#selectordependencies)
-    - [selector`.resultFunc`](#selectorresultfunc)
-    - [selector`.recomputations()`](#selectorrecomputations)
-    - [selector`.resetRecomputations()`](#selectorresetrecomputations)
-    - [selector`.keySelector`](#selectorkeyselector)
-  - [About re-reselect](#about-re-reselect)
-  - [Todo's](#todos)
-  - [Contributors](#contributors)
+- [Installation](#installation)
+- [Why? + example](#why--example)
+  - [re-reselect solution](#re-reselect-solution)
+  - [Other viable solutions](#other-viable-solutions)
+- [Examples](#examples)
+- [FAQ](#faq)
+- [API](#api)
+  - [`createCachedSelector`](#createCachedSelector)
+  - [`createStructuredCachedSelector`](#createStructuredCachedSelector)
+  - [keySelector](#keyselector)
+  - [options](#options)
+  - [selector instance][selector-instance-docs]
+- [About re-reselect](#about-re-reselect)
+- [Todo's](#todos)
+- [Contributors](#contributors)
 
 ## Installation
 
 ```console
-npm install reselect
-npm install re-reselect
+npm install reselect -S
+npm install re-reselect -S
 ```
 
 ## Why? + example
@@ -124,7 +101,7 @@ What happens, here? `getPieceOfData` **selector cache is invalidated** on each c
 
 <!-- Please note that part of this lines are repeated in #api chapter -->
 
-`cacheKey` is by default a `string` or `number` but can be anything depending on the chosen cache strategy (see [`cacheObject` option](#optionscacheobject)).
+`cacheKey` is by default a `string` or `number` but can be anything depending on the chosen cache strategy (see [cache objects docs][cache-objects-docs]).
 
 `cacheKey` is the output of `keySelector`, declared at selector initialization.
 
@@ -258,7 +235,7 @@ createCachedSelector(
 
 ### How do I limit the cache size?
 
-Use a `cacheObject` which provides that feature by supplying a [`cacheObject` option](#optionscacheobject).
+Use a `cacheObject` which provides that feature by supplying a [`cacheObject` option](#options).
 
 You can also write **your own cache strategy**!
 
@@ -315,29 +292,49 @@ myFooDataSelector.resetRecomputations();
 
 ## API
 
-### createCachedSelector([reselect's createSelector arguments])(keySelector, { cacheObject, selectorCreator })
+### createCachedSelector
 
+<!-- prettier-ignore -->
 ```js
 import createCachedSelector from 're-reselect';
+
+createCachedSelector(
+  // ...reselect's `createSelector` arguments
+)(
+  keySelector,
+  { options }
+)
 ```
 
-**createCachedSelector** accepts the same arguments as reselect's [`createSelector` arguments][reselect-create-selector] and returns a new function which accepts **2 arguments**:
+**createCachedSelector** accepts the same arguments as reselect's [`createSelector`][reselect-create-selector] and returns a new function which accepts **2 arguments**:
 
 - `keySelector`
-- `options { cacheObject, selectorCreator }` _(optional)_
+- `{ options }` _(optional)_
 
-### createStructuredCachedSelector([reselect's createStructuredSelector arguments])(keySelector, { cacheObject, selectorCreator })
+**Returns** a [selector instance][selector-instance-docs].
 
+### createStructuredCachedSelector
+
+<!-- prettier-ignore -->
 ```js
-import {createStructuredCachedSelector} from 're-reselect';
+import { createStructuredCachedSelector } from 're-reselect';
+
+createStructuredCachedSelector(
+  // ...reselect's `createStructuredSelector` arguments
+)(
+  keySelector,
+  { options }
+)
 ```
 
-**createStructuredCachedSelector** accepts the same `{inputSelectors}` as reselect's [`createStructuredSelector`][reselect-create-structured-selector] and returns a new function which accepts **2 arguments**:
+**createStructuredCachedSelector** accepts the same arguments as reselect's [`createStructuredSelector`][reselect-create-structured-selector] and returns a new function which accepts **2 arguments**:
 
 - `keySelector`
-- `options { cacheObject, selectorCreator }` _(optional)_
+- `{ options }` _(optional)_
 
-#### keySelector
+**Returns** a [selector instance][selector-instance-docs].
+
+### `keySelector`
 
 `keySelector` is a custom function receiving the same arguments as your selectors (and `inputSelectors`) and **returning a `cacheKey`**.
 
@@ -345,104 +342,61 @@ import {createStructuredCachedSelector} from 're-reselect';
 
 The `keySelector` idea comes from [Lodash's .memoize][lodash-memoize].
 
-#### options.cacheObject
+### `options`
 
-An optional custom [strategy object][docs-strategy-object] to handle the caching behaviour.
+`options` is an optional object with the following properties:
 
-Default cache: `FlatObjectCache`.
+#### `cacheObject`
 
-`re-reselect` provides **6 ready to use cache object constructors**:
+Default: `FlatObjectCache`
 
-|                       name                        | accepted cacheKey |                 type                  |            storage             |
-| :-----------------------------------------------: | :---------------: | :-----------------------------------: | :----------------------------: |
-| [`FlatObjectCache`](src/cache/FlatObjectCache.js) | `number` `string` |            flat unlimited             |           JS object            |
-| [`FifoObjectCache`](src/cache/FifoObjectCache.js) | `number` `string` | [first in first out][docs-fifo-cache] |           JS object            |
-|  [`LruObjectCache`](src/cache/LruObjectCache.js)  | `number` `string` | [least recently used][docs-lru-cache] |           JS object            |
-|    [`FlatMapCache`](src/cache/FlatMapCache.js)    |        any        |            flat unlimited             | [Map object][docs-mozilla-map] |
-|    [`FifoMapCache`](src/cache/FifoMapCache.js)    |        any        | [first in first out][docs-fifo-cache] | [Map object][docs-mozilla-map] |
-|     [`LruMapCache`](src/cache/LruMapCache.js)     |        any        | [least recently used][docs-lru-cache] | [Map object][docs-mozilla-map] |
+An optional custom **cache strategy object** to handle the caching behaviour.
 
-<!-- prettier-ignore -->
-```js
-import createCachedSelector, {LruObjectCache, LruMapCache} from 're-reselect';
+Read more about [re-reselect's custom cache here](cache-objects-docs).
 
-createCachedSelector(
-  // ...
-)(
-  keySelector,
-  {
-    cacheObject: new LruObjectCache({cacheSize: 5}),
-    // or:
-    // cacheObject: new LruMapCache({cacheSize: 5}),
-  }
-);
-```
-
-**[*]ObjectCache** strategy objects treat `cacheKey` of type `number` like strings, since they are used as arguments of JS objects.
-
-**[*]MapCache** strategy objects needs a **Map objects polyfill** in order to use them on non-supporting browsers.
-
-##### Custom cache strategy object
-
-You can provide **any kind of cache strategy**. Declare a JS object adhering to the following interface:
-
-```ts
-interface ICacheObject {
-  set(key: any, selectorFn: any): void;
-  get(key: any): any;
-  remove(key: any): void;
-  clear(): void;
-  isValidCacheKey?(key: any): boolean; // optional
-}
-```
-
-#### options.selectorCreator
+#### `selectorCreator`
 
 An optional function describing a [custom selectors][reselect-create-selector-creator]. By default it uses `reselect`'s `createSelector`.
 
-#### Returns
+### Selector instance
 
-(Function): a `selector` instance ready to be used **like a normal reselect selector**.
-
-### selector(selectorArguments)
-
-Retrieve data for given arguments.
+A selector function providing the same API as a **standard reselect selectors**.
 
 > The followings are advanced methods and you won't need them for basic usage!
 
-### selector`.getMatchingSelector(selectorArguments)`
+#### selector`.getMatchingSelector(selectorArguments)`
 
 Retrieve the selector responding to the given arguments.
 
-### selector`.removeMatchingSelector(selectorArguments)`
+#### selector`.removeMatchingSelector(selectorArguments)`
 
 Remove from the cache the selector responding to the given arguments.
 
-### selector`.cache`
+#### selector`.cache`
 
 Get cacheObject instance being used by the selector (for advanced caching operations like [this](https://github.com/toomuchdesign/re-reselect/issues/40)).
 
-### selector`.clearCache()`
+#### selector`.clearCache()`
 
 Clear whole `selector` cache.
 
-### selector`.dependencies`
+#### selector`.dependencies`
 
 Get an array containing the provided `inputSelectors`. Refer to relevant discussion on [Reselect repo][reselect-test-selectors-dependencies].
 
-### selector`.resultFunc`
+#### selector`.resultFunc`
 
 Get `resultFunc` for easily [testing composed selectors][reselect-test-selectors].
 
-### selector`.recomputations()`
+#### selector`.recomputations()`
 
 Return the number of times the selector's result function has been recomputed.
 
-### selector`.resetRecomputations()`
+#### selector`.resetRecomputations()`
 
 Reset `recomputations` count.
 
-### selector`.keySelector`
+#### selector`.keySelector`
 
 Get `keySelector` for utility compositions or testing.
 
@@ -468,7 +422,7 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-<table><tr><td align="center"><a href="http://www.andreacarraro.it"><img src="https://avatars3.githubusercontent.com/u/4573549?v=4" width="100px;" alt="Andrea Carraro"/><br /><sub><b>Andrea Carraro</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign" title="Documentation">📖</a> <a href="#infra-toomuchdesign" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign" title="Tests">⚠️</a> <a href="#review-toomuchdesign" title="Reviewed Pull Requests">👀</a></td><td align="center"><a href="https://github.com/xsburg"><img src="https://avatars2.githubusercontent.com/u/830824?v=4" width="100px;" alt="Stepan Burguchev"/><br /><sub><b>Stepan Burguchev</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=xsburg" title="Code">💻</a> <a href="#review-xsburg" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=xsburg" title="Tests">⚠️</a></td><td align="center"><a href="https://github.com/sgrishchenko"><img src="https://avatars3.githubusercontent.com/u/15995890?v=4" width="100px;" alt="Sergei Grishchenko"/><br /><sub><b>Sergei Grishchenko</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=sgrishchenko" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=sgrishchenko" title="Tests">⚠️</a></td><td align="center"><a href="https://github.com/Andarist"><img src="https://avatars2.githubusercontent.com/u/9800850?v=4" width="100px;" alt="Mateusz Burzyński"/><br /><sub><b>Mateusz Burzyński</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=Andarist" title="Code">💻</a> <a href="#infra-Andarist" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td><td align="center"><a href="https://olslash.github.io/"><img src="https://avatars3.githubusercontent.com/u/693493?v=4" width="100px;" alt="Mitch Robb"/><br /><sub><b>Mitch Robb</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=olslash" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=olslash" title="Tests">⚠️</a></td><td align="center"><a href="https://github.com/rufman"><img src="https://avatars3.githubusercontent.com/u/1128559?v=4" width="100px;" alt="Stephane Rufer"/><br /><sub><b>Stephane Rufer</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=rufman" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=rufman" title="Tests">⚠️</a></td><td align="center"><a href="https://github.com/spiffysparrow"><img src="https://avatars0.githubusercontent.com/u/2788860?v=4" width="100px;" alt="Tracy Mullen"/><br /><sub><b>Tracy Mullen</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow" title="Tests">⚠️</a></td></tr><tr><td align="center"><a href="https://www.skc.name"><img src="https://avatars1.githubusercontent.com/u/4211838?v=4" width="100px;" alt="Sushain Cherivirala"/><br /><sub><b>Sushain Cherivirala</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=sushain97" title="Code">💻</a></td><td align="center"><a href="https://twitter.com/MaoStevemao"><img src="https://avatars0.githubusercontent.com/u/6316590?v=4" width="100px;" alt="Steve Mao"/><br /><sub><b>Steve Mao</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=stevemao" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/Dante-101"><img src="https://avatars2.githubusercontent.com/u/1428826?v=4" width="100px;" alt="Gaurav Lahoti"/><br /><sub><b>Gaurav Lahoti</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3ADante-101" title="Bug reports">🐛</a></td><td align="center"><a href="http://lon.im"><img src="https://avatars3.githubusercontent.com/u/13602053?v=4" width="100px;" alt="Lon"/><br /><sub><b>Lon</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Acnlon" title="Bug reports">🐛</a></td><td align="center"><a href="https://github.com/bratushka"><img src="https://avatars2.githubusercontent.com/u/5492495?v=4" width="100px;" alt="bratushka"/><br /><sub><b>bratushka</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=bratushka" title="Code">💻</a></td><td align="center"><a href="https://andrz.me"><img src="https://avatars3.githubusercontent.com/u/615381?v=4" width="100px;" alt="Anders D. Johnson"/><br /><sub><b>Anders D. Johnson</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=AndersDJohnson" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/wormyy"><img src="https://avatars3.githubusercontent.com/u/8556724?v=4" width="100px;" alt="Július Retzer"/><br /><sub><b>Július Retzer</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=wormyy" title="Documentation">📖</a></td></tr><tr><td align="center"><a href="https://github.com/maartenschumacher"><img src="https://avatars3.githubusercontent.com/u/10407025?v=4" width="100px;" alt="Maarten Schumacher"/><br /><sub><b>Maarten Schumacher</b></sub></a><br /><a href="#ideas-maartenschumacher" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="https://github.com/alexanderjarvis"><img src="https://avatars2.githubusercontent.com/u/664238?v=4" width="100px;" alt="Alexander Jarvis"/><br /><sub><b>Alexander Jarvis</b></sub></a><br /><a href="#ideas-alexanderjarvis" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="https://github.com/greggb"><img src="https://avatars1.githubusercontent.com/u/514026?v=4" width="100px;" alt="Gregg B"/><br /><sub><b>Gregg B</b></sub></a><br /><a href="#example-greggb" title="Examples">💡</a></td><td align="center"><a href="http://ianobermiller.com"><img src="https://avatars0.githubusercontent.com/u/897931?v=4" width="100px;" alt="Ian Obermiller"/><br /><sub><b>Ian Obermiller</b></sub></a><br /><a href="#review-ianobermiller" title="Reviewed Pull Requests">👀</a></td><td align="center"><a href="https://github.com/lukyth"><img src="https://avatars3.githubusercontent.com/u/7040242?v=4" width="100px;" alt="Kanitkorn Sujautra"/><br /><sub><b>Kanitkorn Sujautra</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=lukyth" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/suark"><img src="https://avatars2.githubusercontent.com/u/6233440?v=4" width="100px;" alt="Brian Kraus"/><br /><sub><b>Brian Kraus</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=suark" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/el-dav"><img src="https://avatars1.githubusercontent.com/u/7252227?v=4" width="100px;" alt="el-dav"/><br /><sub><b>el-dav</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Ael-dav" title="Bug reports">🐛</a></td></tr><tr><td align="center"><a href="https://augustin-riedinger.fr"><img src="https://avatars3.githubusercontent.com/u/1970156?v=4" width="100px;" alt="Augustin Riedinger"/><br /><sub><b>Augustin Riedinger</b></sub></a><br /><a href="#ideas-augnustin" title="Ideas, Planning, & Feedback">🤔</a></td></tr></table>
+<table><tr><td align="center"><a href="http://www.andreacarraro.it"><img src="https://avatars3.githubusercontent.com/u/4573549?v=4" width="100px;" alt="Andrea Carraro"/><br /><sub><b>Andrea Carraro</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign" title="Documentation">📖</a> <a href="#infra-toomuchdesign" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign" title="Tests">⚠️</a> <a href="#review-toomuchdesign" title="Reviewed Pull Requests">👀</a></td><td align="center"><a href="https://github.com/xsburg"><img src="https://avatars2.githubusercontent.com/u/830824?v=4" width="100px;" alt="Stepan Burguchev"/><br /><sub><b>Stepan Burguchev</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=xsburg" title="Code">💻</a> <a href="#review-xsburg" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=xsburg" title="Tests">⚠️</a></td><td align="center"><a href="https://github.com/sgrishchenko"><img src="https://avatars3.githubusercontent.com/u/15995890?v=4" width="100px;" alt="Sergei Grishchenko"/><br /><sub><b>Sergei Grishchenko</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=sgrishchenko" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=sgrishchenko" title="Tests">⚠️</a></td><td align="center"><a href="https://github.com/Andarist"><img src="https://avatars2.githubusercontent.com/u/9800850?v=4" width="100px;" alt="Mateusz Burzyński"/><br /><sub><b>Mateusz Burzyński</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=Andarist" title="Code">💻</a> <a href="#infra-Andarist" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td><td align="center"><a href="https://olslash.github.io/"><img src="https://avatars3.githubusercontent.com/u/693493?v=4" width="100px;" alt="Mitch Robb"/><br /><sub><b>Mitch Robb</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=olslash" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=olslash" title="Tests">⚠️</a></td><td align="center"><a href="https://github.com/rufman"><img src="https://avatars3.githubusercontent.com/u/1128559?v=4" width="100px;" alt="Stephane Rufer"/><br /><sub><b>Stephane Rufer</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=rufman" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=rufman" title="Tests">⚠️</a></td><td align="center"><a href="https://github.com/spiffysparrow"><img src="https://avatars0.githubusercontent.com/u/2788860?v=4" width="100px;" alt="Tracy Mullen"/><br /><sub><b>Tracy Mullen</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow" title="Tests">⚠️</a></td></tr><tr><td align="center"><a href="https://www.skc.name"><img src="https://avatars1.githubusercontent.com/u/4211838?v=4" width="100px;" alt="Sushain Cherivirala"/><br /><sub><b>Sushain Cherivirala</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=sushain97" title="Code">💻</a></td><td align="center"><a href="https://twitter.com/MaoStevemao"><img src="https://avatars0.githubusercontent.com/u/6316590?v=4" width="100px;" alt="Steve Mao"/><br /><sub><b>Steve Mao</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=stevemao" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/Dante-101"><img src="https://avatars2.githubusercontent.com/u/1428826?v=4" width="100px;" alt="Gaurav Lahoti"/><br /><sub><b>Gaurav Lahoti</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3ADante-101" title="Bug reports">🐛</a></td><td align="center"><a href="http://lon.im"><img src="https://avatars3.githubusercontent.com/u/13602053?v=4" width="100px;" alt="Lon"/><br /><sub><b>Lon</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Acnlon" title="Bug reports">🐛</a></td><td align="center"><a href="https://github.com/bratushka"><img src="https://avatars2.githubusercontent.com/u/5492495?v=4" width="100px;" alt="bratushka"/><br /><sub><b>bratushka</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=bratushka" title="Code">💻</a></td><td align="center"><a href="https://andrz.me"><img src="https://avatars3.githubusercontent.com/u/615381?v=4" width="100px;" alt="Anders D. Johnson"/><br /><sub><b>Anders D. Johnson</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=AndersDJohnson" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/wormyy"><img src="https://avatars3.githubusercontent.com/u/8556724?v=4" width="100px;" alt="Július Retzer"/><br /><sub><b>Július Retzer</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=wormyy" title="Documentation">📖</a></td></tr><tr><td align="center"><a href="https://github.com/maartenschumacher"><img src="https://avatars3.githubusercontent.com/u/10407025?v=4" width="100px;" alt="Maarten Schumacher"/><br /><sub><b>Maarten Schumacher</b></sub></a><br /><a href="#ideas-maartenschumacher" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="https://github.com/alexanderjarvis"><img src="https://avatars2.githubusercontent.com/u/664238?v=4" width="100px;" alt="Alexander Jarvis"/><br /><sub><b>Alexander Jarvis</b></sub></a><br /><a href="#ideas-alexanderjarvis" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="https://github.com/greggb"><img src="https://avatars1.githubusercontent.com/u/514026?v=4" width="100px;" alt="Gregg B"/><br /><sub><b>Gregg B</b></sub></a><br /><a href="#example-greggb" title="Examples">💡</a></td><td align="center"><a href="http://ianobermiller.com"><img src="https://avatars0.githubusercontent.com/u/897931?v=4" width="100px;" alt="Ian Obermiller"/><br /><sub><b>Ian Obermiller</b></sub></a><br /><a href="#review-ianobermiller" title="Reviewed Pull Requests">👀</a></td><td align="center"><a href="https://github.com/lukyth"><img src="https://avatars3.githubusercontent.com/u/7040242?v=4" width="100px;" alt="Kanitkorn Sujautra"/><br /><sub><b>Kanitkorn Sujautra</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=lukyth" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/suark"><img src="https://avatars2.githubusercontent.com/u/6233440?v=4" width="100px;" alt="Brian Kraus"/><br /><sub><b>Brian Kraus</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=suark" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/el-dav"><img src="https://avatars1.githubusercontent.com/u/7252227?v=4" width="100px;" alt="el-dav"/><br /><sub><b>el-dav</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Ael-dav" title="Bug reports">🐛</a></td></tr><tr><td align="center"><a href="https://augustin-riedinger.fr"><img src="https://avatars3.githubusercontent.com/u/1970156?v=4" width="100px;" alt="Augustin Riedinger"/><br /><sub><b>Augustin Riedinger</b></sub></a><br /><a href="#ideas-augnustin" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="https://github.com/RichardForrester"><img src="https://avatars0.githubusercontent.com/u/12902182?v=4" width="100px;" alt="RichardForrester"/><br /><sub><b>RichardForrester</b></sub></a><br /><a href="#ideas-RichardForrester" title="Ideas, Planning, & Feedback">🤔</a></td></tr></table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
@@ -492,8 +446,6 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [example-1]: examples/1-join-selectors.md
 [example-2]: examples/2-avoid-selector-factories.md
 [example-3]: examples/3-cache-api-calls.md
-[docs-fifo-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#First_In_First_Out_.28FIFO.29
-[docs-lru-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_.28LRU.29
-[docs-mozilla-map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
-[docs-strategy-object]: https://sourcemaking.com/design_patterns/strategy
+[selector-instance-docs]: #selector-instance
+[cache-objects-docs]: src/cache#readme
 [docs-all-contributors]: https://github.com/kentcdodds/all-contributors#emoji-key

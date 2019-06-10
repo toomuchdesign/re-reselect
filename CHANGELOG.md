@@ -1,5 +1,11 @@
 # Change log
 
+## 3.2.0
+
+### New Features
+
+- Add `createStructuredCachedSelector`
+
 ## 3.1.0
 
 ### New Features

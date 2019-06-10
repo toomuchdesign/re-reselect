@@ -1,4 +1,4 @@
-import {createStructuredCachedSelector} from '../index';
+import {createStructuredCachedSelector} from '../../src/index';
 
 describe('createStructuredCachedSelector', () => {
   it('returns expected cachedSelector', () => {

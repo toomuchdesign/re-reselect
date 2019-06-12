@@ -44,17 +44,14 @@ const cachedSelector = createCachedSelector(
   (state, itemName) => itemName
 );
 
-// Use the cached selector like a normal selector:
+// Cached selector behave like normal selectors:
+// 2 reselect selectors are created, called and cached
 const fooResult = cachedSelector(state, 'foo');
 const barResult = cachedSelector(state, 'bar');
 
-// 2 reselect selectors were created, called and cached behind the scenes
-
 const fooResultAgain = cachedSelector(state, 'foo');
-
 // fooResult === fooResultAgain
-// Cache was not invalidated by calling "cachedSelector(state, 'bar')"
-// "expensiveComputation" totally called twice
+// "expensiveComputation" called twice in total
 ```
 
 ## Table of contents
@@ -84,27 +81,23 @@ npm install re-reselect -S
 
 ## Why? + example
 
-I found myself wrapping a library of data elaboration (quite heavy stuff) with reselect selectors (`getPieceOfData` in the example).
-
-On each store update, I had to repeatedly call the selector in order to retrieve all the pieces of data needed by my UI. Like this:
+Let's say `getData` is a `reselect` selector.
 
 ```js
-getPieceOfData(state, itemId, 'dataA');
-getPieceOfData(state, itemId, 'dataB');
-getPieceOfData(state, itemId, 'dataC');
+getData(state, itemId, 'dataA');
+getData(state, itemId, 'dataB');
+getData(state, itemId, 'dataC');
 ```
 
-What happens, here? `getPieceOfData` **selector cache is invalidated** on each call because of the different 3rd `'dataX'` argument.
+The **3rd argument invalidates `reselect` cache** on each call, forcing `getData` to re-evaluate and return a new value.
 
 ### re-reselect solution
 
-`re-reselect` selectors keep a **cache of `reselect` selectors** and store/retrieve them by `cacheKey`.
+`re-reselect` selectors keep a **cache of `reselect` selectors** stored by `cacheKey`.
 
 <!-- Please note that part of this lines are repeated in #api chapter -->
 
-`cacheKey` is by default a `string` or `number` but can be anything depending on the chosen cache strategy (see [cache objects docs][cache-objects-docs]).
-
-`cacheKey` is the output of `keySelector`, declared at selector initialization.
+`cacheKey` is the return value of the `keySelector` function. It's by default a `string` or `number` but it can be anything depending on the chosen cache strategy (see [cache objects docs][cache-objects-docs]).
 
 `keySelector` is a **custom function** which:
 
@@ -119,7 +112,7 @@ Back to the example, `re-reselect` retrieves data by **querying one of the cache
 ```js
 const getPieceOfData = createCachedSelector(
   state => state,
-  (state, itemId) => itemId,
+  (_state_, itemId) => itemId,
   (state, itemId, dataType) => dataType,
   (state, itemId, dataType) => expensiveComputation(state, itemId, dataType)
 )(
@@ -127,7 +120,7 @@ const getPieceOfData = createCachedSelector(
 );
 ```
 
-`createCachedSelector` returns a selector with the **same signature as a normal `reselect` selector**.
+`createCachedSelector` returns a selector with the **same API as a standard `reselect` selector**.
 
 But now, **each time the selector is called**, the following happens behind the scenes:
 
@@ -136,7 +129,7 @@ But now, **each time the selector is called**, the following happens behind the 
 3.  **Return found selector or create a new one** if no selector was found
 4.  **Call returned selector** with provided arguments
 
-**re-reselect** stays completely optional and consumes **your installed reselect** module (`reselect` is declared as **peer dependency**).
+**re-reselect** stays completely optional and consumes **your installed reselect** package (`reselect` is declared as **peer dependency**).
 
 ### Other viable solutions
 

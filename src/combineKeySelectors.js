@@ -1,7 +1,11 @@
-function combineKeySelectors({inputSelectors = []}) {
+function combineKeySelectors({inputSelectors = [], keySelector}) {
   const keySelectors = inputSelectors
     .filter(entry => entry.hasOwnProperty('keySelector'))
     .map(entry => entry.keySelector);
+
+  if (typeof keySelector === 'function') {
+    keySelectors.unshift(keySelector);
+  }
 
   return (...args) => {
     return keySelectors

@@ -32,7 +32,6 @@ function createCachedSelector(...funcs) {
       keySelector = options.keySelectorCreator({
         inputSelectors: dependencies,
         resultFunc,
-        keySelector,
       });
     }
 

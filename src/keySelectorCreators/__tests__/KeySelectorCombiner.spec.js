@@ -1,4 +1,4 @@
-import createCachedSelector, {combineKeySelectors} from '../../src/index';
+import createCachedSelector, {KeySelectorCombiner} from '../../../src/index';
 
 const stateMock = {
   1: 'foo-state',
@@ -8,7 +8,7 @@ const stateMock = {
 
 const propsMock = {
   foo: '1',
-  bar: '2',
+  bar: 2,
   moo: '3',
 };
 
@@ -16,17 +16,17 @@ const inputSelector1 = createCachedSelector(
   state => state,
   (state, props) => props.foo,
   (state, id) => state[id]
-)((state, props) => props.foo); // Used as chunk of keySelector
+)((state, props) => props.foo); // Used as chunk of keySelector (string)
 
 const inputSelector2 = createCachedSelector(
   state => state,
   (state, props) => props.bar,
   (state, id) => state[id]
-)((state, props) => props.bar); // Used as chunk of keySelector
+)((state, props) => props.bar); // Used as chunk of keySelector (number)
 
 const inputSelector3 = (state, props) => state[props.moo];
 
-describe('combineKeySelectors', () => {
+describe('KeySelectorCombiner', () => {
   it("returns a keySelector composed of the provided inputSelectors' keySelectors", () => {
     const cachedSelector = createCachedSelector(
       inputSelector1,
@@ -37,7 +37,7 @@ describe('combineKeySelectors', () => {
         second,
       })
     )(null, {
-      keySelectorCreator: combineKeySelectors,
+      keySelectorCreator: new KeySelectorCombiner(),
     });
 
     const expectedKeySelector = (state, props) => `${props.foo}:${props.bar}`;
@@ -48,7 +48,7 @@ describe('combineKeySelectors', () => {
     );
   });
 
-  it('accepts an additional keySelector', () => {
+  it('accepts an additional extraKeySelector property', () => {
     const cachedSelector = createCachedSelector(
       inputSelector1,
       inputSelector2,
@@ -57,8 +57,10 @@ describe('combineKeySelectors', () => {
         first,
         second,
       })
-    )((_, props) => props.moo, {
-      keySelectorCreator: combineKeySelectors,
+    )(null, {
+      keySelectorCreator: new KeySelectorCombiner({
+        extraKeySelector: (_, props) => props.moo,
+      }),
     });
 
     const expectedKeySelector = (state, props) =>

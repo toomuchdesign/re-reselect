@@ -17,10 +17,11 @@
 
 Useful to:
 
-- **retain selector's cache** when sequentially **called with one/few different arguments** ([example][example-1])
-- **join similar selectors** into one
-- **share selectors** with props across multiple component instances (see [reselect example][reselect-sharing-selectors] and [re-reselect solution][example-2])
-- **instantiate** selectors **on runtime**
+- **Retain selector's cache** when sequentially **called with one/few different arguments** ([example][example-1])
+- **Join similar selectors** into one
+- **Share selectors** with props across multiple component instances (see [reselect example][reselect-sharing-selectors] and [re-reselect solution][example-2])
+- **Instantiate** selectors **on runtime**
+- Enhance `reselect` with [custom caching strategies][cache-objects-docs]
 
 <!-- prettier-ignore -->
 ```js
@@ -163,11 +164,16 @@ This is what `re-reselect` actually does! :-) It's quite verbose (since has to b
 
 ## FAQ
 
-### How do I wrap my existing selector with re-reselect?
+<details>
+  <summary>
+    <b>How do I wrap my existing selector with re-reselect?</b>
+  </summary>
+  <br/>
 
 Given your `reselect` selectors:
 
-<!-- prettier-ignore -->
+  <!-- prettier-ignore -->
+
 ```js
 import {createSelector} from 'reselect';
 
@@ -181,7 +187,8 @@ export const getMyData = createSelector(
 
 ...add `keySelector` in the second function call:
 
-<!-- prettier-ignore -->
+  <!-- prettier-ignore -->
+
 ```js
 import createCachedSelector from 're-reselect';
 
@@ -201,11 +208,13 @@ Voilà, `getMyData` is ready for use!
 const myData = getMyData(state, 'foo', 'bar');
 ```
 
-### How do I use multiple inputs to set the cacheKey?
+</details>
 
-`cacheKey` is the return value of `keySelector`.
-
-`keySelector` receives the same arguments of your `inputSelectors` and (by default) **must return a `string` or `number`.**
+<details>
+  <summary>
+    <b>How do I use multiple inputs to set the cacheKey?</b>
+  </summary>
+  <br/>
 
 A few good examples and [a bonus](https://github.com/toomuchdesign/re-reselect/issues/3):
 
@@ -233,19 +242,38 @@ createCachedSelector(
 )
 ```
 
-### How do I limit the cache size?
+</details>
 
-Use a `cacheObject` which provides that feature by supplying a [`cacheObject` option](#options).
+<details>
+  <summary>
+    <b>How do I limit the cache size?</b>
+  </summary>
+  <br/>
+
+Use a [`cacheObject`][cache-objects-docs] which provides that feature by supplying a [`cacheObject` option](#options).
 
 You can also write **your own cache strategy**!
 
-### How to share a selector across multiple components while passing in props and retaining memoization?
+</details>
+
+<details>
+  <summary>
+    <b>How to share a selector across multiple components while passing in props and retaining memoization?</b>
+  </summary>
+  <br/>
 
 [This example][example-2] shows how `re-reselect` would solve the scenario described in [reselect docs][reselect-sharing-selectors].
+Read more about testing selectors on [`reselect` docs][reselect-test-selectors].
 
-### How do I test a re-reselect selector?
+</details>
 
-Just like a normal reselect selector!
+<details>
+  <summary>
+    <b>How do I test a re-reselect selector?</b>
+  </summary>
+  <br/>
+
+Like a normal reselect selector!
 
 `re-reselect` selectors expose the same `reselect` testing methods:
 
@@ -268,10 +296,8 @@ Once you get a selector instance you can call [its public methods][reselect-sele
 ```js
 import createCachedSelector from 're-reselect';
 
-export const getMyData = createCachedSelector(
-  selectorA,
-  selectorB,
-  (A, B) => doSomethingWith(A, B)
+export const getMyData = createCachedSelector(selectorA, selectorB, (A, B) =>
+  doSomethingWith(A, B)
 )(
   (state, arg1) => arg1 // cacheKey
 );
@@ -290,6 +316,8 @@ myFooDataSelector.recomputations();
 myFooDataSelector.resetRecomputations();
 ```
 
+</details>
+
 ## API
 
 ### createCachedSelector
@@ -306,7 +334,7 @@ createCachedSelector(
 )
 ```
 
-**createCachedSelector** accepts the same arguments as reselect's [`createSelector`][reselect-create-selector] and returns a new function which accepts **2 arguments**:
+Takes the same arguments as reselect's [`createSelector`][reselect-create-selector] and returns a new function which accepts **2 arguments**:
 
 - `keySelector`
 - `{ options }` _(optional)_
@@ -327,40 +355,40 @@ createStructuredCachedSelector(
 )
 ```
 
-**createStructuredCachedSelector** accepts the same arguments as reselect's [`createStructuredSelector`][reselect-create-structured-selector] and returns a new function which accepts **2 arguments**:
+Takes the same arguments as reselect's [`createStructuredSelector`][reselect-create-structured-selector] and returns a new function which accepts **2 arguments**:
 
 - `keySelector`
 - `{ options }` _(optional)_
 
 **Returns** a [selector instance][selector-instance-docs].
 
-### `keySelector`
+### keySelector
 
-`keySelector` is a custom function receiving the same arguments as your selectors (and `inputSelectors`) and **returning a `cacheKey`**.
+A custom function receiving the same arguments as your selectors (and `inputSelectors`) and **returning a `cacheKey`**.
 
 `cacheKey` is **by default a `string` or `number`** but can be anything depending on the chosen cache strategy (see [`cacheObject` option](#optionscacheobject)).
 
 The `keySelector` idea comes from [Lodash's .memoize][lodash-memoize].
 
-### `options`
+### options
 
-`options` is an optional object with the following properties:
+#### cacheObject
 
-#### `cacheObject`
+Type: `object`<br />
+Default: [`FlatObjectCache`][cache-objects-docs]
 
-Default: `FlatObjectCache`
+An optional custom **cache strategy object** to handle the caching behaviour. Read more about [re-reselect's custom cache here][cache-objects-docs].
 
-An optional custom **cache strategy object** to handle the caching behaviour.
+#### selectorCreator
 
-Read more about [re-reselect's custom cache here](cache-objects-docs).
+Type: `function`<br />
+Default: `reselect`'s [`createSelector`][reselect-create-selector]
 
-#### `selectorCreator`
+An optional function describing a [custom version of createSelector][reselect-create-selector-creator].
 
-An optional function describing a [custom selectors][reselect-create-selector-creator]. By default it uses `reselect`'s `createSelector`.
+### re-reselect selector instance
 
-### Selector instance
-
-A selector function providing the same API as a **standard reselect selectors**.
+`createCachedSelector` and `createStructuredCachedSelector` return a **selector instance** which extends the API of a **standard reselect selector**.
 
 > The followings are advanced methods and you won't need them for basic usage!
 
@@ -446,6 +474,6 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [example-1]: examples/1-join-selectors.md
 [example-2]: examples/2-avoid-selector-factories.md
 [example-3]: examples/3-cache-api-calls.md
-[selector-instance-docs]: #selector-instance
+[selector-instance-docs]: #re-reselect-selector-instance
 [cache-objects-docs]: src/cache#readme
 [docs-all-contributors]: https://github.com/kentcdodds/all-contributors#emoji-key

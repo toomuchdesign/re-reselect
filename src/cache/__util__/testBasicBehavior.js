@@ -2,7 +2,7 @@ import fillCacheWith from './fillCacheWith';
 
 function testBasicBehavior(CacheObject, options) {
   describe('Cache basic behavior', () => {
-    it('Should return cached value', () => {
+    it('returns cached value', () => {
       const cache = new CacheObject(options);
       const actual = () => {};
 
@@ -12,7 +12,7 @@ function testBasicBehavior(CacheObject, options) {
       expect(actual).toBe(expected);
     });
 
-    it('Should remove a single item', () => {
+    it('removes a single item', () => {
       const cache = new CacheObject(options);
       const entries = [1, 2, 3, 4, 5];
       fillCacheWith(cache, entries);
@@ -25,7 +25,7 @@ function testBasicBehavior(CacheObject, options) {
       });
     });
 
-    it('Should clear the cache', () => {
+    it('clears the cache', () => {
       const cache = new CacheObject(options);
       const entries = [1, 2, 3, 4, 5];
       fillCacheWith(cache, entries);

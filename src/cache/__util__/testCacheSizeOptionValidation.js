@@ -1,12 +1,12 @@
 function testCacheSizeOptionValidation(CacheObject) {
   describe('cacheSize option validation', () => {
-    it('Should throw error if not defined', () => {
+    it('throws error if not defined', () => {
       expect(() => {
         const cache = new CacheObject();
       }).toThrow(/Missing/);
     });
 
-    it('Should throw error if not a positive integer', () => {
+    it('throws error if not a positive integer', () => {
       const wrongValues = [2.5, -12, 0];
 
       wrongValues.forEach(value => {
@@ -16,7 +16,7 @@ function testCacheSizeOptionValidation(CacheObject) {
       });
     });
 
-    it('Should not throw if a positive integer', () => {
+    it("doesn't throw if a positive integer", () => {
       expect(() => {
         const cache = new CacheObject({cacheSize: 22});
       }).not.toThrow();

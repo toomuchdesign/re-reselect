@@ -1,4 +1,3 @@
-/* eslint comma-dangle: 0 */
 import * as reselect from 'reselect';
 import createCachedSelector, {FlatObjectCache} from '../../src/index';
 
@@ -20,106 +19,8 @@ function selectorWithMockedResultFunc() {
 }
 
 describe('createCachedSelector', () => {
-  describe('"recomputations" property and cached selectors', () => {
-    describe('keySelector returns the same value', () => {
-      it('Should create and use the same cached selector', () => {
-        const cachedSelector = selectorWithMockedResultFunc();
-        const firstCall = cachedSelector('foo', 'bar');
-        const secondCallWithSamekeySelector = cachedSelector('foo', 'bar');
-
-        expect(createSelectorSpy).toHaveBeenCalledTimes(1);
-        expect(cachedSelector.recomputations()).toBe(1);
-      });
-    });
-
-    describe('keySelector returns 2 different values', () => {
-      it('Should create 2 selectors only and produce 2 recomputations', () => {
-        const cachedSelector = selectorWithMockedResultFunc();
-        const firstCallResult = cachedSelector('foo', 'bar');
-        const secondCallResult = cachedSelector('foo', 'moo');
-        const thirdCallResult = cachedSelector('foo', 'bar');
-        const fourthCallResult = cachedSelector('foo', 'moo');
-
-        expect(createSelectorSpy).toHaveBeenCalledTimes(2);
-        expect(cachedSelector.recomputations()).toBe(2);
-      });
-    });
-  });
-
-  describe('cacheKey validity check', () => {
-    describe('cacheObject.isValidCacheKey not available', () => {
-      it('Should accept any value', () => {
-        const cacheObjectMock = {
-          get: jest.fn(() => () => 'foo'),
-        };
-        const values = [{}, [], null, undefined, 12, 'bar'];
-
-        const cachedSelector = createCachedSelector(resultFuncMock)(
-          arg1 => arg1, // cacheKey
-          {
-            cacheObject: cacheObjectMock,
-          }
-        );
-
-        values.forEach((value, index) => {
-          cachedSelector(value);
-          expect(cacheObjectMock.get).toHaveBeenCalledTimes(index + 1);
-          expect(cacheObjectMock.get).toHaveBeenLastCalledWith(value);
-        });
-      });
-    });
-
-    describe('cacheObject.isValidCacheKey returns "true"', () => {
-      it('Should call cache.get method', () => {
-        const cacheObjectMock = new FlatObjectCache();
-        cacheObjectMock.isValidCacheKey = jest.fn(() => true);
-        cacheObjectMock.get = jest.fn();
-
-        const cachedSelector = createCachedSelector(resultFuncMock)(
-          arg1 => arg1,
-          {
-            cacheObject: cacheObjectMock,
-          }
-        );
-
-        cachedSelector('foo');
-
-        expect(cacheObjectMock.get).toHaveBeenCalledTimes(1);
-        // Receive cacheKey and reselect selector as arguments
-        expect(cacheObjectMock.get).toHaveBeenCalledWith('foo');
-      });
-    });
-
-    describe('cacheObject.isValidCacheKey returns "false"', () => {
-      it('Should return "undefined" and call "console.warn"', () => {
-        const cacheObjectMock = new FlatObjectCache();
-        cacheObjectMock.isValidCacheKey = jest.fn(() => false);
-        cacheObjectMock.get = jest.fn();
-
-        const cachedSelector = createCachedSelector(resultFuncMock)(
-          arg1 => arg1,
-          {
-            cacheObject: cacheObjectMock,
-          }
-        );
-
-        const actual = cachedSelector('foo');
-
-        expect(actual).toBe(undefined);
-        expect(cacheObjectMock.get).not.toHaveBeenCalled();
-        expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
-      });
-    });
-  });
-
-  it('Should throw an error when a function is provided as 2° argument', () => {
-    expect(() => {
-      createCachedSelector(resultFuncMock)(() => {}, reselect.createSelector);
-    }).toThrow(/Second argument "options" must be an object/);
-  });
-
   describe('options', () => {
-    it('Should accept cacheObject and selectorCreator options', () => {
+    it('accepts cacheObject and selectorCreator options', () => {
       const cachedSelector = createCachedSelector(resultFuncMock)(
         (arg1, arg2) => arg2,
         {
@@ -134,7 +35,7 @@ describe('createCachedSelector', () => {
       expect(cachedSelector.recomputations()).toBe(1);
     });
 
-    it('Should accept selectorCreator option', () => {
+    it('accepts selectorCreator option', () => {
       const inputSelector = () => {};
       const resultFunc = () => {};
       const keySelector = () => {};
@@ -157,118 +58,227 @@ describe('createCachedSelector', () => {
     });
   });
 
-  describe('getMatchingSelector()', () => {
-    it('Should return underlying reselect selector for a given cache key', () => {
-      const cachedSelector = createCachedSelector(() => {})(
-        (arg1, arg2) => arg2
-      );
+  describe('created selector', () => {
+    describe('cache retention', () => {
+      describe('calls producing identical cacheKey', () => {
+        it('creates and use the same cached selector', () => {
+          const cachedSelector = selectorWithMockedResultFunc();
+          cachedSelector('foo', 'bar');
+          cachedSelector('foo', 'bar');
 
-      // Retrieve result from re-reselect cached selector
-      const actualResult = cachedSelector('foo', 1);
+          expect(createSelectorSpy).toHaveBeenCalledTimes(1);
+          expect(cachedSelector.recomputations()).toBe(1);
+        });
+      });
 
-      // Retrieve result directly calling underlying reselect selector
-      const reselectSelector = cachedSelector.getMatchingSelector('foo', 1);
-      const expectedResultFromSelector = reselectSelector('foo', 1);
+      describe('calls producing 2 different cacheKey', () => {
+        it('creates 2 selectors only and produce 2 recomputations', () => {
+          const cachedSelector = selectorWithMockedResultFunc();
+          cachedSelector('foo', 'bar');
+          cachedSelector('foo', 'moo');
+          cachedSelector('foo', 'bar');
+          cachedSelector('foo', 'moo');
 
-      expect(actualResult).toBe(expectedResultFromSelector);
+          expect(createSelectorSpy).toHaveBeenCalledTimes(2);
+          expect(cachedSelector.recomputations()).toBe(2);
+        });
+      });
     });
 
-    it('Should return "undefined" when given cache key doesn\'t match any cache entry', () => {
-      const cachedSelector = selectorWithMockedResultFunc();
+    describe('cacheKey validation', () => {
+      describe('cacheObject.isValidCacheKey', () => {
+        describe("doesn't exist", () => {
+          it('accepts any value', () => {
+            const cacheObjectMock = {
+              get: jest.fn(() => () => 'foo'),
+            };
+            const values = [{}, [], null, undefined, 12, 'bar'];
 
-      const actual = cachedSelector.getMatchingSelector('foo', 1);
-      const expected = undefined;
+            const cachedSelector = createCachedSelector(resultFuncMock)(
+              arg1 => arg1,
+              {
+                cacheObject: cacheObjectMock,
+              }
+            );
 
-      expect(actual).toEqual(expected);
+            values.forEach((value, index) => {
+              cachedSelector(value);
+              expect(cacheObjectMock.get).toHaveBeenCalledTimes(index + 1);
+              expect(cacheObjectMock.get).toHaveBeenLastCalledWith(value);
+            });
+          });
+        });
+
+        describe('returns true', () => {
+          it('calls cache.get method', () => {
+            const cacheObjectMock = new FlatObjectCache();
+            cacheObjectMock.isValidCacheKey = () => true;
+            cacheObjectMock.get = jest.fn();
+
+            const cachedSelector = createCachedSelector(resultFuncMock)(
+              arg1 => arg1,
+              {
+                cacheObject: cacheObjectMock,
+              }
+            );
+
+            cachedSelector('foo');
+
+            expect(cacheObjectMock.get).toHaveBeenCalledTimes(1);
+            expect(cacheObjectMock.get).toHaveBeenCalledWith('foo');
+          });
+        });
+
+        describe('returns false', () => {
+          it('returns "undefined" and call "console.warn"', () => {
+            const cacheObjectMock = new FlatObjectCache();
+            cacheObjectMock.isValidCacheKey = () => false;
+            cacheObjectMock.get = jest.fn();
+
+            const cachedSelector = createCachedSelector(resultFuncMock)(
+              arg1 => arg1,
+              {
+                cacheObject: cacheObjectMock,
+              }
+            );
+
+            const actual = cachedSelector('foo');
+
+            expect(actual).toBe(undefined);
+            expect(cacheObjectMock.get).not.toHaveBeenCalled();
+            expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
+          });
+        });
+      });
+    });
+
+    describe('available methods', () => {
+      describe('getMatchingSelector()', () => {
+        it('returns underlying reselect selector for a given cache key', () => {
+          const cachedSelector = createCachedSelector(() => {})(
+            (arg1, arg2) => arg2
+          );
+
+          // Retrieve result from re-reselect cached selector
+          const actualResult = cachedSelector('foo', 1);
+
+          // Retrieve result directly calling underlying reselect selector
+          const reselectSelector = cachedSelector.getMatchingSelector('foo', 1);
+          const expectedResultFromSelector = reselectSelector('foo', 1);
+
+          expect(actualResult).toBe(expectedResultFromSelector);
+        });
+
+        it('returns "undefined" when given cache key doesn\'t match any cache entry', () => {
+          const cachedSelector = selectorWithMockedResultFunc();
+
+          const actual = cachedSelector.getMatchingSelector('foo', 1);
+          const expected = undefined;
+
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('removeMatchingSelector()', () => {
+        it('sets the matching cache entry to "undefined"', () => {
+          const cachedSelector = selectorWithMockedResultFunc();
+
+          cachedSelector('foo', 1); // add to cache
+          cachedSelector('foo', 2); // add to cache
+          cachedSelector.removeMatchingSelector('foo', 1);
+
+          const firstSelectorActual = cachedSelector.getMatchingSelector(
+            'foo',
+            1
+          );
+          const secondSelectorActual = cachedSelector.getMatchingSelector(
+            'foo',
+            2
+          );
+
+          expect(firstSelectorActual).toBe(undefined);
+          expect(secondSelectorActual).not.toBe(undefined);
+        });
+      });
+
+      describe('clearCache()', () => {
+        it('resets cache', () => {
+          const cachedSelector = selectorWithMockedResultFunc();
+
+          cachedSelector('foo', 1); // add to cache
+          cachedSelector.clearCache();
+          const actual = cachedSelector.getMatchingSelector('foo', 1);
+
+          expect(actual).toBe(undefined);
+        });
+      });
+
+      describe('resetRecomputations()', () => {
+        it('resets recomputations', () => {
+          const cachedSelector = selectorWithMockedResultFunc();
+          cachedSelector('foo', 'bar');
+
+          expect(cachedSelector.recomputations()).toBe(1);
+          cachedSelector.resetRecomputations();
+          expect(cachedSelector.recomputations()).toBe(0);
+        });
+      });
+
+      describe('"dependencies" property', () => {
+        it('exports an array containing provided inputSelectors', () => {
+          const dependency1 = state => state.a;
+          const dependency2 = state => state.a;
+
+          const cachedSelector = createCachedSelector(
+            dependency1,
+            dependency2,
+            () => {}
+          )(arg1 => arg1);
+
+          const actual = cachedSelector.dependencies;
+          const expected = [dependency1, dependency2];
+          expect(actual).toEqual(expected);
+        });
+      });
+
+      describe('"resultFunc" property', () => {
+        it('points to provided result function', () => {
+          const cachedSelector = createCachedSelector(() => {}, resultFuncMock)(
+            (arg1, arg2) => arg2
+          );
+          expect(cachedSelector.resultFunc).toBe(resultFuncMock);
+        });
+      });
+
+      describe('"cache" property', () => {
+        it('points to currently used cacheObject', () => {
+          const currentCacheObject = new FlatObjectCache();
+          const cachedSelector = createCachedSelector(resultFuncMock)(
+            arg1 => arg1,
+            {
+              cacheObject: currentCacheObject,
+            }
+          );
+
+          expect(cachedSelector.cache).toBe(currentCacheObject);
+        });
+      });
+
+      describe('"keySelector" property', () => {
+        it('points to provided keySelector', () => {
+          const keySelector = (arg1, arg2) => arg2;
+          const cachedSelector = createCachedSelector(() => {}, resultFuncMock)(
+            keySelector
+          );
+          expect(cachedSelector.keySelector).toBe(keySelector);
+        });
+      });
     });
   });
 
-  describe('removeMatchingSelector()', () => {
-    it('Should set the matching cache entry to "undefined"', () => {
-      const cachedSelector = selectorWithMockedResultFunc();
-
-      cachedSelector('foo', 1); // add to cache
-      cachedSelector('foo', 2); // add to cache
-      cachedSelector.removeMatchingSelector('foo', 1); // remove key from chache
-
-      const firstSelectorActual = cachedSelector.getMatchingSelector('foo', 1);
-      const secondSelectorActual = cachedSelector.getMatchingSelector('foo', 2);
-
-      expect(firstSelectorActual).toBe(undefined);
-      expect(secondSelectorActual).not.toBe(undefined);
-    });
-  });
-
-  describe('clearCache()', () => {
-    it('Should reset cache', () => {
-      const cachedSelector = selectorWithMockedResultFunc();
-
-      cachedSelector('foo', 1); // add to cache
-      cachedSelector.clearCache(); // clear cache
-      const actual = cachedSelector.getMatchingSelector('foo', 1);
-
-      expect(actual).toBe(undefined);
-    });
-  });
-
-  describe('resetRecomputations()', () => {
-    it('Should reset recomputations', () => {
-      const cachedSelector = selectorWithMockedResultFunc();
-      const firstCallResult = cachedSelector('foo', 'bar');
-
-      expect(cachedSelector.recomputations()).toBe(1);
-      cachedSelector.resetRecomputations();
-      expect(cachedSelector.recomputations()).toBe(0);
-    });
-  });
-
-  describe('"dependencies" property', () => {
-    it('Should export an array containing provided inputSelectors', () => {
-      const dependency1 = state => state.a;
-      const dependency2 = state => state.a;
-
-      const cachedSelector = createCachedSelector(
-        dependency1,
-        dependency2,
-        () => {}
-      )(arg1 => arg1);
-
-      const actual = cachedSelector.dependencies;
-      const expected = [dependency1, dependency2];
-      expect(actual).toEqual(expected);
-    });
-  });
-
-  describe('"resultFunc" property', () => {
-    it('Should point to provided result function', () => {
-      const cachedSelector = createCachedSelector(() => {}, resultFuncMock)(
-        (arg1, arg2) => arg2
-      );
-      expect(cachedSelector.resultFunc).toBe(resultFuncMock);
-    });
-  });
-
-  describe('"cache" property', () => {
-    it('Should point to currently used cacheObject', () => {
-      const currentCacheObject = new FlatObjectCache();
-      const cachedSelector = createCachedSelector(resultFuncMock)(
-        arg1 => arg1,
-        {
-          cacheObject: currentCacheObject,
-        }
-      );
-
-      expect(cachedSelector.cache).toBe(currentCacheObject);
-    });
-  });
-
-  describe('"keySelector" property', () => {
-    it('Should point to provided keySelector', () => {
-      const keySelector = (arg1, arg2) => arg2;
-      const cachedSelector = createCachedSelector(() => {}, resultFuncMock)(
-        keySelector
-      );
-      expect(cachedSelector.keySelector).toBe(keySelector);
-    });
+  it('throws an error when a function is provided as 2° argument', () => {
+    expect(() => {
+      createCachedSelector(resultFuncMock)(() => {}, reselect.createSelector);
+    }).toThrow(/Second argument "options" must be an object/);
   });
 });

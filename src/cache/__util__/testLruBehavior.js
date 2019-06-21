@@ -2,7 +2,7 @@ import fillCacheWith from './fillCacheWith';
 
 function testLruBehavior(CacheObject) {
   describe('LRU cache behavior', () => {
-    it('Should remove an item and update cache ordering when another is added', () => {
+    it('removes an item and update cache ordering when another is added', () => {
       const cache = new CacheObject({cacheSize: 5});
       const entries = [1, 2, 3, 4, 5];
       fillCacheWith(cache, entries);
@@ -16,7 +16,7 @@ function testLruBehavior(CacheObject) {
       });
     });
 
-    it('Should limit cache queue by removing the least recently used item', () => {
+    it('limits cache queue by removing the least recently used item', () => {
       const cache = new CacheObject({cacheSize: 5});
 
       const entries = [0, 1, 2];

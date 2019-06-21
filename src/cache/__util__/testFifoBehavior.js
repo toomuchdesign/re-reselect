@@ -2,7 +2,7 @@ import fillCacheWith from './fillCacheWith';
 
 function testFifoBehavior(CacheObject) {
   describe('FIFO cache behavior', () => {
-    it('Should limit cache queue by removing the first added items', () => {
+    it('limits cache queue by removing the first added items', () => {
       const cache = new CacheObject({cacheSize: 5});
       const entries = [1, 2, 3, 4];
       const newEntries = [5, 6, 7];
@@ -17,7 +17,7 @@ function testFifoBehavior(CacheObject) {
       });
     });
 
-    it('Should mantain cache updated after removing extraneous entry', () => {
+    it('mantains cache updated after removing extraneous entry', () => {
       const cache = new CacheObject({cacheSize: 5});
       const entries = [1, 2, 3, 4, 5];
       fillCacheWith(cache, entries);

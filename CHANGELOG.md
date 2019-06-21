@@ -1,5 +1,11 @@
 # Change log
 
+## 3.3.0
+
+### New Features
+
+- Add `keySelectorCreator` option
+
 ## 3.2.0
 
 ### New Features

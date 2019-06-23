@@ -54,14 +54,20 @@ exports[`Dist bundle is unchanged 1`] = `
       funcs[_key] = arguments[_key];
     }
 
-    return function (keySelector, options) {
-      if (options === void 0) {
-        options = {};
+    return function (polymorphicOptions, legacyOptions) {
+      // @NOTE Versions 0.x/1.x accepted \\"options\\" as a function
+      if (typeof legacyOptions === 'function') {
+        throw new Error('[re-reselect] Second argument \\"options\\" must be an object. Please use \\"options.selectorCreator\\" to provide a custom selectorCreator.');
       }
 
-      // @NOTE Versions 0.x/1.x accepted \\"options\\" as a function
-      if (typeof options === 'function') {
-        throw new Error('[re-reselect] Second argument \\"options\\" must be an object. Please use \\"options.selectorCreator\\" to provide a custom selectorCreator.');
+      var options = {};
+
+      if (typeof polymorphicOptions === 'function') {
+        Object.assign(options, legacyOptions, {
+          keySelector: polymorphicOptions
+        }); // @TODO add legacyOptions deprecation notice in next major release
+      } else {
+        Object.assign(options, polymorphicOptions);
       } // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
 
 
@@ -80,16 +86,16 @@ exports[`Dist bundle is unchanged 1`] = `
       var isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
 
       if (options.keySelectorCreator) {
-        keySelector = options.keySelectorCreator({
+        options.keySelector = options.keySelectorCreator({
+          keySelector: options.keySelector,
           inputSelectors: dependencies,
-          resultFunc: resultFunc,
-          keySelector: keySelector
+          resultFunc: resultFunc
         });
       } // Application receives this function
 
 
       var selector = function selector() {
-        var cacheKey = keySelector.apply(void 0, arguments);
+        var cacheKey = options.keySelector.apply(options, arguments);
 
         if (isValidCacheKey(cacheKey)) {
           var cacheResponse = cache.get(cacheKey);
@@ -108,13 +114,13 @@ exports[`Dist bundle is unchanged 1`] = `
 
 
       selector.getMatchingSelector = function () {
-        var cacheKey = keySelector.apply(void 0, arguments); // @NOTE It might update cache hit count in LRU-like caches
+        var cacheKey = options.keySelector.apply(options, arguments); // @NOTE It might update cache hit count in LRU-like caches
 
         return cache.get(cacheKey);
       };
 
       selector.removeMatchingSelector = function () {
-        var cacheKey = keySelector.apply(void 0, arguments);
+        var cacheKey = options.keySelector.apply(options, arguments);
         cache.remove(cacheKey);
       };
 
@@ -134,7 +140,7 @@ exports[`Dist bundle is unchanged 1`] = `
         return recomputations = 0;
       };
 
-      selector.keySelector = keySelector;
+      selector.keySelector = options.keySelector;
       return selector;
     };
   }

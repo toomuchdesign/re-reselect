@@ -5,12 +5,20 @@ const defaultCacheCreator = FlatObjectCache;
 const defaultCacheKeyValidator = () => true;
 
 function createCachedSelector(...funcs) {
-  return (keySelector, options = {}) => {
+  return (polymorphicOptions, legacyOptions) => {
     // @NOTE Versions 0.x/1.x accepted "options" as a function
-    if (typeof options === 'function') {
+    if (typeof legacyOptions === 'function') {
       throw new Error(
         '[re-reselect] Second argument "options" must be an object. Please use "options.selectorCreator" to provide a custom selectorCreator.'
       );
+    }
+
+    const options = {};
+    if (typeof polymorphicOptions === 'function') {
+      Object.assign(options, legacyOptions, {keySelector: polymorphicOptions});
+      // @TODO add legacyOptions deprecation notice in next major release
+    } else {
+      Object.assign(options, polymorphicOptions);
     }
 
     // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
@@ -29,16 +37,16 @@ function createCachedSelector(...funcs) {
     const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
 
     if (options.keySelectorCreator) {
-      keySelector = options.keySelectorCreator({
+      options.keySelector = options.keySelectorCreator({
+        keySelector: options.keySelector,
         inputSelectors: dependencies,
         resultFunc,
-        keySelector,
       });
     }
 
     // Application receives this function
     const selector = function(...args) {
-      const cacheKey = keySelector(...args);
+      const cacheKey = options.keySelector(...args);
 
       if (isValidCacheKey(cacheKey)) {
         let cacheResponse = cache.get(cacheKey);
@@ -58,13 +66,13 @@ function createCachedSelector(...funcs) {
 
     // Further selector methods
     selector.getMatchingSelector = (...args) => {
-      const cacheKey = keySelector(...args);
+      const cacheKey = options.keySelector(...args);
       // @NOTE It might update cache hit count in LRU-like caches
       return cache.get(cacheKey);
     };
 
     selector.removeMatchingSelector = (...args) => {
-      const cacheKey = keySelector(...args);
+      const cacheKey = options.keySelector(...args);
       cache.remove(cacheKey);
     };
 
@@ -82,7 +90,7 @@ function createCachedSelector(...funcs) {
 
     selector.resetRecomputations = () => (recomputations = 0);
 
-    selector.keySelector = keySelector;
+    selector.keySelector = options.keySelector;
 
     return selector;
   };

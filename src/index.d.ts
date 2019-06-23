@@ -34,25 +34,23 @@ export type OutputParametricSelector<S, P, R, C, D> = ParametricSelector<
 
 export type CreateSelectorInstance = typeof createSelector;
 
-type Options<S, C, D> =
-  | {
-      selectorCreator?: CreateSelectorInstance;
-      cacheObject?: ICacheObject;
-      keySelectorCreator?: KeySelectorCreator<S, C, D>;
-    }
-  | CreateSelectorInstance;
+type Options<S, C, D> = {
+  selectorCreator?: CreateSelectorInstance;
+  cacheObject?: ICacheObject;
+  keySelector?: KeySelector<S>;
+  keySelectorCreator?: KeySelectorCreator<S, C, D>;
+};
 
-type ParametricOptions<S, P, C, D> =
-  | {
-      selectorCreator?: CreateSelectorInstance;
-      cacheObject?: ICacheObject;
-      keySelectorCreator?: ParametricKeySelectorCreator<S, P, C, D>;
-    }
-  | CreateSelectorInstance;
+type ParametricOptions<S, P, C, D> = {
+  selectorCreator?: CreateSelectorInstance;
+  cacheObject?: ICacheObject;
+  keySelector?: ParametricKeySelector<S, P>;
+  keySelectorCreator?: ParametricKeySelectorCreator<S, P, C, D>;
+};
 
 export type OutputCachedSelector<S, R, C, D> = (
-  keySelector: KeySelector<S>,
-  optionsOrSelectorCreator?: Options<S, C, D>
+  options: KeySelector<S> | Options<S, C, D>,
+  legacyOptions?: Options<S, C, D> | CreateSelectorInstance
 ) => OutputSelector<S, R, C, D> & {
   getMatchingSelector: (state: S, ...args: any[]) => OutputSelector<S, R, C, D>;
   removeMatchingSelector: (state: S, ...args: any[]) => void;
@@ -62,8 +60,8 @@ export type OutputCachedSelector<S, R, C, D> = (
 };
 
 export type OutputParametricCachedSelector<S, P, R, C, D> = (
-  keySelector: ParametricKeySelector<S, P>,
-  optionsOrSelectorCreator?: ParametricOptions<S, P, C, D>
+  options: ParametricKeySelector<S, P> | ParametricOptions<S, P, C, D>,
+  legacyOptions?: ParametricOptions<S, P, C, D> | CreateSelectorInstance
 ) => OutputParametricSelector<S, P, R, C, D> & {
   getMatchingSelector: (
     state: S,

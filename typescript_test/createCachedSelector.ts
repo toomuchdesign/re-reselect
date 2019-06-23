@@ -381,7 +381,8 @@ function testKeySelectorCreatorOption() {
     inputSelector,
     inputSelector,
     resultFunc
-  )(keySelector, {
+  )({
+    keySelector,
     keySelectorCreator: ({inputSelectors, resultFunc, keySelector}) => {
       const input1 = inputSelectors[0](state);
       const input2 = inputSelectors[1](state);

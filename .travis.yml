@@ -1,9 +1,6 @@
 language: node_js
 node_js:
-  - "8"
-  - "10"
-before_install:
-  - if [[ `npm -v` < 5.3 ]]; then npm install -g npm@5.3.x; fi
+  - "lts/*"
 script:
   - npm run prepublish
 after_success:

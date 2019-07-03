@@ -4,8 +4,8 @@ exports[`Dist bundle is unchanged 1`] = `
 "(function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('reselect')) :
   typeof define === 'function' && define.amd ? define(['exports', 'reselect'], factory) :
-  (factory((global['Re-reselect'] = {}),global.Reselect));
-}(this, (function (exports,reselect) { 'use strict';
+  (global = global || self, factory(global['Re-reselect'] = {}, global.Reselect));
+}(this, function (exports, reselect) { 'use strict';
 
   function isStringOrNumber(value) {
     return typeof value === 'string' || typeof value === 'number';
@@ -384,21 +384,21 @@ exports[`Dist bundle is unchanged 1`] = `
     return LruMapCache;
   }();
 
-  exports.default = createCachedSelector;
-  exports.createStructuredCachedSelector = createStructuredCachedSelector;
-  exports.FlatObjectCache = FlatObjectCache;
-  exports.FifoObjectCache = FifoObjectCache;
-  exports.LruObjectCache = LruObjectCache;
-  exports.FlatMapCache = FlatMapCache;
-  exports.FifoMapCache = FifoMapCache;
-  exports.LruMapCache = LruMapCache;
-  exports.FlatCacheObject = FlatObjectCache;
   exports.FifoCacheObject = FifoObjectCache;
+  exports.FifoMapCache = FifoMapCache;
+  exports.FifoObjectCache = FifoObjectCache;
+  exports.FlatCacheObject = FlatObjectCache;
+  exports.FlatMapCache = FlatMapCache;
+  exports.FlatObjectCache = FlatObjectCache;
   exports.LruCacheObject = LruMapCache;
+  exports.LruMapCache = LruMapCache;
+  exports.LruObjectCache = LruObjectCache;
+  exports.createStructuredCachedSelector = createStructuredCachedSelector;
+  exports.default = createCachedSelector;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
+}));
 //# sourceMappingURL=index.js.map
 "
 `;

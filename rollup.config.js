@@ -10,7 +10,7 @@ let plugins = [
   }),
 ];
 
-const config = {
+export default {
   input: 'src/index.js',
   external: external,
   plugins: plugins,
@@ -39,5 +39,3 @@ const config = {
     },
   ],
 };
-
-export default config;

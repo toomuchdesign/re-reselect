@@ -16,9 +16,11 @@
     "!__util__"
   ],
   "scripts": {
-    "test": "npm run test:typescript && jest",
+    "test": "npm run test:typescript && jest ./src",
     "test:typescript": "typings-tester --config typescript_test/tsconfig.json --dir typescript_test",
-    "test:bundles": "jest --config ./jest/es.config.js && jest --config ./jest/lib.config.js && jest --config ./jest/dist.config.js",
+    "test:bundles": "npm run test:bundles:snapshot && npm run test:bundles:unit",
+    "test:bundles:unit": "jest --config ./jest/es.config.js && jest --config ./jest/lib.config.js && jest --config ./jest/dist.config.js",
+    "test:bundles:snapshot": "jest ./jest/bundles-snapshot.test.js",
     "clean": "rimraf dist es lib",
     "compile": "npm run clean && rollup -c",
     "contrib:add": "all-contributors add",

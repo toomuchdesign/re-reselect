@@ -329,15 +329,11 @@ import createCachedSelector from 're-reselect';
 createCachedSelector(
   // ...reselect's `createSelector` arguments
 )(
-  keySelector,
-  { options }
+  keySelector | { options }
 )
 ```
 
-Takes the same arguments as reselect's [`createSelector`][reselect-create-selector] and returns a new function which accepts **2 arguments**:
-
-- `keySelector`
-- `{ options }` _(optional)_
+Takes the same arguments as reselect's [`createSelector`][reselect-create-selector] and returns a new function which accepts a [`keySelector`](#keyselector) or an [`options`](#options) object.
 
 **Returns** a [selector instance][selector-instance-docs].
 
@@ -350,15 +346,11 @@ import { createStructuredCachedSelector } from 're-reselect';
 createStructuredCachedSelector(
   // ...reselect's `createStructuredSelector` arguments
 )(
-  keySelector,
-  { options }
+  keySelector | { options }
 )
 ```
 
-Takes the same arguments as reselect's [`createStructuredSelector`][reselect-create-structured-selector] and returns a new function which accepts **2 arguments**:
-
-- `keySelector`
-- `{ options }` _(optional)_
+Takes the same arguments as reselect's [`createStructuredSelector`][reselect-create-structured-selector] and returns a new function which accepts a [`keySelector`](#keyselector) or an [`options`](#options) object.
 
 **Returns** a [selector instance][selector-instance-docs].
 
@@ -372,19 +364,19 @@ The `keySelector` idea comes from [Lodash's .memoize resolver][lodash-memoize].
 
 ### options
 
+#### keySelector
+
+Type: `function`<br />
+Default: `undefined`
+
+The [`keySelector`](#keyselector) used by the cached selector.
+
 #### cacheObject
 
 Type: `object`<br />
 Default: [`FlatObjectCache`][cache-objects-docs]
 
 An optional custom **cache strategy object** to handle the caching behaviour. Read more about [re-reselect's custom cache here][cache-objects-docs].
-
-#### selectorCreator
-
-Type: `function`<br />
-Default: `reselect`'s [`createSelector`][reselect-create-selector]
-
-An optional function describing a [custom version of createSelector][reselect-create-selector-creator].
 
 #### keySelectorCreator
 
@@ -401,7 +393,14 @@ export type keySelectorCreator = (selectorInputs: {
 }) => KeySelector;
 ```
 
-This allows to dynamically **generate `keySelectors` on runtime** based on provided `inputSelectors`/`resultFunc` supporting [**key selectors composition**](https://github.com/toomuchdesign/re-reselect/pull/73).
+This allows to dynamically **generate `keySelectors` on runtime** based on provided `inputSelectors`/`resultFunc` supporting [**key selectors composition**](https://github.com/toomuchdesign/re-reselect/pull/73). It overrides any provided `keySelector`.
+
+#### selectorCreator
+
+Type: `function`<br />
+Default: `reselect`'s [`createSelector`][reselect-create-selector]
+
+An optional function describing a [custom version of createSelector][reselect-create-selector-creator].
 
 ### re-reselect selector instance
 

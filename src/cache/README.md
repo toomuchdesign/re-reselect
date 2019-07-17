@@ -21,14 +21,12 @@ import createCachedSelector, {LruObjectCache, LruMapCache} from 're-reselect';
 
 createCachedSelector(
   // ...
-)(
+)({
   keySelector,
-  {
-    cacheObject: new LruObjectCache({cacheSize: 5}),
-    // or:
-    // cacheObject: new LruMapCache({cacheSize: 5}),
-  }
-);
+  cacheObject: new LruObjectCache({cacheSize: 5}),
+  // or:
+  // cacheObject: new LruMapCache({cacheSize: 5}),
+});
 ```
 
 **[*]ObjectCache** strategy objects treat `cacheKey` of type `number` like strings, since they are used as arguments of JS objects.

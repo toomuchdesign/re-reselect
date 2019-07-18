@@ -380,7 +380,7 @@ Default: `undefined`
 An optional function with the following signature returning the [`keySelector`](#keyselector) used by the cached selector.
 
 ```typescript
-export type keySelectorCreator = (selectorInputs: {
+type keySelectorCreator = (selectorInputs: {
   inputSelectors: InputSelector[];
   resultFunc: ResultFunc;
   keySelector: KeySelector;
@@ -388,6 +388,8 @@ export type keySelectorCreator = (selectorInputs: {
 ```
 
 This allows to dynamically **generate `keySelectors` on runtime** based on provided `inputSelectors`/`resultFunc` supporting [**key selectors composition**](https://github.com/toomuchdesign/re-reselect/pull/73). It overrides any provided `keySelector`.
+
+See [programmatic keySelector composition][example-4] example.
 
 #### selectorCreator
 

@@ -28,29 +28,30 @@ Useful to:
 import createCachedSelector from 're-reselect';
 
 // Normal reselect routine: declare "inputSelectors" and "resultFunc"
-const selectorA = state => state.a;
-const selectorB = (state, itemName) => state.items[itemName];
+const getUsers = state => state.users;
+const getLibraryId = (state, libName) => state.libraries[libName].id;
 
-const cachedSelector = createCachedSelector(
+const getUsersByLibrary = createCachedSelector(
   // inputSelectors
-  selectorA,
-  selectorB,
+  getUsers,
+  getLibraryId,
 
   // resultFunc
-  (A, B) => expensiveComputation(A, B)
+  (users, libraryId) => expensiveComputation(users, libraryId),
 )(
-  // keySelector
-  // Instruct re-reselect to use "itemName" as cacheKey
-  (state, itemName) => itemName
+  // re-reselect keySelector
+  // Use "libraryId" as cacheKey
+  (_, libraryId) => libraryId
 );
 
 // Cached selector behave like normal selectors:
 // 2 reselect selectors are created, called and cached
-const fooResult = cachedSelector(state, 'foo');
-const barResult = cachedSelector(state, 'bar');
+const reactUsers = getUsersByLibrary(state, 'react');
+const vueUsers = getUsersByLibrary(state, 'vue');
 
-const fooResultAgain = cachedSelector(state, 'foo');
-// fooResult === fooResultAgain
+// This 3rd call hits the cache
+const reactUsersAgain = getUsersByLibrary(state, 'react');
+// reactUsers === reactUsersAgain
 // "expensiveComputation" called twice in total
 ```
 

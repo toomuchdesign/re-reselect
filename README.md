@@ -154,6 +154,7 @@ This is what `re-reselect` actually does! :-) It's quite verbose (since has to b
 - [Join similar selectors][example-1]
 - [Avoid selector factories][example-2]
 - [Cache API calls][example-3]
+- [Programmatic keySelector composition][example-4]
 
 ## FAQ
 
@@ -483,6 +484,7 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [example-1]: examples/1-join-selectors.md
 [example-2]: examples/2-avoid-selector-factories.md
 [example-3]: examples/3-cache-api-calls.md
+[example-4]: examples/4-programmatic-keyselector-composition.md
 [selector-instance-docs]: #re-reselect-selector-instance
 [cache-objects-docs]: src/cache#readme
 [docs-all-contributors]: https://allcontributors.org/docs/en/emoji-key

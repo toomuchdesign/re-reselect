@@ -100,12 +100,12 @@ The **3rd argument invalidates `reselect` cache** on each call, forcing `getData
 
 `cacheKey` is the return value of the `keySelector` function. It's by default a `string` or `number` but it can be anything depending on the chosen cache strategy (see [cache objects docs][cache-objects-docs]).
 
-`keySelector` is a **custom function** which:
+`keySelector` is a custom function which:
 
 - takes the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`)
-- returns a `cacheKey`.
+- returns a `cacheKey`
 
-Note that the **same `reselect` selector instance** stored in cache will be used for computing data for the **same `cacheKey`** (1:1).
+A **unique persisting `reselect` selector instance** stored in cache is used to compute data for a given `cacheKey` (1:1).
 
 Back to the example, `re-reselect` retrieves data by **querying one of the cached selectors** using the 3rd argument as `cacheKey`, allowing cache invalidation only when `state` or `itemId` change (but not `dataType`):
 
@@ -121,16 +121,14 @@ const getPieceOfData = createCachedSelector(
 );
 ```
 
-`createCachedSelector` returns a selector with the **same API as a standard `reselect` selector**.
+**Replacing a selector with a cached selector is invisible to the consuming application since the API is the same.**
 
-But now, **each time the selector is called**, the following happens behind the scenes:
+**When a cached selector is called**, the following happens behind the scenes:
 
 1.  **Evaluate the `cacheKey`** for current call by executing `keySelector`
 2.  **Retrieve** from cache the **`reselect` selector** stored under the given `cacheKey`
 3.  **Return found selector or create a new one** if no selector was found
 4.  **Call returned selector** with provided arguments
-
-**re-reselect** stays completely optional and consumes **your installed reselect** package (`reselect` is declared as **peer dependency**).
 
 ### Other viable solutions
 
@@ -148,7 +146,7 @@ The solution suggested in [Reselect docs][reselect-sharing-selectors] is fine, b
 
 #### 3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector
 
-This is what `re-reselect` actually does! :-) It's quite verbose (since has to be repeated for each selector), **that's why re-reselect is here**.
+This is what `re-reselect` actually does. 😀
 
 ## Examples
 

@@ -1,5 +1,11 @@
 # Change log
 
+## 3.4.0
+
+### New Features
+
+- Introduce single argument signature
+
 ## 3.3.0
 
 ### New Features

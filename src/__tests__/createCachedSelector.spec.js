@@ -83,15 +83,6 @@ describe('createCachedSelector', () => {
         expect(cachedSelector.cache).toBeInstanceOf(LruObjectCache);
       });
     });
-
-    describe('as function as 2° argument', () => {
-      it('throws an error', () => {
-        expect(() => {
-          createCachedSelector(resultFuncMock)(() => {},
-          reselect.createSelector);
-        }).toThrow(/Second argument "options" must be an object/);
-      });
-    });
   });
 
   describe('created selector', () => {

@@ -6,13 +6,6 @@ const defaultCacheKeyValidator = () => true;
 
 function createCachedSelector(...funcs) {
   return (polymorphicOptions, legacyOptions) => {
-    // @NOTE Versions 0.x/1.x accepted "options" as a function
-    if (typeof legacyOptions === 'function') {
-      throw new Error(
-        '[re-reselect] Second argument "options" must be an object. Please use "options.selectorCreator" to provide a custom selectorCreator.'
-      );
-    }
-
     const options = {};
     if (typeof polymorphicOptions === 'function') {
       Object.assign(options, legacyOptions, {keySelector: polymorphicOptions});

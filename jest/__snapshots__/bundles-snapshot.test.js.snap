@@ -53,16 +53,13 @@ exports[`Dist bundle is unchanged 1`] = `
     }
 
     return function (polymorphicOptions, legacyOptions) {
-      var options = {};
+      if (legacyOptions) {
+        throw new Error('[re-reselect] \\"options\\" as second argument is not supported anymore. Please provide an option object as single argument.');
+      }
 
-      if (typeof polymorphicOptions === 'function') {
-        Object.assign(options, legacyOptions, {
-          keySelector: polymorphicOptions
-        }); // @TODO add legacyOptions deprecation notice in next major release
-      } else {
-        Object.assign(options, polymorphicOptions);
-      } // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
-
+      var options = typeof polymorphicOptions === 'function' ? {
+        keySelector: polymorphicOptions
+      } : Object.assign({}, polymorphicOptions); // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
 
       var recomputations = 0;
       var resultFunc = funcs.pop();

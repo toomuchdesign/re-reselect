@@ -6,13 +6,16 @@ const defaultCacheKeyValidator = () => true;
 
 function createCachedSelector(...funcs) {
   return (polymorphicOptions, legacyOptions) => {
-    const options = {};
-    if (typeof polymorphicOptions === 'function') {
-      Object.assign(options, legacyOptions, {keySelector: polymorphicOptions});
-      // @TODO add legacyOptions deprecation notice in next major release
-    } else {
-      Object.assign(options, polymorphicOptions);
+    if (legacyOptions) {
+      throw new Error(
+        '[re-reselect] "options" as second argument is not supported anymore. Please provide an option object as single argument.'
+      );
     }
+
+    const options =
+      typeof polymorphicOptions === 'function'
+        ? {keySelector: polymorphicOptions}
+        : Object.assign({}, polymorphicOptions);
 
     // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
     let recomputations = 0;

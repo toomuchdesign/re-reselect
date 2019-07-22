@@ -53,11 +53,6 @@ exports[`Dist bundle is unchanged 1`] = `
     }
 
     return function (polymorphicOptions, legacyOptions) {
-      // @NOTE Versions 0.x/1.x accepted \\"options\\" as a function
-      if (typeof legacyOptions === 'function') {
-        throw new Error('[re-reselect] Second argument \\"options\\" must be an object. Please use \\"options.selectorCreator\\" to provide a custom selectorCreator.');
-      }
-
       var options = {};
 
       if (typeof polymorphicOptions === 'function') {

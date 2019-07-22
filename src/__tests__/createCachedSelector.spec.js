@@ -69,18 +69,11 @@ describe('createCachedSelector', () => {
       });
     });
 
-    describe('as function + object', () => {
-      it('accepts keySelector function + option object', () => {
-        const keySelectorMock = () => {};
-        const cachedSelector = createCachedSelector(resultFuncMock)(
-          keySelectorMock,
-          {
-            cacheObject: new LruObjectCache({cacheSize: 10}),
-          }
-        );
-
-        expect(cachedSelector.keySelector).toBe(keySelectorMock);
-        expect(cachedSelector.cache).toBeInstanceOf(LruObjectCache);
+    describe('as second argument', () => {
+      it('throws an error', () => {
+        expect(() => {
+          createCachedSelector(() => {})(() => {}, {});
+        }).toThrow(/"options" as second argument is not supported anymore/);
       });
     });
   });

@@ -49,8 +49,7 @@ type ParametricOptions<S, P, C, D> = {
 };
 
 export type OutputCachedSelector<S, R, C, D> = (
-  options: KeySelector<S> | Options<S, C, D>,
-  legacyOptions?: Options<S, C, D>
+  options: KeySelector<S> | Options<S, C, D>
 ) => OutputSelector<S, R, C, D> & {
   getMatchingSelector: (state: S, ...args: any[]) => OutputSelector<S, R, C, D>;
   removeMatchingSelector: (state: S, ...args: any[]) => void;
@@ -60,8 +59,7 @@ export type OutputCachedSelector<S, R, C, D> = (
 };
 
 export type OutputParametricCachedSelector<S, P, R, C, D> = (
-  options: ParametricKeySelector<S, P> | ParametricOptions<S, P, C, D>,
-  legacyOptions?: ParametricOptions<S, P, C, D>
+  options: ParametricKeySelector<S, P> | ParametricOptions<S, P, C, D>
 ) => OutputParametricSelector<S, P, R, C, D> & {
   getMatchingSelector: (
     state: S,

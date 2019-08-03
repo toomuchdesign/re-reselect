@@ -21,6 +21,7 @@
     "test:bundles": "npm run test:bundles:snapshot && npm run test:bundles:unit",
     "test:bundles:unit": "jest ./src --config ./jest/es.config.js && jest ./src --config ./jest/lib.config.js && jest ./src --config ./jest/dist.config.js",
     "test:bundles:snapshot": "jest ./jest/bundles-snapshot.test.js",
+    "test:update": "npm run compile && npm run test:bundles:snapshot -- -u",
     "clean": "rimraf dist es lib",
     "compile": "npm run clean && rollup -c",
     "contrib:add": "all-contributors add",

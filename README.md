@@ -29,7 +29,7 @@ import createCachedSelector from 're-reselect';
 
 // Normal reselect routine: declare "inputSelectors" and "resultFunc"
 const getUsers = state => state.users;
-const getLibraryId = (state, libName) => state.libraries[libName].id;
+const getLibraryId = (state, libraryName) => state.libraries[libraryName].id;
 
 const getUsersByLibrary = createCachedSelector(
   // inputSelectors
@@ -39,9 +39,9 @@ const getUsersByLibrary = createCachedSelector(
   // resultFunc
   (users, libraryId) => expensiveComputation(users, libraryId),
 )(
-  // re-reselect keySelector
-  // Use "libraryId" as cacheKey
-  (_, libraryId) => libraryId
+  // re-reselect keySelector (receives selectors' arguments)
+  // Use "libraryName" as cacheKey
+  (_state_, libraryName) => libraryName
 );
 
 // Cached selector behave like normal selectors:
@@ -102,7 +102,7 @@ The **3rd argument invalidates `reselect` cache** on each call, forcing `getData
 
 `keySelector` is a custom function which:
 
-- takes the same arguments as the final selector (in the example: `state`, `itemId`, `'dataX'`)
+- takes the same arguments as the selector itself (in the example: `state`, `itemId`, `'dataX'`)
 - returns a `cacheKey`
 
 A **unique persisting `reselect` selector instance** stored in cache is used to compute data for a given `cacheKey` (1:1).
@@ -114,7 +114,7 @@ Back to the example, `re-reselect` retrieves data by **querying one of the cache
 const getPieceOfData = createCachedSelector(
   state => state,
   (_state_, itemId) => itemId,
-  (state, itemId, dataType) => dataType,
+  (_state_, _itemId_, dataType) => dataType,
   (state, itemId, dataType) => expensiveComputation(state, itemId, dataType)
 )(
   (state, itemId, dataType) => dataType // Use dataType as cacheKey

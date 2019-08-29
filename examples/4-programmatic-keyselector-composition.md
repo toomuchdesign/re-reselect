@@ -17,7 +17,7 @@ Since we don't want to know the number of provided `inputSelectors` upfront, we'
 #### `keySelectorCombiner.js`
 
 ```js
-return function keySelectorCombiner({inputSelectors = []} = {}) {
+function keySelectorCombiner({inputSelectors = []} = {}) {
   const keySelectors = inputSelectors
     .map(entry => entry.keySelector)
     .filter(keySelector => typeof keySelector === 'function');

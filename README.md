@@ -44,7 +44,7 @@ const getUsersByLibrary = createCachedSelector(
   (_state_, libraryName) => libraryName
 );
 
-// Cached selector behave like normal selectors:
+// Cached selectors behave like normal selectors:
 // 2 reselect selectors are created, called and cached
 const reactUsers = getUsersByLibrary(state, 'react');
 const vueUsers = getUsersByLibrary(state, 'vue');
@@ -125,7 +125,7 @@ const getPieceOfData = createCachedSelector(
 
 **When a cached selector is called**, the following happens behind the scenes:
 
-1.  **Evaluate the `cacheKey`** for current call by executing `keySelector`
+1.  **Evaluate the `cacheKey`** for the current call by executing `keySelector`
 2.  **Retrieve** from cache the **`reselect` selector** stored under the given `cacheKey`
 3.  **Return found selector or create a new one** if no selector was found
 4.  **Call returned selector** with provided arguments
@@ -141,8 +141,8 @@ Easy, but doesn't scale. See ["join similar selectors" example][example-1].
 The solution suggested in [Reselect docs][reselect-sharing-selectors] is fine, but it has a few downsides:
 
 - Bloats your code by exposing both `get` selectors and `makeGet` selector factories
-- Needs to import/call selector factory instead of directly using selector
-- Two different instances given the same arguments, will individually store and recompute the same result (read [this](https://github.com/reactjs/reselect/pull/213))
+- Needs to import/call the selector factory instead of directly using the selector
+- Two different instances, given the same arguments, will individually store and recompute the same result (read [this](https://github.com/reactjs/reselect/pull/213))
 
 #### 3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector
 

@@ -256,7 +256,6 @@ You can also write **your own cache strategy**!
   <br/>
 
 [This example][example-2] shows how `re-reselect` would solve the scenario described in [reselect docs][reselect-sharing-selectors].
-Read more about testing selectors on [`reselect` docs][reselect-test-selectors].
 
 </details>
 

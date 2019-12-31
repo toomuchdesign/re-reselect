@@ -243,7 +243,7 @@ createCachedSelector(
   </summary>
   <br/>
 
-Use a [`cacheObject`][cache-objects-docs] which provides that feature by supplying a [`cacheObject` option](#options).
+Use a [`cacheObject`][cache-objects-docs] which provides that feature by supplying a [`cacheObject` option](#cacheobject).
 
 You can also write **your own cache strategy**!
 

@@ -385,7 +385,7 @@ type keySelectorCreator = (selectorInputs: {
 }) => KeySelector;
 ```
 
-This allows to dynamically **generate `keySelectors` on runtime** based on provided `inputSelectors`/`resultFunc` supporting [**key selectors composition**](https://github.com/toomuchdesign/re-reselect/pull/73). It overrides any provided `keySelector`.
+This allows the ability to dynamically **generate `keySelectors` on runtime** based on provided `inputSelectors`/`resultFunc` supporting [**key selectors composition**](https://github.com/toomuchdesign/re-reselect/pull/73). It overrides any provided `keySelector`.
 
 See [programmatic keySelector composition][example-4] example.
 
@@ -412,7 +412,7 @@ Remove from the cache the selector responding to the given arguments.
 
 #### selector`.cache`
 
-Get cacheObject instance being used by the selector (for advanced caching operations like [this](https://github.com/toomuchdesign/re-reselect/issues/40)).
+Get the cacheObject instance being used by the selector (for advanced caching operations like [this](https://github.com/toomuchdesign/re-reselect/issues/40)).
 
 #### selector`.clearCache()`
 

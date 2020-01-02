@@ -65,8 +65,8 @@
     "prettier": "^1.19.1",
     "reselect": "^4.0.0",
     "rimraf": "^3.0.0",
-    "rollup": "^1.16.4",
-    "rollup-plugin-babel": "^4.0.3",
+    "rollup": "^1.27.14",
+    "rollup-plugin-babel": "^4.3.3",
     "typescript": "^3.7.4",
     "typings-tester": "^0.3.2"
   },

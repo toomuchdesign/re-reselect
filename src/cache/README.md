@@ -31,7 +31,7 @@ createCachedSelector(
 
 **[*]ObjectCache** strategy objects treat `cacheKey` of type `number` like strings, since they are used as arguments of JS objects.
 
-**[*]MapCache** strategy objects needs a **Map objects polyfill** in order to use them on non-supporting browsers.
+**[*]MapCache** strategy objects need a **Map objects polyfill** in order to use them on non-supporting browsers.
 
 ## Write your custom cache object
 
@@ -51,6 +51,6 @@ interface ICacheObject {
 
 [docs-strategy-object]: https://sourcemaking.com/design_patterns/strategy
 [wiki-strategy-pattern]: https://en.wikipedia.org/wiki/Strategy_pattern
-[docs-fifo-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#First_In_First_Out_.28FIFO.29
-[docs-lru-cache]: https://en.wikipedia.org/wiki/
+[docs-fifo-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#First_in_first_out_(FIFO)
+[docs-lru-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)
 [docs-mozilla-map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map

@@ -44,7 +44,7 @@ const getUsersByLibrary = createCachedSelector(
   (_state_, libraryName) => libraryName
 );
 
-// Cached selector behave like normal selectors:
+// Cached selectors behave like normal selectors:
 // 2 reselect selectors are created, called and cached
 const reactUsers = getUsersByLibrary(state, 'react');
 const vueUsers = getUsersByLibrary(state, 'vue');
@@ -125,7 +125,7 @@ const getPieceOfData = createCachedSelector(
 
 **When a cached selector is called**, the following happens behind the scenes:
 
-1.  **Evaluate the `cacheKey`** for current call by executing `keySelector`
+1.  **Evaluate the `cacheKey`** for the current call by executing `keySelector`
 2.  **Retrieve** from cache the **`reselect` selector** stored under the given `cacheKey`
 3.  **Return found selector or create a new one** if no selector was found
 4.  **Call returned selector** with provided arguments
@@ -141,8 +141,8 @@ Easy, but doesn't scale. See ["join similar selectors" example][example-1].
 The solution suggested in [Reselect docs][reselect-sharing-selectors] is fine, but it has a few downsides:
 
 - Bloats your code by exposing both `get` selectors and `makeGet` selector factories
-- Needs to import/call selector factory instead of directly using selector
-- Two different instances given the same arguments, will individually store and recompute the same result (read [this](https://github.com/reactjs/reselect/pull/213))
+- Needs to import/call the selector factory instead of directly using the selector
+- Two different instances, given the same arguments, will individually store and recompute the same result (read [this](https://github.com/reactjs/reselect/pull/213))
 
 #### 3- Wrap your `makeGetPieceOfData` selector factory into a memoizer function and call the returning memoized selector
 
@@ -243,7 +243,7 @@ createCachedSelector(
   </summary>
   <br/>
 
-Use a [`cacheObject`][cache-objects-docs] which provides that feature by supplying a [`cacheObject` option](#options).
+Use a [`cacheObject`][cache-objects-docs] which provides that feature by supplying a [`cacheObject` option](#cacheobject).
 
 You can also write **your own cache strategy**!
 
@@ -256,7 +256,6 @@ You can also write **your own cache strategy**!
   <br/>
 
 [This example][example-2] shows how `re-reselect` would solve the scenario described in [reselect docs][reselect-sharing-selectors].
-Read more about testing selectors on [`reselect` docs][reselect-test-selectors].
 
 </details>
 
@@ -386,7 +385,7 @@ type keySelectorCreator = (selectorInputs: {
 }) => KeySelector;
 ```
 
-This allows to dynamically **generate `keySelectors` on runtime** based on provided `inputSelectors`/`resultFunc` supporting [**key selectors composition**](https://github.com/toomuchdesign/re-reselect/pull/73). It overrides any provided `keySelector`.
+This allows the ability to dynamically **generate `keySelectors` on runtime** based on provided `inputSelectors`/`resultFunc` supporting [**key selectors composition**](https://github.com/toomuchdesign/re-reselect/pull/73). It overrides any provided `keySelector`.
 
 See [programmatic keySelector composition][example-4] example.
 
@@ -413,7 +412,7 @@ Remove from the cache the selector responding to the given arguments.
 
 #### selector`.cache`
 
-Get cacheObject instance being used by the selector (for advanced caching operations like [this](https://github.com/toomuchdesign/re-reselect/issues/40)).
+Get the cacheObject instance being used by the selector (for advanced caching operations like [this](https://github.com/toomuchdesign/re-reselect/issues/40)).
 
 #### selector`.clearCache()`
 

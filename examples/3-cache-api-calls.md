@@ -1,6 +1,6 @@
 ## Cache API calls
 
-This example shows how `re-reselect` can be used to _not as a selector_ but to **cache API calls** in a typical **Redux scenario**.
+This example shows how `re-reselect` can be used _not as a selector_ but to **cache API calls** in a typical **Redux scenario**.
 
 A working proof of concept can be found [here](https://codesandbox.io/s/py8prlj7om).
 
@@ -47,7 +47,7 @@ actionFetchPage(pageId) {
         }),
         /*
          * On error we might also opt for removing the matching cache entry
-         * in order to refetch the page on future request:
+         * in order to refetch the page on future requests:
          * fetchPageWithCache.removeMatchingSelector(pageId);
          */
       );

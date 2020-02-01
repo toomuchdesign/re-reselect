@@ -44,7 +44,7 @@ const afghanistanAgain = getCountryData(state, 'afghanistan');
  * Solution 3: use a factory function
  * Problem:
  * - Lost memoization across multiple components
- * - Must the factory once for each country on each container component
+ * - Must call the factory once for each country on each container component
  */
 const makeGetCountryData = country => {
   return createSelector(
@@ -66,13 +66,13 @@ const getCountryData = createCachedSelector(
   (state, country) => country,
   (world, country) => extractData(world, country),
 )(
-  (state, country) => country, // Cache selectors by state name
+  (state, country) => country, // Cache selectors by country name
 );
 
 const afghanistan = getCountryData(state, 'afghanistan');
 const zimbabwe = getCountryData(state, 'zimbawe');
 const afghanistanAgain = getCountryData(state, 'afghanistan');
 
-// No selector factories and memoization preserved among different components
+// No selector factories and memoization is preserved among different components
 // afghanistan === afghanistanAgain
 ```

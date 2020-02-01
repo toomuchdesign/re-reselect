@@ -1,10 +1,10 @@
 ## Programmatic keySelector composition
 
-This example shows how decouple `keySelector` from provided `inputSelectors` and make it flexible enough to automatically handle changes in `inputSelector` declarations.
+This example shows how to decouple `keySelector` from provided `inputSelectors` and make it flexible enough to automatically handle changes in `inputSelector` declarations.
 
 The final `keySelector` will be the composition of provided `inputSelectors`' keySelectors.
 
-Since we don't want to know the number of provided `inputSelectors` upfront, we'll make use of `keySelectorCreator` option: a function to **generate the actual `keySelector` at runtime** based on the actually provided `inputselectors`.
+Since we don't want to know the number of provided `inputSelectors` upfront, we'll make use of the `keySelectorCreator` option: a function to **generate the actual `keySelector` at runtime** based on the actually provided `inputSelectors`.
 
 `keySelectorCreator` might be implemented like this:
 
@@ -12,7 +12,7 @@ Since we don't want to know the number of provided `inputSelectors` upfront, we'
 - filter out `inputSelectors` without a `keySelector` property
 - return the chained result of `inputSelectors`'s `keySelector` property (`res1:res2:res3`)
 
-> In the future a similar utility might be shipped with `re-reselect` itself.
+> In the future, a similar utility might be shipped with `re-reselect` itself.
 
 #### `keySelectorCombiner.js`
 

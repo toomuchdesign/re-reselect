@@ -228,7 +228,17 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "mechmillan",
+      "name": "Alfonso Millan",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/25711137?v=4",
+      "profile": "https://alfonsomillan.com/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
-  "repoType": "github"
+  "repoType": "github",
+  "commitConvention": "none"
 }

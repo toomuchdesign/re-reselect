@@ -8,7 +8,10 @@ function testCreateStructuredCachedSelector() {
   const mySelectorA = (state: State) => state.a;
   const mySelectorB = (state: State) => state.b;
 
-  const selector = createStructuredCachedSelector({
+  const selector = createStructuredCachedSelector<
+    State,
+    {x: ReturnType<typeof mySelectorA>; y: ReturnType<typeof mySelectorB>}
+  >({
     x: mySelectorA,
     y: mySelectorB,
   })((state: State) => state.a);
@@ -27,7 +30,11 @@ function testParametricCreateStructuredCachedSelector() {
   const mySelectorA = (state: State) => state.a;
   const mySelectorB = (state: State, id: string) => state.items[id];
 
-  const selector = createStructuredCachedSelector({
+  const selector = createStructuredCachedSelector<
+    State,
+    string,
+    {x: ReturnType<typeof mySelectorA>; y: ReturnType<typeof mySelectorB>}
+  >({
     x: mySelectorA,
     y: mySelectorB,
   })((state: State, id: string) => id);

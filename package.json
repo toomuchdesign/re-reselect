@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "test": "npm run test:typescript && jest ./src",
-    "test:typescript": "typings-tester --config typescript_test/tsconfig.json --dir typescript_test",
+    "test:typescript": "typings-tester --dir typescript_test",
     "test:bundles": "npm run test:bundles:snapshot && npm run test:bundles:unit",
     "test:bundles:unit": "jest ./src --config ./jest/es.config.js && jest ./src --config ./jest/lib.config.js && jest ./src --config ./jest/dist.config.js",
     "test:bundles:snapshot": "jest ./jest/bundles-snapshot.test.js",

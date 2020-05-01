@@ -79,9 +79,10 @@ function testInvalidTypeInCombinator() {
   type State = {foo: string; bar: number; baz: boolean};
 
   // typings:expect-error
-  createCachedSelector((state: State) => state.foo, (foo: number) => foo)(
-    (state: State) => foo
-  );
+  createCachedSelector(
+    (state: State) => state.foo,
+    (foo: number) => foo
+  )((state: State) => foo);
 
   // typings:expect-error
   createCachedSelector(
@@ -98,9 +99,9 @@ function testParametricSelector() {
 
   const selector = createCachedSelector(
     (state: State) => state.foo,
-    (state: never, props: Props) => props.bar,
+    (state: State, props: Props) => props.bar,
     (foo, bar) => ({foo, bar})
-  )((state: never, props: Props) => props.bar);
+  )((state: State, props: Props) => props.bar);
 
   const result = selector({foo: 'fizz'}, {bar: 42});
   const foo: string = result.foo;
@@ -144,20 +145,21 @@ function testParametricSelector() {
       foo5,
       bar,
     })
-  )((state: never, props: Props) => props.bar);
+  )((state: State, props: Props) => props.bar);
 
   selector2({foo: 'fizz'}, {bar: 42});
 }
 
 function testArrayArgument() {
+  type State = {foo: string};
   const selector = createCachedSelector(
     [
-      (state: {foo: string}) => state.foo,
-      (state: {foo: string}) => state.foo,
-      (state: never, props: {bar: number}) => props.bar,
+      (state: State) => state.foo,
+      (state: State) => state.foo,
+      (state: State, props: {bar: number}) => props.bar,
     ],
     (foo1, foo2, bar) => ({foo1, foo2, bar})
-  )((state: never, props: {bar: number}) => props.bar);
+  )((state: State, props: {bar: number}) => props.bar);
 
   const ret = selector({foo: 'fizz'}, {bar: 42});
   const foo1: string = ret.foo1;
@@ -176,7 +178,7 @@ function testArrayArgument() {
 
   createCachedSelector(
     [(state: {foo: string}) => state.foo, (state: {foo: string}) => state.foo],
-    (foo: string, bar: number) => {}
+    (foo: string, bar: string) => {}
   )((state: {foo: string}) => state.foo);
 
   createCachedSelector(
@@ -286,7 +288,7 @@ function testArrayArgument() {
 
   const parametric = createCachedSelector(
     [
-      (state: never, props: {bar: number}) => props.bar,
+      (state: {foo: string}, props: {bar: number}) => props.bar,
       (state: {foo: string}) => state.foo,
       (state: {foo: string}) => state.foo,
       (state: {foo: string}) => state.foo,
@@ -309,7 +311,7 @@ function testArrayArgument() {
     ) => {
       return {foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, bar};
     }
-  )((state: never, props: {bar: number}) => props.bar);
+  )((state: any, props: {bar: number}) => props.bar);
 
   // typings:expect-error
   parametric({foo: 'fizz'});
@@ -335,17 +337,17 @@ function testKeySelector() {
 
   const selector = createCachedSelector(
     (state: State) => state.foo,
-    (state: never, arg1: number) => arg1,
-    (state: never, arg1: number, arg2: number) => arg1 + arg2,
+    (state: State, arg1: number) => arg1,
+    (state: State, arg1: number, arg2: number) => arg1 + arg2,
     (foo, arg1, sum) => ({foo, arg1, sum})
-  )((state: never, arg1: number, arg2: number) => arg1 + arg2);
+  )((state: State, arg1: number, arg2: number) => arg1 + arg2);
 
   selector({foo: 'fizz', obj: {bar: 'bar'}}, 1, 2);
 
   const selector2 = createCachedSelector(
     (state: State) => state.obj,
     obj => obj
-  )((state: never, obj) => obj);
+  )((state: State, obj) => obj);
 }
 
 function testSelectorCreatorOption() {
@@ -367,7 +369,10 @@ function testSelectorCreatorOption() {
   const selectorFailing = createCachedSelector(
     (state: State) => state.foo,
     foo => foo
-  )((state: State) => state.foo, (): void => {});
+  )(
+    (state: State) => state.foo,
+    (): void => {}
+  );
 }
 
 function testKeySelectorCreatorOption() {

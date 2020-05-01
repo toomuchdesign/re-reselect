@@ -8,10 +8,7 @@ function testCreateStructuredCachedSelector() {
   const mySelectorA = (state: State) => state.a;
   const mySelectorB = (state: State) => state.b;
 
-  const selector = createStructuredCachedSelector<
-    State,
-    {x: ReturnType<typeof mySelectorA>; y: ReturnType<typeof mySelectorB>}
-  >({
+  const selector = createStructuredCachedSelector({
     x: mySelectorA,
     y: mySelectorB,
   })((state: State) => state.a);
@@ -27,20 +24,26 @@ function testParametricCreateStructuredCachedSelector() {
   type Result = {x: string; y: string};
   type WrongResult = {x: string; y: number};
 
-  const mySelectorA = (state: State) => state.a;
+  const mySelectorA = (state: State, id: string) => state.a;
   const mySelectorB = (state: State, id: string) => state.items[id];
 
-  const selector = createStructuredCachedSelector<
-    State,
-    string,
-    {x: ReturnType<typeof mySelectorA>; y: ReturnType<typeof mySelectorB>}
-  >({
+  const selector = createStructuredCachedSelector({
     x: mySelectorA,
     y: mySelectorB,
   })((state: State, id: string) => id);
 
+  const selectorWithGenerics = createStructuredCachedSelector<
+    {x: typeof mySelectorA; y: typeof mySelectorB},
+    State,
+    string
+  >({
+    x: mySelectorA,
+    y: mySelectorB,
+  })((state: State) => state.a);
+
   const state: State = {a: 'foo', items: {foo: 'foo', bar: 'bar'}};
   const result: Result = selector(state, 'foo');
+  const resultG: Result = selectorWithGenerics(state, 'foo');
   // typings:expect-error
   const wrongResult: WrongResult = selector(state, 'foo');
 }

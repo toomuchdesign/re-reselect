@@ -11,9 +11,7 @@ exports[`Dist bundle is unchanged 1`] = `
     return typeof value === 'string' || typeof value === 'number';
   }
 
-  var FlatObjectCache =
-  /*#__PURE__*/
-  function () {
+  var FlatObjectCache = /*#__PURE__*/function () {
     function FlatObjectCache() {
       this._cache = {};
     }
@@ -159,9 +157,7 @@ exports[`Dist bundle is unchanged 1`] = `
     }
   }
 
-  var FifoObjectCache =
-  /*#__PURE__*/
-  function () {
+  var FifoObjectCache = /*#__PURE__*/function () {
     function FifoObjectCache(_temp) {
       var _ref = _temp === void 0 ? {} : _temp,
           cacheSize = _ref.cacheSize;
@@ -211,9 +207,7 @@ exports[`Dist bundle is unchanged 1`] = `
     return FifoObjectCache;
   }();
 
-  var LruObjectCache =
-  /*#__PURE__*/
-  function () {
+  var LruObjectCache = /*#__PURE__*/function () {
     function LruObjectCache(_temp) {
       var _ref = _temp === void 0 ? {} : _temp,
           cacheSize = _ref.cacheSize;
@@ -275,9 +269,7 @@ exports[`Dist bundle is unchanged 1`] = `
     return LruObjectCache;
   }();
 
-  var FlatMapCache =
-  /*#__PURE__*/
-  function () {
+  var FlatMapCache = /*#__PURE__*/function () {
     function FlatMapCache() {
       this._cache = new Map();
     }
@@ -303,9 +295,7 @@ exports[`Dist bundle is unchanged 1`] = `
     return FlatMapCache;
   }();
 
-  var FifoMapCache =
-  /*#__PURE__*/
-  function () {
+  var FifoMapCache = /*#__PURE__*/function () {
     function FifoMapCache(_temp) {
       var _ref = _temp === void 0 ? {} : _temp,
           cacheSize = _ref.cacheSize;
@@ -342,9 +332,7 @@ exports[`Dist bundle is unchanged 1`] = `
     return FifoMapCache;
   }();
 
-  var LruMapCache =
-  /*#__PURE__*/
-  function () {
+  var LruMapCache = /*#__PURE__*/function () {
     function LruMapCache(_temp) {
       var _ref = _temp === void 0 ? {} : _temp,
           cacheSize = _ref.cacheSize;

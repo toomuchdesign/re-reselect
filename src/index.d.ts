@@ -4370,23 +4370,35 @@ export default function createCachedSelector<S, P, R, T>(
 /*
  * createStructuredCachedSelector
  */
-export function createStructuredCachedSelector<S, T>(
-  selectors: {[K in keyof T]: Selector<S, T[K]>}
+
+export function createStructuredCachedSelector<
+  T extends {[key: string]: (state: any) => any},
+  S = $Values<{[K in keyof T]: Parameters<T[K]>[0]}>,
+  R = {[K in keyof T]: ReturnType<T[K]>}
+>(
+  selectors: T
 ): OutputCachedSelector<
   S,
-  T,
-  (...args: $Values<T>[]) => T,
-  Selector<S, $Values<T>>[]
+  R,
+  (...args: $Values<R>[]) => R,
+  Selector<S, $Values<R>>[]
 >;
 
-export function createStructuredCachedSelector<S, P, T>(
-  selectors: {[K in keyof T]: ParametricSelector<S, P, T[K]>}
+export function createStructuredCachedSelector<
+  T extends {
+    [key: string]: (state: any, props: any, ...args: any[]) => any;
+  },
+  S = $Values<{[K in keyof T]: Parameters<T[K]>[0]}>,
+  P = Exclude<$Values<{[K in keyof T]: Parameters<T[K]>[1]}>, undefined>,
+  R = {[K in keyof T]: ReturnType<T[K]>}
+>(
+  selectors: T
 ): OutputParametricCachedSelector<
   S,
   P,
-  T,
-  (...args: $Values<T>[]) => T,
-  ParametricSelector<S, P, $Values<T>>[]
+  R,
+  (...args: $Values<R>[]) => R,
+  ParametricSelector<S, P, $Values<R>>[]
 >;
 
 /*

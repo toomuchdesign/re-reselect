@@ -1,49 +1,74 @@
 import {createStructuredCachedSelector} from '../src/index';
 
-function testCreateStructuredCachedSelector() {
-  type State = {a: string; b: string};
-  type Result = {x: string; y: string};
-  type WrongResult = {x: string; y: number};
+function assertType<T>(value: T): T {
+  return value;
+}
 
+function testCreateStructuredCachedSelector() {
+  interface State {
+    a: string;
+    b: string;
+  }
+  interface Result {
+    x: string;
+    y: string;
+  }
+  interface WrongResult {
+    x: string;
+    y: number;
+  }
+
+  // 1. Infer selector type based on the selector functions.
   const mySelectorA = (state: State) => state.a;
   const mySelectorB = (state: State) => state.b;
-
-  const selector = createStructuredCachedSelector({
+  const selector1 = createStructuredCachedSelector({
     x: mySelectorA,
     y: mySelectorB,
-  })((state: State) => state.a);
-
-  const state: State = {a: 'foo', b: 'bar'};
-  const result: Result = selector(state);
+  })(state => assertType<string>(state.a));
+  assertType<(state: State) => Result>(selector1);
   // typings:expect-error
-  const wrongResult: WrongResult = selector(state);
+  assertType<(state: State) => WrongResult>(selector1);
+
+  // 2. Explicitly set State type for all selector functions
+  // => not supported
 }
 
 function testParametricCreateStructuredCachedSelector() {
-  type State = {a: string; items: {[key: string]: string}};
-  type Result = {x: string; y: string};
-  type WrongResult = {x: string; y: number};
+  interface State {
+    a: string;
+    items: {[key: string]: string};
+  }
+  interface Result {
+    x: string;
+    y: string;
+  }
+  interface WrongResult {
+    x: string;
+    y: number;
+  }
 
+  // 1.1 Infer selector type based on the selector functions. Selectors have the same signature.
   const mySelectorA = (state: State, id: string) => state.a;
   const mySelectorB = (state: State, id: string) => state.items[id];
-
-  const selector = createStructuredCachedSelector({
+  const selector1p1 = createStructuredCachedSelector({
     x: mySelectorA,
     y: mySelectorB,
-  })((state: State, id: string) => id);
-
-  const selectorWithGenerics = createStructuredCachedSelector<
-    {x: typeof mySelectorA; y: typeof mySelectorB},
-    State,
-    string
-  >({
-    x: mySelectorA,
-    y: mySelectorB,
-  })((state: State) => state.a);
-
-  const state: State = {a: 'foo', items: {foo: 'foo', bar: 'bar'}};
-  const result: Result = selector(state, 'foo');
-  const resultG: Result = selectorWithGenerics(state, 'foo');
+  })((state, id) => assertType<string>(id));
+  assertType<(state: State, id: string) => Result>(selector1p1);
   // typings:expect-error
-  const wrongResult: WrongResult = selector(state, 'foo');
+  assertType<(state: State, id: string) => WrongResult>(selector1p1);
+
+  // 1.2 Infer selector type based on the selector functions. One selector doesn't have a param.
+  const mySelectorC = (state: State) => state.a;
+  const mySelectorD = (state: State, id: string) => state.items[id];
+  const selector1p2 = createStructuredCachedSelector({
+    x: mySelectorC,
+    y: mySelectorD,
+  })((state, id) => assertType<string>(id));
+  assertType<(state: State, id: string) => Result>(selector1p2);
+  // typings:expect-error
+  assertType<(state: State, id: string) => WrongResult>(selector1p2);
+
+  // 2. Explicitly set State and Parameter types for all selector functions
+  // => not supported
 }

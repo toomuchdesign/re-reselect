@@ -32,13 +32,13 @@ function keySelectorCombiner({inputSelectors = []} = {}) {
       })
       .join(':');
   };
-};
+}
 ```
 
 #### `composedSelector.js`
 
 ```js
-import createCachedSelector from 're-reselect';
+import {createCachedSelector} from 're-reselect';
 import keySelectorCombiner from './keySelectorCombiner';
 
 const composedSelector = createCachedSelector(

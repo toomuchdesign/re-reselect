@@ -1,4 +1,5 @@
-import createCachedSelector, {
+import {
+  createCachedSelector,
   FlatObjectCache,
   FifoObjectCache,
   LruObjectCache,
@@ -13,7 +14,10 @@ const combinerSelector = (foo: string) => foo;
 
 function testFlatObjectCache() {
   // Accepts this cache object as an option
-  createCachedSelector(fooSelector, combinerSelector)({
+  createCachedSelector(
+    fooSelector,
+    combinerSelector
+  )({
     keySelector: fooSelector,
     cacheObject: new FlatObjectCache(),
   });
@@ -35,7 +39,10 @@ function testFlatObjectCache() {
 
 function testFifoObjectCache() {
   // Accepts this cache object as an option
-  createCachedSelector(fooSelector, combinerSelector)({
+  createCachedSelector(
+    fooSelector,
+    combinerSelector
+  )({
     keySelector: fooSelector,
     cacheObject: new FifoObjectCache({cacheSize: 10}),
   });
@@ -60,7 +67,10 @@ function testFifoObjectCache() {
 
 function testLruObjectCache() {
   // Accepts this cache object as an option
-  createCachedSelector(fooSelector, combinerSelector)({
+  createCachedSelector(
+    fooSelector,
+    combinerSelector
+  )({
     keySelector: fooSelector,
     cacheObject: new LruObjectCache({cacheSize: 10}),
   });
@@ -85,7 +95,10 @@ function testLruObjectCache() {
 
 function testFlatMapCache() {
   // Accepts this cache object as an option
-  createCachedSelector(fooSelector, combinerSelector)({
+  createCachedSelector(
+    fooSelector,
+    combinerSelector
+  )({
     keySelector: fooSelector,
     cacheObject: new FlatMapCache(),
   });
@@ -106,7 +119,10 @@ function testFlatMapCache() {
 
 function testFifoMapCache() {
   // Accepts this cache object as an option
-  createCachedSelector(fooSelector, combinerSelector)({
+  createCachedSelector(
+    fooSelector,
+    combinerSelector
+  )({
     keySelector: fooSelector,
     cacheObject: new FifoMapCache({cacheSize: 10}),
   });
@@ -130,7 +146,10 @@ function testFifoMapCache() {
 
 function testLruMapCache() {
   // Accepts this cache object as an option
-  createCachedSelector(fooSelector, combinerSelector)({
+  createCachedSelector(
+    fooSelector,
+    combinerSelector
+  )({
     keySelector: fooSelector,
     cacheObject: new LruMapCache({cacheSize: 10}),
   });

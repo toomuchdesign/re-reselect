@@ -376,6 +376,7 @@ exports[`Dist bundle is unchanged 1`] = `
   exports.FlatObjectCache = FlatObjectCache;
   exports.LruMapCache = LruMapCache;
   exports.LruObjectCache = LruObjectCache;
+  exports.createCachedSelector = createCachedSelector;
   exports.createStructuredCachedSelector = createStructuredCachedSelector;
   exports.default = createCachedSelector;
 

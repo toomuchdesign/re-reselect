@@ -1,5 +1,29 @@
 # Change log
 
+## 4.0.0
+
+### Breaking Changes
+
+- Drop support for `createCachedSelector` calls with multiple arguments
+- Drop legacy `FifoCacheObject`, `FlatCacheObject`, `LruCacheObject` exports
+- TypeScript typings of `createStructuredSelector` have been changed. Explicitly setting `State` and `Parameter` types is no longer required (nor possible), please update the typings as follows if necessary:
+
+```typescript
+// Before:
+const selector = createStructuredCachedSelector<State, string>({
+  x: (state, id) => state.a[id],
+})((state, id) => id);
+// After:
+const selector = createStructuredCachedSelector({
+  x: (state: State, id: string) => state.a[id],
+})((state, id) => id);
+```
+
+### New Features
+
+- Provide auto inferring to `createStructuredSelector` typings
+- Expose `createCachedSelector` as both default and named export
+
 ## 3.4.0
 
 ### New Features

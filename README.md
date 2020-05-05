@@ -25,7 +25,7 @@ Useful to:
 
 <!-- prettier-ignore -->
 ```js
-import createCachedSelector from 're-reselect';
+import {createCachedSelector} from 're-reselect';
 
 // Normal reselect routine: declare "inputSelectors" and "resultFunc"
 const getUsers = state => state.users;
@@ -184,7 +184,7 @@ export const getMyData = createSelector(
   <!-- prettier-ignore -->
 
 ```js
-import createCachedSelector from 're-reselect';
+import {createCachedSelector} from 're-reselect';
 
 export const getMyData = createCachedSelector(
   selectorA,
@@ -287,7 +287,7 @@ Once you get a selector instance you can call [its public methods][reselect-sele
 
 <!-- prettier-ignore -->
 ```js
-import createCachedSelector from 're-reselect';
+import {createCachedSelector} from 're-reselect';
 
 export const getMyData = createCachedSelector(selectorA, selectorB, (A, B) =>
   doSomethingWith(A, B)
@@ -317,7 +317,7 @@ myFooDataSelector.resetRecomputations();
 
 <!-- prettier-ignore -->
 ```js
-import createCachedSelector from 're-reselect';
+import {createCachedSelector} from 're-reselect';
 
 createCachedSelector(
   // ...reselect's `createSelector` arguments
@@ -334,7 +334,7 @@ Takes the same arguments as reselect's [`createSelector`][reselect-create-select
 
 <!-- prettier-ignore -->
 ```js
-import { createStructuredCachedSelector } from 're-reselect';
+import {createStructuredCachedSelector} from 're-reselect';
 
 createStructuredCachedSelector(
   // ...reselect's `createStructuredSelector` arguments

@@ -5,7 +5,7 @@
 ### Wrap boilerplate code into a reusable create selector function
 
 ```js
-import createCachedSelector from 're-reselect';
+import {createCachedSelector} from 're-reselect';
 import createSelectoratorSelector from 'selectorator';
 
 export function createCachedSelectorWithSelectorator(...args) {

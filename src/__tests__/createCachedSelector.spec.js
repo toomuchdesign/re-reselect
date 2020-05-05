@@ -1,5 +1,6 @@
 import * as reselect from 'reselect';
-import createCachedSelector, {
+import createCachedSelectorAsDefault, {
+  createCachedSelector,
   FlatObjectCache,
   LruObjectCache,
 } from '../../src/index';
@@ -16,12 +17,21 @@ beforeEach(() => {
 });
 
 function selectorWithMockedResultFunc() {
-  return createCachedSelector([], resultFuncMock)(
+  return createCachedSelector(
+    [],
+    resultFuncMock
+  )(
     (arg1, arg2) => arg2 // keySelector
   );
 }
 
 describe('createCachedSelector', () => {
+  describe('default export', () => {
+    it('exports the same as "createCachedSelector"', () => {
+      expect(createCachedSelectorAsDefault).toBe(createCachedSelector);
+    });
+  });
+
   describe('options', () => {
     describe('as single function', () => {
       it('accepts keySelector function', () => {
@@ -55,7 +65,10 @@ describe('createCachedSelector', () => {
         const generatedKeySelector = () => {};
         const keySelectorCreatorMock = jest.fn(() => generatedKeySelector);
 
-        const cachedSelector = createCachedSelector(inputSelector, resultFunc)({
+        const cachedSelector = createCachedSelector(
+          inputSelector,
+          resultFunc
+        )({
           keySelector,
           keySelectorCreator: keySelectorCreatorMock,
         });

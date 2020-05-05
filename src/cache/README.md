@@ -17,7 +17,7 @@
 
 <!-- prettier-ignore -->
 ```js
-import createCachedSelector, {LruObjectCache, LruMapCache} from 're-reselect';
+import {createCachedSelector, LruObjectCache, LruMapCache} from 're-reselect';
 
 createCachedSelector(
   // ...

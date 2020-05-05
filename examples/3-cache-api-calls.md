@@ -9,7 +9,7 @@ Thanks to [@greggb](https://github.com/greggb) for the idea and the demo.
 #### `page/api.js`
 
 ```js
-import createCachedSelector from 're-reselect';
+import { createCachedSelector } from 're-reselect';
 import fetchFromApi from './api';
 
 const fetchPageWithCache = createCachedSelector(

@@ -1,9 +1,8 @@
 import createCachedSelector from './createCachedSelector';
 export default createCachedSelector;
+export {createCachedSelector};
 
-export {
-  default as createStructuredCachedSelector,
-} from './createStructuredCachedSelector';
+export {default as createStructuredCachedSelector} from './createStructuredCachedSelector';
 
 // Cache objects
 export {default as FlatObjectCache} from './cache/FlatObjectCache';

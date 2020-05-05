@@ -8,7 +8,7 @@ Using `re-reselect` you can directly declare a `getVisibleTodos` selector. Since
 
 <!-- prettier-ignore -->
 ```js
-import createCachedSelector from 're-reselect';
+import { createCachedSelector } from 're-reselect';
 
 const getVisibilityFilter = (state, props) =>
   state.todoLists[props.listId].visibilityFilter;

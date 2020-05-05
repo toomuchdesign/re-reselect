@@ -87,7 +87,7 @@ Let's say `getData` is a `reselect` selector.
 ```js
 getData(state, itemId, 'dataA');
 getData(state, itemId, 'dataB');
-getData(state, itemId, 'dataC');
+getData(state, itemId, 'dataA');
 ```
 
 The **3rd argument invalidates `reselect` cache** on each call, forcing `getData` to re-evaluate and return a new value.
@@ -102,19 +102,19 @@ The **3rd argument invalidates `reselect` cache** on each call, forcing `getData
 
 `keySelector` is a custom function which:
 
-- takes the same arguments as the selector itself (in the example: `state`, `itemId`, `'dataX'`)
+- takes the same arguments as the selector itself (in the example: `state`, `itemId`, `dataType`)
 - returns a `cacheKey`
 
 A **unique persisting `reselect` selector instance** stored in cache is used to compute data for a given `cacheKey` (1:1).
 
-Back to the example, `re-reselect` retrieves data by **querying one of the cached selectors** using the 3rd argument as `cacheKey`, allowing cache invalidation only when `state` or `itemId` change (but not `dataType`):
+Back to the example, we might setup `re-reselect` to retrieve data by **querying one of the cached selectors** using the 3rd argument as `cacheKey`, allowing cache invalidation only when `state` or `itemId` change (but not `dataType`):
 
 <!-- prettier-ignore -->
 ```js
 const getPieceOfData = createCachedSelector(
   state => state,
-  (_state_, itemId) => itemId,
-  (_state_, _itemId_, dataType) => dataType,
+  (state, itemId) => itemId,
+  (state, itemId, dataType) => dataType,
   (state, itemId, dataType) => expensiveComputation(state, itemId, dataType)
 )(
   (state, itemId, dataType) => dataType // Use dataType as cacheKey
@@ -494,6 +494,8 @@ Thanks to you all ([emoji key][docs-all-contributors]):
     <td align="center"><a href="https://augustin-riedinger.fr"><img src="https://avatars3.githubusercontent.com/u/1970156?v=4" width="100px;" alt=""/><br /><sub><b>Augustin Riedinger</b></sub></a><br /><a href="#ideas-augnustin" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/RichardForrester"><img src="https://avatars0.githubusercontent.com/u/12902182?v=4" width="100px;" alt=""/><br /><sub><b>RichardForrester</b></sub></a><br /><a href="#ideas-RichardForrester" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://alfonsomillan.com/"><img src="https://avatars3.githubusercontent.com/u/25711137?v=4" width="100px;" alt=""/><br /><sub><b>Alfonso Millan</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=mechmillan" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/parkerault"><img src="https://avatars2.githubusercontent.com/u/78856?v=4" width="100px;" alt=""/><br /><sub><b>parkerault</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Aparkerault" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/dahannes"><img src="https://avatars0.githubusercontent.com/u/2493211?v=4" width="100px;" alt=""/><br /><sub><b>johannes</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Adahannes" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 

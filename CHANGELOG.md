@@ -4,7 +4,7 @@
 
 ### Breaking Changes
 
-- Drop support for `createCachedSelector` calls with multiple arguments
+- Drop support for `createCachedSelector(...)(arguments)` call with multiple arguments
 - Drop legacy `FifoCacheObject`, `FlatCacheObject`, `LruCacheObject` exports
 - TypeScript typings of `createStructuredSelector` have been changed. Explicitly setting `State` and `Parameter` types is no longer required (nor possible), please update the typings as follows if necessary:
 

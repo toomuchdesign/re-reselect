@@ -370,12 +370,135 @@ exports[`Dist bundle is unchanged 1`] = `
     return LruMapCache;
   }();
 
+  var RrObjectCache = /*#__PURE__*/function () {
+    function RrObjectCache(_temp) {
+      var _ref = _temp === void 0 ? {} : _temp,
+          cacheSize = _ref.cacheSize;
+
+      validateCacheSize(cacheSize);
+      this._cache = {};
+      this._cacheKeys = [];
+      this._cacheLength = 0;
+      this._cacheSize = cacheSize;
+    }
+
+    var _proto = RrObjectCache.prototype;
+
+    _proto.set = function set(key, selectorFn) {
+      if (this._cacheLength >= this._cacheSize) {
+        this._randomReplace(key, selectorFn);
+      } else {
+        this._cache[key] = selectorFn;
+        this._cacheKeys[this._cacheLength] = key;
+        this._cacheLength++;
+      }
+    };
+
+    _proto.get = function get(key) {
+      return this._cache[key];
+    };
+
+    _proto.remove = function remove(key) {
+      var index = this._cacheKeys.indexOf(key); // O(1)
+
+
+      if (index > -1) {
+        delete this._cache[key];
+        var lastIndex = this._cacheLength - 1;
+        var lastKey = this._cacheKeys[lastIndex];
+        this._cacheKeys[index] = lastKey;
+        this._cacheLength--;
+      }
+    };
+
+    _proto.clear = function clear() {
+      this._cache = {};
+      this._cacheKeys = [];
+      this._cacheLength = 0;
+    };
+
+    _proto._randomReplace = function _randomReplace(newKey, newValue) {
+      var index = Math.floor(Math.random() * this._cacheLength);
+      var key = this._cacheKeys[index];
+      delete this._cache[key];
+      this._cacheKeys[index] = newKey;
+      this._cache[newKey] = newValue;
+    };
+
+    _proto.isValidCacheKey = function isValidCacheKey(cacheKey) {
+      return isStringOrNumber(cacheKey);
+    };
+
+    return RrObjectCache;
+  }();
+
+  var RrMapCache = /*#__PURE__*/function () {
+    function RrMapCache(_temp) {
+      var _ref = _temp === void 0 ? {} : _temp,
+          cacheSize = _ref.cacheSize;
+
+      validateCacheSize(cacheSize);
+      this.clear();
+      this._cacheSize = cacheSize;
+    }
+
+    var _proto = RrMapCache.prototype;
+
+    _proto.set = function set(key, selectorFn) {
+      if (this._cacheLength >= this._cacheSize) {
+        this._randomReplace(key, selectorFn);
+      } else {
+        this._cache.set(key, selectorFn);
+
+        this._cacheKeys[this._cacheLength] = key;
+        this._cacheLength++;
+      }
+    };
+
+    _proto.get = function get(key) {
+      return this._cache.get(key);
+    };
+
+    _proto.remove = function remove(key) {
+      var index = this._cacheKeys.indexOf(key);
+
+      if (index > -1) {
+        delete this._cache[\\"delete\\"](key);
+        var lastIndex = this._cacheLength - 1;
+        var lastKey = this._cacheKeys[lastIndex];
+        this._cacheKeys[index] = lastKey;
+        this._cacheLength--;
+      }
+    };
+
+    _proto.clear = function clear() {
+      this._cache = new Map();
+      this._cacheKeys = [];
+      this._cacheLength = 0;
+    };
+
+    _proto._randomReplace = function _randomReplace(newKey, newValue) {
+      var index = Math.floor(Math.random() * this._cacheLength);
+      var key = this._cacheKeys[index];
+
+      this._cache[\\"delete\\"](key);
+
+      this._cacheKeys[index] = newKey;
+
+      this._cache.set(newKey, newValue);
+    };
+
+    return RrMapCache;
+  }();
+
   exports.FifoMapCache = FifoMapCache;
   exports.FifoObjectCache = FifoObjectCache;
   exports.FlatMapCache = FlatMapCache;
   exports.FlatObjectCache = FlatObjectCache;
   exports.LruMapCache = LruMapCache;
   exports.LruObjectCache = LruObjectCache;
+  exports.RrMapCache = RrMapCache;
+  exports.RrObjectCache = RrObjectCache;
   exports.createCachedSelector = createCachedSelector;
   exports.createStructuredCachedSelector = createStructuredCachedSelector;
   exports[\\"default\\"] = createCachedSelector;

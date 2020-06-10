@@ -376,9 +376,7 @@ exports[`Dist bundle is unchanged 1`] = `
           cacheSize = _ref.cacheSize;
 
       validateCacheSize(cacheSize);
-      this._cache = {};
-      this._cacheKeys = [];
-      this._cacheLength = 0;
+      this.clear();
       this._cacheSize = cacheSize;
     }
 
@@ -404,10 +402,8 @@ exports[`Dist bundle is unchanged 1`] = `
 
       if (index > -1) {
         delete this._cache[key];
-        var lastIndex = this._cacheLength - 1;
-        var lastKey = this._cacheKeys[lastIndex];
-        this._cacheKeys[index] = lastKey;
         this._cacheLength--;
+        this._cacheKeys[index] = this._cacheKeys[this._cacheLength];
       }
     };
 
@@ -419,8 +415,7 @@ exports[`Dist bundle is unchanged 1`] = `
 
     _proto._randomReplace = function _randomReplace(newKey, newValue) {
       var index = Math.floor(Math.random() * this._cacheLength);
-      var key = this._cacheKeys[index];
-      delete this._cache[key];
+      delete this._cache[this._cacheKeys[index]];
       this._cacheKeys[index] = newKey;
       this._cache[newKey] = newValue;
     };
@@ -460,14 +455,13 @@ exports[`Dist bundle is unchanged 1`] = `
     };
 
     _proto.remove = function remove(key) {
-      var index = this._cacheKeys.indexOf(key);
+      var index = this._cacheKeys.indexOf(key); // O(1)
+
 
       if (index > -1) {
         delete this._cache[\\"delete\\"](key);
-        var lastIndex = this._cacheLength - 1;
-        var lastKey = this._cacheKeys[lastIndex];
-        this._cacheKeys[index] = lastKey;
         this._cacheLength--;
+        this._cacheKeys[index] = this._cacheKeys[this._cacheLength];
       }
     };
 
@@ -479,9 +473,8 @@ exports[`Dist bundle is unchanged 1`] = `
 
     _proto._randomReplace = function _randomReplace(newKey, newValue) {
       var index = Math.floor(Math.random() * this._cacheLength);
-      var key = this._cacheKeys[index];
 
-      this._cache[\\"delete\\"](key);
+      this._cache[\\"delete\\"](this._cacheKeys[index]);
 
       this._cacheKeys[index] = newKey;
 

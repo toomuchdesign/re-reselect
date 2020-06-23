@@ -111,7 +111,7 @@ Back to the example, we might setup `re-reselect` to retrieve data by **querying
 
 <!-- prettier-ignore -->
 ```js
-const getPieceOfData = createCachedSelector(
+const getData = createCachedSelector(
   state => state,
   (state, itemId) => itemId,
   (state, itemId, dataType) => dataType,

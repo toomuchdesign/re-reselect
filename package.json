@@ -67,7 +67,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^1.27.14",
     "rollup-plugin-babel": "^4.4.0",
-    "typescript": "^3.7.5",
+    "typescript": "^3.9.5",
     "typings-tester": "^0.3.2"
   },
   "jest": {

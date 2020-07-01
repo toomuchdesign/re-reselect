@@ -513,8 +513,8 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [reselect-create-structured-selector]: https://github.com/reduxjs/reselect/tree/v4.0.0#createstructuredselectorinputselectors-selectorcreator--createselector
 [reselect-create-selector-creator]: https://github.com/reactjs/reselect/tree/v4.0.0#createselectorcreatormemoize-memoizeoptions
 [lodash-memoize]: https://lodash.com/docs/4.17.4#memoize
-[ci-badge]: https://travis-ci.org/toomuchdesign/re-reselect.svg?branch=master
-[ci]: https://travis-ci.org/toomuchdesign/re-reselect
+[ci-badge]: https://travis-ci.com/toomuchdesign/re-reselect.svg?branch=master
+[ci]: https://travis-ci.com/toomuchdesign/re-reselect
 [coveralls-badge]: https://coveralls.io/repos/github/toomuchdesign/re-reselect/badge.svg?branch=master
 [coveralls]: https://coveralls.io/github/toomuchdesign/re-reselect?branch=master
 [npm]: https://www.npmjs.com/package/re-reselect

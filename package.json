@@ -61,7 +61,7 @@
     "coveralls": "^3.0.9",
     "husky": "^4.2.5",
     "jest": "^25.1.0",
-    "lint-staged": "^9.5.0",
+    "lint-staged": "^10.2.11",
     "prettier": "^1.19.1",
     "reselect": "^4.0.0",
     "rimraf": "^3.0.1",

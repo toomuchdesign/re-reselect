@@ -41,7 +41,7 @@ function createCachedSelector(...funcs) {
     }
 
     // Application receives this function
-    const selector = function(...args) {
+    const selector = function (...args) {
       const cacheKey = options.keySelector(...args);
 
       if (isValidCacheKey(cacheKey)) {

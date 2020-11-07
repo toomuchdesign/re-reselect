@@ -27,7 +27,8 @@
       "stabilityDays": 3,
       "major": {
         "automerge": false
-      }
+      },
+      "masterIssue": true
     }
   ]
 }

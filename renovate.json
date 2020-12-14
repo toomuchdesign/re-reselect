@@ -2,6 +2,7 @@
   "extends": ["config:base"],
   "schedule": "every month",
   "postUpdateOptions": ["npmDedupe"],
+  "masterIssue": true,
   "packageRules": [
     {
       "packagePatterns": ["^rollup"],
@@ -27,8 +28,7 @@
       "stabilityDays": 3,
       "major": {
         "automerge": false
-      },
-      "masterIssue": true
+      }
     }
   ]
 }

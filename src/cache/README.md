@@ -4,16 +4,18 @@
 
 ## Available cache objects
 
-`re-reselect` ships with **6 ready-to-use cache object constructors**:
+`re-reselect` ships with several **ready-to-use cache object constructors**:
 
 |                   name                    | accepted cacheKey |                 type                  |            storage             |
 | :---------------------------------------: | :---------------: | :-----------------------------------: | :----------------------------: |
 | [`FlatObjectCache`](./FlatObjectCache.js) | `number` `string` |            flat unlimited             |           JS object            |
 | [`FifoObjectCache`](./FifoObjectCache.js) | `number` `string` | [first in first out][docs-fifo-cache] |           JS object            |
 |  [`LruObjectCache`](./LruObjectCache.js)  | `number` `string` | [least recently used][docs-lru-cache] |           JS object            |
+|   [`RrObjectCache`](./RrObjectCache.js)   | `number` `string` |  [random replacement][docs-rr-cache]  |           JS object            |
 |    [`FlatMapCache`](./FlatMapCache.js)    |        any        |            flat unlimited             | [Map object][docs-mozilla-map] |
 |    [`FifoMapCache`](./FifoMapCache.js)    |        any        | [first in first out][docs-fifo-cache] | [Map object][docs-mozilla-map] |
 |     [`LruMapCache`](./LruMapCache.js)     |        any        | [least recently used][docs-lru-cache] | [Map object][docs-mozilla-map] |
+|      [`RrMapCache`](./RrMapCache.js)      |        any        |  [random replacement][docs-rr-cache]  | [Map object][docs-mozilla-map] |
 
 <!-- prettier-ignore -->
 ```js
@@ -53,4 +55,5 @@ interface ICacheObject {
 [wiki-strategy-pattern]: https://en.wikipedia.org/wiki/Strategy_pattern
 [docs-fifo-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#First_in_first_out_(FIFO)
 [docs-lru-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)
+[docs-rr-cache]: https://en.wikipedia.org/wiki/Cache_replacement_policies#Random_replacement_(RR)
 [docs-mozilla-map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map

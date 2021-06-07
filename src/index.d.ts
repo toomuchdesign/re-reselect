@@ -4327,6 +4327,15 @@ export class LruObjectCache implements ICacheObject {
   isValidCacheKey(key: ObjectCacheKey): boolean;
 }
 
+export class RrObjectCache implements ICacheObject {
+  constructor(options: {cacheSize: number});
+  set(key: ObjectCacheKey, selectorFn: any): void;
+  get(key: ObjectCacheKey): any;
+  remove(key: ObjectCacheKey): void;
+  clear(): void;
+  isValidCacheKey(key: ObjectCacheKey): boolean;
+}
+
 export class FlatMapCache implements ICacheObject {
   set(key: any, selectorFn: any): void;
   get(key: any): any;
@@ -4343,6 +4352,14 @@ export class FifoMapCache implements ICacheObject {
 }
 
 export class LruMapCache implements ICacheObject {
+  constructor(options: {cacheSize: number});
+  set(key: any, selectorFn: any): void;
+  get(key: any): any;
+  remove(key: any): void;
+  clear(): void;
+}
+
+export class RrMapCache implements ICacheObject {
   constructor(options: {cacheSize: number});
   set(key: any, selectorFn: any): void;
   get(key: any): any;

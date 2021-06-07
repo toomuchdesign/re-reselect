@@ -36,6 +36,11 @@ function testBasicBehavior(CacheObject, options) {
         expect(cache.get(entry)).toBe(undefined);
       });
     });
+
+    it('removes non-existant keys', () => {
+      const cache = new CacheObject({cacheSize: 5});
+      expect(() => cache.remove('foo')).not.toThrow();
+    });
   });
 }
 

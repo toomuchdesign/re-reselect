@@ -1,9 +1,0 @@
-language: node_js
-node_js:
-  - "lts/*"
-script:
-  - npm run prepublish
-after_success:
-  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-notifications:
-  email: false

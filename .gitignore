@@ -15,6 +15,7 @@ coverage
 !.gitignore
 !.npmignore
 !.npmrc
+!.nvmrc
 !.prettierignore
 !.prettierrc
 !.travis.yml

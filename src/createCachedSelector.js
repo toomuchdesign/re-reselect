@@ -54,9 +54,11 @@ function createCachedSelector(...funcs) {
 
         return cacheResponse(...args);
       }
-      console.warn(
-        `[re-reselect] Invalid cache key "${cacheKey}" has been returned by keySelector function.`
-      );
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(
+          `[re-reselect] Invalid cache key "${cacheKey}" has been returned by keySelector function.`
+        );
+      }
       return undefined;
     };
 

@@ -443,6 +443,7 @@ Get `keySelector` for utility compositions or testing.
 
 - [re-reselect your whole redux state](https://patrickdesjardins.com/blog/re-reselect-your-whole-redux-state)
 - [Understanding reselect and re-reselect](http://alexnitta.com/understanding-reselect-and-re-reselect/)
+- [React re-reselect: Better memoization and cache management](https://blog.logrocket.com/react-re-reselect-better-memoization-cache-management/)
 - [Advanced Redux patterns: selectors](https://blog.brainsandbeards.com/advanced-redux-patterns-selectors-cb9f88381d74)
 - [Be selective with your state](https://medium.com/riipen-engineering/be-selective-with-your-state-8f1be76cb9f4)
 - [A swift developer’s React Native experience](https://swiftwithjustin.co/2018/06/24/a-swift-developers-react-native-experience)

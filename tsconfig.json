@@ -2,6 +2,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "strict": true,
+    "allowJs": true,
+    "esModuleInterop": true,
     "lib": ["es6"]
-  }
+  },
+  "include": ["./src"]
 }

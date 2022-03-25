@@ -64,7 +64,7 @@
     "jest": "^27.5.1",
     "lint-staged": "^10.5.4",
     "prettier": "^2.0.5",
-    "reselect": "^4.0.0",
+    "reselect": "^4.1.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.23.1",
     "rollup-plugin-babel": "^4.4.0",

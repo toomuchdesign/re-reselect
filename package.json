@@ -58,7 +58,7 @@
     "babel-jest": "^27.5.1",
     "jest": "^27.5.1",
     "lint-staged": "^10.5.4",
-    "prettier": "^2.0.5",
+    "prettier": "^2.6.1",
     "reselect": "^4.1.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.70.1",

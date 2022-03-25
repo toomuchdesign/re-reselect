@@ -19,8 +19,6 @@ jobs:
           node-version-file: '.nvmrc'
 
       - run: npm ci
-        env:
-          HUSKY_SKIP_INSTALL: 1
 
       - name: Upload code coverage
         uses: coverallsapp/github-action@master

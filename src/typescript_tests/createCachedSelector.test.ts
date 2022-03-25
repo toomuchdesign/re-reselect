@@ -2,7 +2,7 @@ import {createSelectorCreator, defaultMemoize} from 'reselect';
 import createCachedSelectorAsDefault, {
   createCachedSelector,
   KeySelector,
-} from '../src/index';
+} from '../index';
 
 function assertType<T>(value: T): T {
   return value;
@@ -20,13 +20,12 @@ function testSelector() {
   )((state: State) => state.foo);
 
   const result: string = selector({foo: 'bar'});
-  // typings:expect-error
+  // @ts-expect-error
   const num: number = selector({foo: 'bar'});
 
   const recomputations: number = selector.recomputations();
   selector.resetRecomputations();
 
-  // typings:expect-error
   // @NOTE selector.dependencies typings still to be implemented
   const dependencies: Array<(state: State) => string> = selector.dependencies;
 
@@ -38,18 +37,18 @@ function testSelector() {
 
   const keySelector: KeySelector<State> = selector.keySelector;
 
-  // typings:expect-error
+  // @ts-expect-error
   selector.getMatchingSelector('foo');
 
   selector.removeMatchingSelector({foo: 'bar'});
-  // typings:expect-error
+  // @ts-expect-error
   selector.removeMatchingSelector('foo');
 
   selector.clearCache();
 
   selector.cache;
 
-  // typings:expect-error
+  // @ts-expect-error
   selector({foo: 'bar'}, {prop: 'value'});
 
   createCachedSelector(
@@ -71,15 +70,15 @@ function testNestedSelector() {
     (state: State) => state.baz,
     ({foo, bar}, baz) => {
       const foo1: string = foo;
-      // typings:expect-error
+      // @ts-expect-error
       const foo2: number = foo;
 
       const bar1: number = bar;
-      // typings:expect-error
+      // @ts-expect-error
       const bar2: string = bar;
 
       const baz1: boolean = baz;
-      // typings:expect-error
+      // @ts-expect-error
       const baz2: string = baz;
     }
   )((state: State) => state.bar);
@@ -88,18 +87,22 @@ function testNestedSelector() {
 function testInvalidTypeInCombinator() {
   type State = {foo: string; bar: number; baz: boolean};
 
-  // typings:expect-error
   createCachedSelector(
+    // @ts-expect-error
     (state: State) => state.foo,
     (foo: number) => foo
+    // @ts-expect-error
   )((state: State) => foo);
 
-  // typings:expect-error
   createCachedSelector(
     (state: State) => state.foo,
+    // @ts-expect-error
     state => state.bar,
+    // @ts-expect-error
     state => state.baz,
+    // @ts-expect-error
     (foo: string, bar: number, baz: boolean, fizz: string) => {}
+    // @ts-expect-error
   )((state: State) => foo);
 }
 
@@ -117,9 +120,9 @@ function testParametricSelector() {
   const foo: string = result.foo;
   const bar: number = result.bar;
 
-  // typings:expect-error
+  // @ts-expect-error
   selector({foo: 'fizz'});
-  // typings:expect-error
+  // @ts-expect-error
   selector({foo: 'fizz'}, {bar: 'baz'});
 
   const matchingSelectors = selector.getMatchingSelector(
@@ -129,11 +132,11 @@ function testParametricSelector() {
   const matchingSelectorsResultFunc: (foo: string, bar: number) => object =
     matchingSelectors.resultFunc;
 
-  // typings:expect-error
+  // @ts-expect-error
   selector.getMatchingSelector({foo: 'fizz'}, {bar: 'fuzz'});
 
   selector.removeMatchingSelector({foo: 'fizz'}, {bar: 42});
-  // typings:expect-error
+  // @ts-expect-error
   selector.removeMatchingSelector({foo: 'fizz'});
 
   selector.clearCache();
@@ -176,8 +179,9 @@ function testArrayArgument() {
   const foo2: string = ret.foo2;
   const bar: number = ret.bar;
 
-  // typings:expect-error
+  // @ts-expect-error
   createCachedSelector([(state: {foo: string}) => state.foo])(
+    // @ts-expect-error
     (state: {foo: string}) => state.foo
   );
 
@@ -218,7 +222,6 @@ function testArrayArgument() {
     ) => {}
   )((state: {foo: string}) => state.foo);
 
-  // typings:expect-error
   createCachedSelector(
     [
       (state: {foo: string}) => state.foo,
@@ -230,25 +233,37 @@ function testArrayArgument() {
       (state: {foo: string}) => state.foo,
       (state: {foo: string}) => state.foo,
       (state: {foo: string}) => state.foo,
+      // @ts-expect-error
       (state: {bar: number}) => state.bar,
     ],
     (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8: number, foo9, bar) => {}
+    // @ts-expect-error
   )((state: {foo: string}) => state.foo);
 
-  // typings:expect-error
   createCachedSelector(
     [
+      // @ts-expect-error
       (state: {foo: string}) => state.foo,
+      // @ts-expect-error
       state => state.foo,
+      // @ts-expect-error
       state => state.foo,
+      // @ts-expect-error
       state => state.foo,
+      // @ts-expect-error
       state => state.foo,
+      // @ts-expect-error
       state => state.foo,
+      // @ts-expect-error
       state => state.foo,
+      // @ts-expect-error
       state => state.foo,
+      // @ts-expect-error
       1,
     ],
+    // @ts-expect-error
     (foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9) => {}
+    // @ts-expect-error
   )(state => state.foo);
 
   const selector2 = createCachedSelector(
@@ -289,11 +304,11 @@ function testArrayArgument() {
     const foo7: string = ret.foo7;
     const foo8: string = ret.foo8;
     const foo9: string = ret.foo9;
-    // typings:expect-error
+    // @ts-expect-error
     ret.foo10;
   }
 
-  // typings:expect-error
+  // @ts-expect-error
   selector2({foo: 'fizz'}, {bar: 42});
 
   const parametric = createCachedSelector(
@@ -323,7 +338,7 @@ function testArrayArgument() {
     }
   )((state: any, props: {bar: number}) => props.bar);
 
-  // typings:expect-error
+  // @ts-expect-error
   parametric({foo: 'fizz'});
 
   {
@@ -337,7 +352,7 @@ function testArrayArgument() {
     const foo7: string = ret.foo7;
     const foo8: string = ret.foo8;
     const bar: number = ret.bar;
-    // typings:expect-error
+    // @ts-expect-error
     ret.foo9;
   }
 }
@@ -378,7 +393,7 @@ function testKeySelectorCreatorOption() {
     keySelectorCreator: ({inputSelectors, resultFunc, keySelector}) => {
       const input1 = inputSelectors[0](state);
       const input2 = inputSelectors[1](state);
-      // typings:expect-error
+      // @ts-expect-error
       inputSelectors[2];
 
       const result: string = resultFunc(input1, input2);

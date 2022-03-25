@@ -6,7 +6,7 @@ import {
   FlatMapCache,
   FifoMapCache,
   LruMapCache,
-} from '../src/index';
+} from '../index';
 
 type State = {foo: string};
 const fooSelector = (state: State) => state.foo;
@@ -26,7 +26,7 @@ function testFlatObjectCache() {
   const cacheObject = new FlatObjectCache();
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
-  // typings:expect-error
+  // @ts-expect-error
   cacheObject.set({}, () => {});
   const result1: any = cacheObject.get('foo');
   const result2: any = cacheObject.get(2);
@@ -47,14 +47,14 @@ function testFifoObjectCache() {
     cacheObject: new FifoObjectCache({cacheSize: 10}),
   });
 
-  // typings:expect-error
+  // @ts-expect-error
   new FifoObjectCache();
 
   // Exposes the interface
   const cacheObject = new FifoObjectCache({cacheSize: 10});
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
-  // typings:expect-error
+  // @ts-expect-error
   cacheObject.set({}, () => {});
   const result1: any = cacheObject.get('foo');
   const result2: any = cacheObject.get(2);
@@ -75,14 +75,14 @@ function testLruObjectCache() {
     cacheObject: new LruObjectCache({cacheSize: 10}),
   });
 
-  // typings:expect-error
+  // @ts-expect-error
   new LruObjectCache();
 
   // Exposes the interface
   const cacheObject = new LruObjectCache({cacheSize: 10});
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
-  // typings:expect-error
+  // @ts-expect-error
   cacheObject.set({}, () => {});
   const result1: any = cacheObject.get('foo');
   const result2: any = cacheObject.get(2);
@@ -127,7 +127,7 @@ function testFifoMapCache() {
     cacheObject: new FifoMapCache({cacheSize: 10}),
   });
 
-  // typings:expect-error
+  // @ts-expect-error
   new FifoMapCache();
 
   // Exposes the interface
@@ -154,7 +154,7 @@ function testLruMapCache() {
     cacheObject: new LruMapCache({cacheSize: 10}),
   });
 
-  // typings:expect-error
+  // @ts-expect-error
   new LruMapCache();
 
   // Exposes the interface

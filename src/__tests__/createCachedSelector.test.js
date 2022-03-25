@@ -2,7 +2,6 @@ import * as reselect from 'reselect';
 import createCachedSelectorAsDefault, {
   createCachedSelector,
   FlatObjectCache,
-  LruObjectCache,
 } from '../../src/index';
 
 const createSelectorSpy = jest.spyOn(reselect, 'createSelector');

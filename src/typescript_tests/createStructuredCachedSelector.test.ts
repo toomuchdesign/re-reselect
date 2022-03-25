@@ -1,4 +1,4 @@
-import {createStructuredCachedSelector} from '../src/index';
+import {createStructuredCachedSelector} from '../index';
 
 function assertType<T>(value: T): T {
   return value;
@@ -26,7 +26,7 @@ function testCreateStructuredCachedSelector() {
     y: mySelectorB,
   })(state => assertType<string>(state.a));
   assertType<(state: State) => Result>(selector1);
-  // typings:expect-error
+  // @ts-expect-error
   assertType<(state: State) => WrongResult>(selector1);
 
   // 2. Explicitly set State type for all selector functions
@@ -55,7 +55,7 @@ function testParametricCreateStructuredCachedSelector() {
     y: mySelectorB,
   })((state, id) => assertType<string>(id));
   assertType<(state: State, id: string) => Result>(selector1p1);
-  // typings:expect-error
+  // @ts-expect-error
   assertType<(state: State, id: string) => WrongResult>(selector1p1);
 
   // 1.2 Infer selector type based on the selector functions. One selector doesn't have a param.
@@ -66,7 +66,7 @@ function testParametricCreateStructuredCachedSelector() {
     y: mySelectorD,
   })((state, id) => assertType<string>(id));
   assertType<(state: State, id: string) => Result>(selector1p2);
-  // typings:expect-error
+  // @ts-expect-error
   assertType<(state: State, id: string) => WrongResult>(selector1p2);
 
   // 2. Explicitly set State and Parameter types for all selector functions

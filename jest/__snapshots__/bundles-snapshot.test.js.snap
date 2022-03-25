@@ -4,8 +4,8 @@ exports[`Dist bundle is unchanged 1`] = `
 "(function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('reselect')) :
   typeof define === 'function' && define.amd ? define(['exports', 'reselect'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['Re-reselect'] = {}, global.Reselect));
-}(this, (function (exports, reselect) { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global[\\"Re-reselect\\"] = {}, global.Reselect));
+})(this, (function (exports, reselect) { 'use strict';
 
   function isStringOrNumber(value) {
     return typeof value === 'string' || typeof value === 'number';
@@ -378,11 +378,11 @@ exports[`Dist bundle is unchanged 1`] = `
   exports.LruObjectCache = LruObjectCache;
   exports.createCachedSelector = createCachedSelector;
   exports.createStructuredCachedSelector = createStructuredCachedSelector;
-  exports.default = createCachedSelector;
+  exports[\\"default\\"] = createCachedSelector;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
+}));
 //# sourceMappingURL=index.js.map
 "
 `;

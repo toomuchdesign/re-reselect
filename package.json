@@ -7,6 +7,7 @@
   "jsnext:main": "es/index.js",
   "browser": "dist/index.js",
   "types": "src/index.d.ts",
+  "sideEffects": false,
   "files": [
     "dist",
     "es",
@@ -30,13 +31,8 @@
     "preversion": "npm run prepublish",
     "version": "git add package.json",
     "postversion": "git push && git push --tags",
-    "prepare": "npm run test:source && npm run compile && npm run test:bundles",
+    "prepare": "npx simple-git-hooks && npm run test:source && npm run compile && npm run test:bundles",
     "format": "prettier --write \"**/*.{js,ts,json,md}\""
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "keywords": [
     "react",
@@ -60,7 +56,6 @@
     "@types/jest": "^27.4.1",
     "all-contributors-cli": "^6.20.0",
     "babel-jest": "^27.5.1",
-    "husky": "^4.3.8",
     "jest": "^27.5.1",
     "lint-staged": "^10.5.4",
     "prettier": "^2.0.5",
@@ -68,6 +63,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.23.1",
     "rollup-plugin-babel": "^4.4.0",
+    "simple-git-hooks": "^2.7.0",
     "ts-jest": "^27.1.4",
     "typescript": "^4.6.3"
   },
@@ -85,7 +81,9 @@
     ],
     "testEnvironment": "node"
   },
-  "sideEffects": false,
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
   "lint-staged": {
     "**/*.{js,ts}": [
       "prettier --write",

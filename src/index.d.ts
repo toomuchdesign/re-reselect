@@ -32,7 +32,7 @@ export type OutputParametricSelector<S, P, R, C, D> = ParametricSelector<
   resetRecomputations: () => number;
 };
 
-export type CreateSelectorInstance = typeof createSelector;
+export type CreateSelectorInstance = Omit<typeof createSelector, 'clearCache'>;
 
 type Options<S, C, D> = {
   selectorCreator?: CreateSelectorInstance;

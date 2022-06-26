@@ -415,3 +415,15 @@ function testSelectorCreatorOption() {
     selectorCreator: createSelectorCreator(defaultMemoize),
   });
 }
+
+function testSelectorCreatorOptionNonDefaultMemoize() {
+  type State = {foo: string};
+
+  const selector2 = createCachedSelector(
+    (state: State) => state.foo,
+    foo => foo
+  )({
+    keySelector: (state: State) => state.foo,
+    selectorCreator: createSelectorCreator((func) => func),
+  });
+}

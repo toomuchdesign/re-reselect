@@ -1,5 +1,9 @@
 # Change log
 
+## 4.0.1
+
+- omit `clearCache` from `CreateSelectorInstance` type
+
 ## 4.0.0
 
 ### Breaking Changes

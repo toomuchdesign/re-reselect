@@ -255,6 +255,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "alexdlm",
+      "name": "Alex de la Mare",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1270606?v=4",
+      "profile": "https://github.com/alexdlm",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "repoType": "github",

@@ -1,6 +1,6 @@
 {
   "name": "re-reselect",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Enhance Reselect selectors with deeper memoization and cache management",
   "main": "lib/index.js",
   "module": "es/index.js",

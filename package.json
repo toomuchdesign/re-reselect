@@ -28,7 +28,7 @@
     "compile": "npm run clean && rollup -c",
     "contrib:add": "all-contributors add",
     "contrib:generate": "all-contributors generate",
-    "preversion": "npm run prepublish",
+    "preversion": "npm run prepare",
     "version": "git add package.json",
     "postversion": "git push && git push --tags",
     "prepare": "npx simple-git-hooks && npm run test:source && npm run compile && npm run test:bundles",

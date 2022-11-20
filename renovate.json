@@ -13,7 +13,7 @@
       "groupName": "Update babel packages"
     },
     {
-      "packageNames": ["jest", "babel-jest"],
+      "packageNames": ["jest", "@types/jest", "babel-jest", "ts-jest"],
       "groupName": "Update jest packages"
     },
     {

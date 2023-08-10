@@ -54,7 +54,7 @@
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@types/jest": "^27.4.1",
-    "all-contributors-cli": "^6.20.0",
+    "all-contributors-cli": "^6.26.1",
     "babel-jest": "^27.5.1",
     "jest": "^27.5.1",
     "lint-staged": "^13.2.2",

@@ -11,5 +11,4 @@ export {default as LruObjectCache} from './cache/LruObjectCache';
 export {default as FlatMapCache} from './cache/FlatMapCache';
 export {default as FifoMapCache} from './cache/FifoMapCache';
 export {default as LruMapCache} from './cache/LruMapCache';
-export {default as RrObjectCache} from './cache/RrObjectCache';
 export {default as RrMapCache} from './cache/RrMapCache';

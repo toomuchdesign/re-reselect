@@ -4,7 +4,7 @@
 
 ## Available cache objects
 
-`re-reselect` ships with several **ready-to-use cache object constructors**:
+`re-reselect` ships with **7 ready-to-use cache object constructors**:
 
 |                   name                    | accepted cacheKey |                 type                  |            storage             |
 | :---------------------------------------: | :---------------: | :-----------------------------------: | :----------------------------: |

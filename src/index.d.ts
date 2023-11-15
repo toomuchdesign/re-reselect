@@ -4350,6 +4350,14 @@ export class LruMapCache implements ICacheObject {
   clear(): void;
 }
 
+export class RrMapCache implements ICacheObject {
+  constructor(options: {cacheSize: number});
+  set(key: any, selectorFn: any): void;
+  get(key: any): any;
+  remove(key: any): void;
+  clear(): void;
+}
+
 /*
  * Key selector creators
  */

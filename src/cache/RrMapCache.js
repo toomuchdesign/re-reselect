@@ -10,8 +10,8 @@ export default class RrMapCache {
     if (this._cache.size >= this._cacheSize) {
       this._randomReplace(key, selectorFn);
     } else {
-      this._cache.set(key, selectorFn);
       this._cacheKeys[this._cache.size] = key;
+      this._cache.set(key, selectorFn);
     }
   }
   get(key) {

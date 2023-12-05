@@ -1,18 +1,32 @@
-import * as reselect from 'reselect';
 import createCachedSelectorAsDefault, {
   createCachedSelector,
   FlatObjectCache,
 } from '../../src/index';
+import {createSelector, setGlobalDevModeChecks} from 'reselect';
 
-const createSelectorSpy = jest.spyOn(reselect, 'createSelector');
+jest.mock('reselect', () => {
+  return {
+    ...jest.requireActual('reselect'),
+    createSelector: jest.fn(),
+  };
+});
+
 const consoleWarnSpy = jest
   .spyOn(global.console, 'warn')
   .mockImplementation(() => {});
 const resultFuncMock = () => undefined;
 
+beforeAll(() => {
+  setGlobalDevModeChecks({
+    inputStabilityCheck: 'never',
+    identityFunctionCheck: 'never',
+  });
+});
+
 beforeEach(() => {
+  jest.resetAllMocks();
+
   consoleWarnSpy.mockClear();
-  createSelectorSpy.mockClear();
 });
 
 function selectorWithMockedResultFunc() {
@@ -35,9 +49,8 @@ describe('createCachedSelector', () => {
     describe('as single function', () => {
       it('accepts keySelector function', () => {
         const keySelectorMock = () => {};
-        const cachedSelector = createCachedSelector(resultFuncMock)(
-          keySelectorMock
-        );
+        const cachedSelector =
+          createCachedSelector(resultFuncMock)(keySelectorMock);
 
         expect(cachedSelector.keySelector).toBe(keySelectorMock);
       });
@@ -45,10 +58,12 @@ describe('createCachedSelector', () => {
 
     describe('as single object', () => {
       it('accepts keySelector, cacheObject and selectorCreator options', () => {
+        const actual = jest.requireActual('reselect');
+
         const cachedSelector = createCachedSelector(resultFuncMock)({
           keySelector: (arg1, arg2) => arg2,
           cacheObject: new FlatObjectCache(),
-          selectorCreator: reselect.createSelector,
+          selectorCreator: actual.createSelector,
         });
 
         expect(cachedSelector.recomputations()).toBe(0);
@@ -94,6 +109,11 @@ describe('createCachedSelector', () => {
     describe('cache retention', () => {
       describe('calls producing identical cacheKey', () => {
         it('creates and use the same cached selector', () => {
+          const actual = jest.requireActual('reselect');
+          const createSelectorSpy = jest.fn(actual.createSelector);
+
+          jest.mocked(createSelector).mockImplementation(createSelectorSpy);
+
           const cachedSelector = selectorWithMockedResultFunc();
           cachedSelector('foo', 'bar');
           cachedSelector('foo', 'bar');
@@ -105,6 +125,11 @@ describe('createCachedSelector', () => {
 
       describe('calls producing 2 different cacheKey', () => {
         it('creates 2 selectors only and produce 2 recomputations', () => {
+          const actual = jest.requireActual('reselect');
+          const createSelectorSpy = jest.fn(actual.createSelector);
+
+          jest.mocked(createSelector).mockImplementation(createSelectorSpy);
+
           const cachedSelector = selectorWithMockedResultFunc();
           cachedSelector('foo', 'bar');
           cachedSelector('foo', 'moo');
@@ -141,6 +166,11 @@ describe('createCachedSelector', () => {
 
         describe('returns true', () => {
           it('calls cache.get method', () => {
+            const actual = jest.requireActual('reselect');
+            jest
+              .mocked(createSelector)
+              .mockImplementation(actual.createSelector);
+
             const cacheObjectMock = new FlatObjectCache();
             cacheObjectMock.isValidCacheKey = () => true;
             cacheObjectMock.get = jest.fn();
@@ -181,6 +211,9 @@ describe('createCachedSelector', () => {
     describe('available methods', () => {
       describe('getMatchingSelector()', () => {
         it('returns underlying reselect selector for a given cache key', () => {
+          const actual = jest.requireActual('reselect');
+          jest.mocked(createSelector).mockImplementation(actual.createSelector);
+
           const cachedSelector = createCachedSelector(() => {})(
             (arg1, arg2) => arg2
           );
@@ -207,6 +240,9 @@ describe('createCachedSelector', () => {
 
       describe('removeMatchingSelector()', () => {
         it('sets the matching cache entry to "undefined"', () => {
+          const actual = jest.requireActual('reselect');
+          jest.mocked(createSelector).mockImplementation(actual.createSelector);
+
           const cachedSelector = selectorWithMockedResultFunc();
 
           cachedSelector('foo', 1); // add to cache
@@ -229,6 +265,11 @@ describe('createCachedSelector', () => {
 
       describe('clearCache()', () => {
         it('resets cache', () => {
+          const actualReselect = jest.requireActual('reselect');
+          jest
+            .mocked(createSelector)
+            .mockImplementation(actualReselect.createSelector);
+
           const cachedSelector = selectorWithMockedResultFunc();
 
           cachedSelector('foo', 1); // add to cache
@@ -241,6 +282,11 @@ describe('createCachedSelector', () => {
 
       describe('resetRecomputations()', () => {
         it('resets recomputations', () => {
+          const actualReselect = jest.requireActual('reselect');
+          jest
+            .mocked(createSelector)
+            .mockImplementation(actualReselect.createSelector);
+
           const cachedSelector = selectorWithMockedResultFunc();
           cachedSelector('foo', 'bar');
 

@@ -1,5 +1,4 @@
-// https://github.com/rollup/rollup-starter-project
-import babel from 'rollup-plugin-babel';
+import {babel} from '@rollup/plugin-babel';
 
 let pkg = require('./package.json');
 let external = Object.keys(pkg.peerDependencies);
@@ -7,6 +6,7 @@ let external = Object.keys(pkg.peerDependencies);
 let plugins = [
   babel({
     exclude: 'node_modules/**',
+    babelHelpers: 'bundled',
   }),
 ];
 

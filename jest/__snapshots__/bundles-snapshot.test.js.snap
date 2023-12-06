@@ -300,7 +300,7 @@ exports[`Dist bundle is unchanged 1`] = `
   exports.LruObjectCache = LruObjectCache;
   exports.createCachedSelector = createCachedSelector;
   exports.createStructuredCachedSelector = createStructuredCachedSelector;
-  exports["default"] = createCachedSelector;
+  exports.default = createCachedSelector;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

@@ -6,3 +6,7 @@ beforeAll(() => {
     identityFunctionCheck: 'never',
   });
 });
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});

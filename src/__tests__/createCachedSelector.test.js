@@ -16,11 +16,6 @@ const consoleWarnSpy = jest
   .mockImplementation(() => {});
 const resultFuncMock = () => undefined;
 
-beforeEach(() => {
-  consoleWarnSpy.mockClear();
-  createSelectorSpy.mockClear();
-});
-
 function selectorWithMockedResultFunc() {
   return createCachedSelector(
     [],

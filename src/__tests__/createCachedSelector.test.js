@@ -4,6 +4,12 @@ import createCachedSelectorAsDefault, {
   FlatObjectCache,
 } from '../../src/index';
 
+// Cannot natively spyOn es module named exports
+jest.mock('reselect', () => ({
+  __esModule: true,
+  ...jest.requireActual('reselect'),
+}));
+
 const createSelectorSpy = jest.spyOn(reselect, 'createSelector');
 const consoleWarnSpy = jest
   .spyOn(global.console, 'warn')
@@ -35,9 +41,8 @@ describe('createCachedSelector', () => {
     describe('as single function', () => {
       it('accepts keySelector function', () => {
         const keySelectorMock = () => {};
-        const cachedSelector = createCachedSelector(resultFuncMock)(
-          keySelectorMock
-        );
+        const cachedSelector =
+          createCachedSelector(resultFuncMock)(keySelectorMock);
 
         expect(cachedSelector.keySelector).toBe(keySelectorMock);
       });

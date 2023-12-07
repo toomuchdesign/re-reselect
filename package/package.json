@@ -19,7 +19,7 @@
     "test:bundles:snapshot": "jest ./jest/bundles-snapshot.test.js",
     "test:source": "npm run test:typescript && npm run test -- --coverage",
     "test:update": "npm run compile && npm run test:bundles:snapshot -- -u",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist es lib",
     "compile": "npm run clean && rollup -c --bundleConfigAsCjs",
     "contrib:add": "all-contributors add",
     "contrib:generate": "all-contributors generate",

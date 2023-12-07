@@ -1,4 +1,5 @@
 import {babel} from '@rollup/plugin-babel';
+import copy from 'rollup-plugin-copy';
 
 let pkg = require('./package.json');
 let external = Object.keys(pkg.peerDependencies);
@@ -7,6 +8,9 @@ let plugins = [
   babel({
     exclude: 'node_modules/**',
     babelHelpers: 'bundled',
+  }),
+  copy({
+    targets: [{src: 'src/index.d.ts', dest: 'dist/types'}],
   }),
 ];
 
@@ -28,7 +32,7 @@ export default {
       exports: 'named',
     },
     {
-      file: 'dist/index.js',
+      file: pkg.browser,
       format: 'umd',
       sourcemap: true,
       exports: 'named',

@@ -70,7 +70,7 @@
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",
     "moduleFileExtensions": [
-      "js"
+      "js", "ts"
     ],
     "coverageReporters": [
       "text",

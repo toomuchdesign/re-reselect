@@ -1,9 +1,10 @@
+import type {ICacheObject} from '../../index';
 import fillCacheWith from './fillCacheWith';
 
-function testBasicBehavior(CacheObject, options) {
+function testBasicBehavior(makeCacheObject: () => ICacheObject) {
   describe('Cache basic behavior', () => {
     it('returns cached value', () => {
-      const cache = new CacheObject(options);
+      const cache = makeCacheObject();
       const actual = () => {};
 
       cache.set('foo', actual);
@@ -13,7 +14,7 @@ function testBasicBehavior(CacheObject, options) {
     });
 
     it('removes a single item', () => {
-      const cache = new CacheObject(options);
+      const cache = makeCacheObject();
       const entries = [1, 2, 3, 4, 5];
       fillCacheWith(cache, entries);
 
@@ -26,7 +27,7 @@ function testBasicBehavior(CacheObject, options) {
     });
 
     it('clears the cache', () => {
-      const cache = new CacheObject(options);
+      const cache = makeCacheObject();
       const entries = [1, 2, 3, 4, 5];
       fillCacheWith(cache, entries);
 

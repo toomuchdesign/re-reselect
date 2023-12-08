@@ -23,12 +23,6 @@ function selectorWithMockedResultFunc() {
 }
 
 describe('createCachedSelector', () => {
-  describe('default export', () => {
-    it('exports the same as "createCachedSelector"', () => {
-      expect(createCachedSelectorAsDefault).toBe(createCachedSelector);
-    });
-  });
-
   describe('options', () => {
     describe('as single function', () => {
       it('accepts keySelector function', () => {
@@ -80,21 +74,6 @@ describe('createCachedSelector', () => {
           keySelector: keySelector,
         });
         expect(cachedSelector.keySelector).toBe(generatedKeySelector);
-      });
-    });
-
-    describe('as second argument', () => {
-      it('throws an error', () => {
-        expect(() => {
-          createCachedSelector(
-            () => {},
-            () => {}
-          )(
-            () => {},
-            // @ts-expect-error
-            {}
-          );
-        }).toThrow(/"options" as second argument is not supported anymore/);
       });
     });
   });

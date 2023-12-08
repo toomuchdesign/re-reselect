@@ -5,13 +5,7 @@ const defaultCacheCreator = FlatObjectCache;
 const defaultCacheKeyValidator = () => true;
 
 function createCachedSelector(...funcs) {
-  return (polymorphicOptions, legacyOptions) => {
-    if (legacyOptions) {
-      throw new Error(
-        '[re-reselect] "options" as second argument is not supported anymore. Please provide an option object as single argument.'
-      );
-    }
-
+  return polymorphicOptions => {
     const options =
       typeof polymorphicOptions === 'function'
         ? {keySelector: polymorphicOptions}

@@ -1,15 +1,9 @@
 import {createSelectorCreator, lruMemoize} from 'reselect';
-import createCachedSelectorAsDefault, {
-  createCachedSelector,
-  KeySelector,
-} from '../index';
+import {createCachedSelector, KeySelector} from '../index';
 
 function assertType<T>(value: T): T {
   return value;
 }
-
-// default export and "createCachedSelector" named export are the same thing
-assertType<typeof createCachedSelector>(createCachedSelectorAsDefault);
 
 function testSelector() {
   type State = {foo: string};

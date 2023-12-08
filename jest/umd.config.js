@@ -4,6 +4,6 @@ var pkg = require('../package.json');
 module.exports = Object.assign({}, pkg.jest, {
   rootDir: '../',
   moduleNameMapper: {
-    '/src/index$': '<rootDir>/lib/index',
+    '/src/index$': '<rootDir>/dist/umd/index',
   },
 });

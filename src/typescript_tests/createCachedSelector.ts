@@ -1,4 +1,4 @@
-import {createSelectorCreator, defaultMemoize} from 'reselect';
+import {createSelectorCreator, lruMemoize} from 'reselect';
 import createCachedSelectorAsDefault, {
   createCachedSelector,
   KeySelector,
@@ -412,11 +412,11 @@ function testSelectorCreatorOption() {
     foo => foo
   )({
     keySelector: (state: State) => state.foo,
-    selectorCreator: createSelectorCreator(defaultMemoize),
+    selectorCreator: createSelectorCreator(lruMemoize),
   });
 }
 
-function testSelectorCreatorOptionNonDefaultMemoize() {
+function testSelectorCreatorOptionNonLruMemoize() {
   type State = {foo: string};
 
   const selector2 = createCachedSelector(
@@ -424,6 +424,6 @@ function testSelectorCreatorOptionNonDefaultMemoize() {
     foo => foo
   )({
     keySelector: (state: State) => state.foo,
-    selectorCreator: createSelectorCreator((func) => func),
+    selectorCreator: createSelectorCreator(func => func),
   });
 }

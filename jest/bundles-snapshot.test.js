@@ -1,9 +1,12 @@
 import {readFileSync} from 'fs';
 import {join} from 'path';
 
-describe('Dist bundle', () => {
+describe('UMD bundle', () => {
   it('is unchanged', () => {
-    const bundle = readFileSync(join(__dirname, '..', 'dist/index.js'), 'utf8');
+    const bundle = readFileSync(
+      join(__dirname, '..', 'dist/umd/index.js'),
+      'utf8'
+    );
     expect(bundle).toMatchSnapshot();
   });
 });

@@ -4251,7 +4251,6 @@ declare function createCachedSelector<S, P, R, T>(
   ParametricSelector<S, P, R>[]
 >;
 
-export default createCachedSelector;
 export {createCachedSelector};
 
 /*

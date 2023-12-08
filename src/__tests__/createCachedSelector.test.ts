@@ -23,12 +23,6 @@ function selectorWithMockedResultFunc() {
 }
 
 describe('createCachedSelector', () => {
-  describe('default export', () => {
-    it('exports the same as "createCachedSelector"', () => {
-      expect(createCachedSelectorAsDefault).toBe(createCachedSelector);
-    });
-  });
-
   describe('options', () => {
     describe('as single function', () => {
       it('accepts keySelector function', () => {

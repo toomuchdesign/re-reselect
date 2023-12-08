@@ -42,10 +42,7 @@ exports[`UMD bundle is unchanged 1`] = `
     for (var _len = arguments.length, funcs = new Array(_len), _key = 0; _key < _len; _key++) {
       funcs[_key] = arguments[_key];
     }
-    return function (polymorphicOptions, legacyOptions) {
-      if (legacyOptions) {
-        throw new Error('[re-reselect] "options" as second argument is not supported anymore. Please provide an option object as single argument.');
-      }
+    return function (polymorphicOptions) {
       var options = typeof polymorphicOptions === 'function' ? {
         keySelector: polymorphicOptions
       } : Object.assign({}, polymorphicOptions);
@@ -300,9 +297,6 @@ exports[`UMD bundle is unchanged 1`] = `
   exports.LruObjectCache = LruObjectCache;
   exports.createCachedSelector = createCachedSelector;
   exports.createStructuredCachedSelector = createStructuredCachedSelector;
-  exports.default = createCachedSelector;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
 //# sourceMappingURL=index.js.map

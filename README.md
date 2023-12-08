@@ -76,8 +76,8 @@ const reactUsersAgain = getUsersByLibrary(state, 'react');
 ## Installation
 
 ```console
-npm install reselect -S
-npm install re-reselect -S
+npm install reselect
+npm install re-reselect
 ```
 
 ## Why? + example

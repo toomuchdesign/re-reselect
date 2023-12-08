@@ -1,6 +1,9 @@
+import type {ICacheObject} from '../../index';
 import fillCacheWith from './fillCacheWith';
 
-function testLruBehavior(CacheObject) {
+function testLruBehavior(
+  CacheObject: new (options: {cacheSize: number}) => ICacheObject
+) {
   describe('LRU cache behavior', () => {
     it('removes an item and update cache ordering when another is added', () => {
       const cache = new CacheObject({cacheSize: 5});

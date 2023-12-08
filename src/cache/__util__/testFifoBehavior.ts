@@ -1,6 +1,9 @@
+import type {ICacheObject} from '../../index';
 import fillCacheWith from './fillCacheWith';
 
-function testFifoBehavior(CacheObject) {
+function testFifoBehavior(
+  CacheObject: new (options: {cacheSize: number}) => ICacheObject
+) {
   describe('FIFO cache behavior', () => {
     it('limits cache queue by removing the first added items', () => {
       const cache = new CacheObject({cacheSize: 5});

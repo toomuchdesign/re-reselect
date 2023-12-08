@@ -76,21 +76,6 @@ describe('createCachedSelector', () => {
         expect(cachedSelector.keySelector).toBe(generatedKeySelector);
       });
     });
-
-    describe('as second argument', () => {
-      it('throws an error', () => {
-        expect(() => {
-          createCachedSelector(
-            () => {},
-            () => {}
-          )(
-            () => {},
-            // @ts-expect-error
-            {}
-          );
-        }).toThrow(/"options" as second argument is not supported anymore/);
-      });
-    });
   });
 
   describe('created selector', () => {

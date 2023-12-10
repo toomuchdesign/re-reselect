@@ -1,9 +1,5 @@
 import * as reselect from 'reselect';
-import createCachedSelectorAsDefault, {
-  createCachedSelector,
-  FlatObjectCache,
-  ICacheObject,
-} from '../index';
+import {createCachedSelector, FlatObjectCache, ICacheObject} from '../index';
 
 // Cannot natively spyOn es module named exports
 jest.mock('reselect', () => ({

@@ -5,7 +5,7 @@
 [![Npm downloads][npm-downloads-badge]][npm]
 [![Test coverage report][coveralls-badge]][coveralls]
 
-From [v5](https://github.com/reduxjs/reselect/releases/tag/v5.0.1), `reselect` provides options to implement natively you custom memoization caching solution via `createSelector` options. Most of the features `re-reselect` used to enable should be now available natively in `reselect`. `re-reselect` will try to support `reselect` v5+ for backward compatibility reasons.
+From [v5](https://github.com/reduxjs/reselect/releases/tag/v5.0.1), `reselect` provides the ability to natively implement custom memoization/caching solutions via `createSelector` options. Most of the features `re-reselect` used to enable should be now natively available in `reselect`. `re-reselect` will try to support `reselect` v5+ for backward compatibility reasons.
 
 `re-reselect` is a lightweight wrapper around **[Reselect][reselect]** meant to enhance selectors with **deeper memoization** and **cache management**.
 
@@ -455,8 +455,9 @@ Get `keySelector` for utility compositions or testing.
 
 ## Todo's
 
-- Improve TS tests readability
-- More examples
+- Improve tests readability
+- Port to native TS based on reselect v5 approach
+- Find out whether `re-reselect` should be deprecated in favour of `reselect` memoization/cache options
 
 ## Contributors
 

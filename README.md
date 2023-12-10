@@ -5,6 +5,8 @@
 [![Npm downloads][npm-downloads-badge]][npm]
 [![Test coverage report][coveralls-badge]][coveralls]
 
+From [v5](https://github.com/reduxjs/reselect/releases/tag/v5.0.1), `reselect` provides options to implement natively you custom memoization caching solution via `createSelector` options. Most of the features `re-reselect` used to enable should be now available natively in `reselect`. `re-reselect` will try to support `reselect` v5+ for backward compatibility reasons.
+
 `re-reselect` is a lightweight wrapper around **[Reselect][reselect]** meant to enhance selectors with **deeper memoization** and **cache management**.
 
 **Switching between different arguments** using standard `reselect` selectors causes **cache invalidation** since default `reselect` cache has a **limit of one**.

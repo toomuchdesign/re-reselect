@@ -140,7 +140,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, T>(
   [
     ParametricSelector<S, P, R1>,
     ParametricSelector<S, P, R2>,
-    ParametricSelector<S, P, R3>
+    ParametricSelector<S, P, R3>,
   ]
 >;
 
@@ -172,7 +172,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, T>(
     ParametricSelector<S, P, R1>,
     ParametricSelector<S, P, R2>,
     ParametricSelector<S, P, R3>,
-    ParametricSelector<S, P, R4>
+    ParametricSelector<S, P, R4>,
   ]
 >;
 
@@ -193,7 +193,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, T>(
     Selector<S, R2>,
     Selector<S, R3>,
     Selector<S, R4>,
-    Selector<S, R5>
+    Selector<S, R5>,
   ]
 >;
 declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, T>(
@@ -213,7 +213,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, T>(
     ParametricSelector<S, P, R2>,
     ParametricSelector<S, P, R3>,
     ParametricSelector<S, P, R4>,
-    ParametricSelector<S, P, R5>
+    ParametricSelector<S, P, R5>,
   ]
 >;
 
@@ -236,7 +236,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, T>(
     Selector<S, R3>,
     Selector<S, R4>,
     Selector<S, R5>,
-    Selector<S, R6>
+    Selector<S, R6>,
   ]
 >;
 declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, T>(
@@ -258,7 +258,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, T>(
     ParametricSelector<S, P, R3>,
     ParametricSelector<S, P, R4>,
     ParametricSelector<S, P, R5>,
-    ParametricSelector<S, P, R6>
+    ParametricSelector<S, P, R6>,
   ]
 >;
 
@@ -291,7 +291,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, R7, T>(
     Selector<S, R4>,
     Selector<S, R5>,
     Selector<S, R6>,
-    Selector<S, R7>
+    Selector<S, R7>,
   ]
 >;
 declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, T>(
@@ -323,7 +323,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, T>(
     ParametricSelector<S, P, R4>,
     ParametricSelector<S, P, R5>,
     ParametricSelector<S, P, R6>,
-    ParametricSelector<S, P, R7>
+    ParametricSelector<S, P, R7>,
   ]
 >;
 
@@ -368,7 +368,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, R7, R8, T>(
     Selector<S, R5>,
     Selector<S, R6>,
     Selector<S, R7>,
-    Selector<S, R8>
+    Selector<S, R8>,
   ]
 >;
 declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, R8, T>(
@@ -412,7 +412,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, R8, T>(
     ParametricSelector<S, P, R5>,
     ParametricSelector<S, P, R6>,
     ParametricSelector<S, P, R7>,
-    ParametricSelector<S, P, R8>
+    ParametricSelector<S, P, R8>,
   ]
 >;
 
@@ -461,7 +461,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, R7, R8, R9, T>(
     Selector<S, R6>,
     Selector<S, R7>,
     Selector<S, R8>,
-    Selector<S, R9>
+    Selector<S, R9>,
   ]
 >;
 declare function createCachedSelector<
@@ -476,7 +476,7 @@ declare function createCachedSelector<
   R7,
   R8,
   R9,
-  T
+  T,
 >(
   selector1: ParametricSelector<S, P, R1>,
   selector2: ParametricSelector<S, P, R2>,
@@ -522,7 +522,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R6>,
     ParametricSelector<S, P, R7>,
     ParametricSelector<S, P, R8>,
-    ParametricSelector<S, P, R9>
+    ParametricSelector<S, P, R9>,
   ]
 >;
 
@@ -539,7 +539,7 @@ declare function createCachedSelector<
   R8,
   R9,
   R10,
-  T
+  T,
 >(
   selector1: Selector<S, R1>,
   selector2: Selector<S, R2>,
@@ -588,7 +588,7 @@ declare function createCachedSelector<
     Selector<S, R7>,
     Selector<S, R8>,
     Selector<S, R9>,
-    Selector<S, R10>
+    Selector<S, R10>,
   ]
 >;
 declare function createCachedSelector<
@@ -604,7 +604,7 @@ declare function createCachedSelector<
   R8,
   R9,
   R10,
-  T
+  T,
 >(
   selector1: ParametricSelector<S, P, R1>,
   selector2: ParametricSelector<S, P, R2>,
@@ -654,7 +654,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R7>,
     ParametricSelector<S, P, R8>,
     ParametricSelector<S, P, R9>,
-    ParametricSelector<S, P, R10>
+    ParametricSelector<S, P, R10>,
   ]
 >;
 
@@ -672,7 +672,7 @@ declare function createCachedSelector<
   R9,
   R10,
   R11,
-  T
+  T,
 >(
   selector1: Selector<S, R1>,
   selector2: Selector<S, R2>,
@@ -725,7 +725,7 @@ declare function createCachedSelector<
     Selector<S, R8>,
     Selector<S, R9>,
     Selector<S, R10>,
-    Selector<S, R11>
+    Selector<S, R11>,
   ]
 >;
 declare function createCachedSelector<
@@ -742,7 +742,7 @@ declare function createCachedSelector<
   R9,
   R10,
   R11,
-  T
+  T,
 >(
   selector1: ParametricSelector<S, P, R1>,
   selector2: ParametricSelector<S, P, R2>,
@@ -796,7 +796,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R8>,
     ParametricSelector<S, P, R9>,
     ParametricSelector<S, P, R10>,
-    ParametricSelector<S, P, R11>
+    ParametricSelector<S, P, R11>,
   ]
 >;
 
@@ -815,7 +815,7 @@ declare function createCachedSelector<
   R10,
   R11,
   R12,
-  T
+  T,
 >(
   selector1: Selector<S, R1>,
   selector2: Selector<S, R2>,
@@ -872,7 +872,7 @@ declare function createCachedSelector<
     Selector<S, R9>,
     Selector<S, R10>,
     Selector<S, R11>,
-    Selector<S, R12>
+    Selector<S, R12>,
   ]
 >;
 declare function createCachedSelector<
@@ -890,7 +890,7 @@ declare function createCachedSelector<
   R10,
   R11,
   R12,
-  T
+  T,
 >(
   selector1: ParametricSelector<S, P, R1>,
   selector2: ParametricSelector<S, P, R2>,
@@ -948,7 +948,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R9>,
     ParametricSelector<S, P, R10>,
     ParametricSelector<S, P, R11>,
-    ParametricSelector<S, P, R12>
+    ParametricSelector<S, P, R12>,
   ]
 >;
 
@@ -1007,7 +1007,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, T>(
   selectors: [
     ParametricSelector<S, P, R1>,
     ParametricSelector<S, P, R2>,
-    ParametricSelector<S, P, R3>
+    ParametricSelector<S, P, R3>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3) => T
 ): OutputParametricCachedSelector<
@@ -1018,7 +1018,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, T>(
   [
     ParametricSelector<S, P, R1>,
     ParametricSelector<S, P, R2>,
-    ParametricSelector<S, P, R3>
+    ParametricSelector<S, P, R3>,
   ]
 >;
 
@@ -1028,7 +1028,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, T>(
     Selector<S, R1>,
     Selector<S, R2>,
     Selector<S, R3>,
-    Selector<S, R4>
+    Selector<S, R4>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4) => T
 ): OutputCachedSelector<
@@ -1042,7 +1042,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, T>(
     ParametricSelector<S, P, R1>,
     ParametricSelector<S, P, R2>,
     ParametricSelector<S, P, R3>,
-    ParametricSelector<S, P, R4>
+    ParametricSelector<S, P, R4>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4) => T
 ): OutputParametricCachedSelector<
@@ -1054,7 +1054,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, T>(
     ParametricSelector<S, P, R1>,
     ParametricSelector<S, P, R2>,
     ParametricSelector<S, P, R3>,
-    ParametricSelector<S, P, R4>
+    ParametricSelector<S, P, R4>,
   ]
 >;
 
@@ -1065,7 +1065,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, T>(
     Selector<S, R2>,
     Selector<S, R3>,
     Selector<S, R4>,
-    Selector<S, R5>
+    Selector<S, R5>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4, res5: R5) => T
 ): OutputCachedSelector<
@@ -1077,7 +1077,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, T>(
     Selector<S, R2>,
     Selector<S, R3>,
     Selector<S, R4>,
-    Selector<S, R5>
+    Selector<S, R5>,
   ]
 >;
 declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, T>(
@@ -1086,7 +1086,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, T>(
     ParametricSelector<S, P, R2>,
     ParametricSelector<S, P, R3>,
     ParametricSelector<S, P, R4>,
-    ParametricSelector<S, P, R5>
+    ParametricSelector<S, P, R5>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4, res5: R5) => T
 ): OutputParametricCachedSelector<
@@ -1099,7 +1099,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, T>(
     ParametricSelector<S, P, R2>,
     ParametricSelector<S, P, R3>,
     ParametricSelector<S, P, R4>,
-    ParametricSelector<S, P, R5>
+    ParametricSelector<S, P, R5>,
   ]
 >;
 
@@ -1111,7 +1111,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, T>(
     Selector<S, R3>,
     Selector<S, R4>,
     Selector<S, R5>,
-    Selector<S, R6>
+    Selector<S, R6>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4, res5: R5, res6: R6) => T
 ): OutputCachedSelector<
@@ -1124,7 +1124,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, T>(
     Selector<S, R3>,
     Selector<S, R4>,
     Selector<S, R5>,
-    Selector<S, R6>
+    Selector<S, R6>,
   ]
 >;
 declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, T>(
@@ -1134,7 +1134,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, T>(
     ParametricSelector<S, P, R3>,
     ParametricSelector<S, P, R4>,
     ParametricSelector<S, P, R5>,
-    ParametricSelector<S, P, R6>
+    ParametricSelector<S, P, R6>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4, res5: R5, res6: R6) => T
 ): OutputParametricCachedSelector<
@@ -1148,7 +1148,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, T>(
     ParametricSelector<S, P, R3>,
     ParametricSelector<S, P, R4>,
     ParametricSelector<S, P, R5>,
-    ParametricSelector<S, P, R6>
+    ParametricSelector<S, P, R6>,
   ]
 >;
 
@@ -1161,7 +1161,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, R7, T>(
     Selector<S, R4>,
     Selector<S, R5>,
     Selector<S, R6>,
-    Selector<S, R7>
+    Selector<S, R7>,
   ],
   combiner: (
     res1: R1,
@@ -1183,7 +1183,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, R7, T>(
     Selector<S, R4>,
     Selector<S, R5>,
     Selector<S, R6>,
-    Selector<S, R7>
+    Selector<S, R7>,
   ]
 >;
 declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, T>(
@@ -1194,7 +1194,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, T>(
     ParametricSelector<S, P, R4>,
     ParametricSelector<S, P, R5>,
     ParametricSelector<S, P, R6>,
-    ParametricSelector<S, P, R7>
+    ParametricSelector<S, P, R7>,
   ],
   combiner: (
     res1: R1,
@@ -1217,7 +1217,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, T>(
     ParametricSelector<S, P, R4>,
     ParametricSelector<S, P, R5>,
     ParametricSelector<S, P, R6>,
-    ParametricSelector<S, P, R7>
+    ParametricSelector<S, P, R7>,
   ]
 >;
 
@@ -1231,7 +1231,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, R7, R8, T>(
     Selector<S, R5>,
     Selector<S, R6>,
     Selector<S, R7>,
-    Selector<S, R8>
+    Selector<S, R8>,
   ],
   combiner: (
     res1: R1,
@@ -1264,7 +1264,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, R7, R8, T>(
     Selector<S, R5>,
     Selector<S, R6>,
     Selector<S, R7>,
-    Selector<S, R8>
+    Selector<S, R8>,
   ]
 >;
 declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, R8, T>(
@@ -1276,7 +1276,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, R8, T>(
     ParametricSelector<S, P, R5>,
     ParametricSelector<S, P, R6>,
     ParametricSelector<S, P, R7>,
-    ParametricSelector<S, P, R8>
+    ParametricSelector<S, P, R8>,
   ],
   combiner: (
     res1: R1,
@@ -1310,7 +1310,7 @@ declare function createCachedSelector<S, P, R1, R2, R3, R4, R5, R6, R7, R8, T>(
     ParametricSelector<S, P, R5>,
     ParametricSelector<S, P, R6>,
     ParametricSelector<S, P, R7>,
-    ParametricSelector<S, P, R8>
+    ParametricSelector<S, P, R8>,
   ]
 >;
 
@@ -1325,7 +1325,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, R7, R8, R9, T>(
     Selector<S, R6>,
     Selector<S, R7>,
     Selector<S, R8>,
-    Selector<S, R9>
+    Selector<S, R9>,
   ],
   combiner: (
     res1: R1,
@@ -1361,7 +1361,7 @@ declare function createCachedSelector<S, R1, R2, R3, R4, R5, R6, R7, R8, R9, T>(
     Selector<S, R6>,
     Selector<S, R7>,
     Selector<S, R8>,
-    Selector<S, R9>
+    Selector<S, R9>,
   ]
 >;
 declare function createCachedSelector<
@@ -1376,7 +1376,7 @@ declare function createCachedSelector<
   R7,
   R8,
   R9,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S, P, R1>,
@@ -1387,7 +1387,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R6>,
     ParametricSelector<S, P, R7>,
     ParametricSelector<S, P, R8>,
-    ParametricSelector<S, P, R9>
+    ParametricSelector<S, P, R9>,
   ],
   combiner: (
     res1: R1,
@@ -1424,7 +1424,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R6>,
     ParametricSelector<S, P, R7>,
     ParametricSelector<S, P, R8>,
-    ParametricSelector<S, P, R9>
+    ParametricSelector<S, P, R9>,
   ]
 >;
 
@@ -1441,7 +1441,7 @@ declare function createCachedSelector<
   R8,
   R9,
   R10,
-  T
+  T,
 >(
   selectors: [
     Selector<S, R1>,
@@ -1453,7 +1453,7 @@ declare function createCachedSelector<
     Selector<S, R7>,
     Selector<S, R8>,
     Selector<S, R9>,
-    Selector<S, R10>
+    Selector<S, R10>,
   ],
   combiner: (
     res1: R1,
@@ -1492,7 +1492,7 @@ declare function createCachedSelector<
     Selector<S, R7>,
     Selector<S, R8>,
     Selector<S, R9>,
-    Selector<S, R10>
+    Selector<S, R10>,
   ]
 >;
 declare function createCachedSelector<
@@ -1508,7 +1508,7 @@ declare function createCachedSelector<
   R8,
   R9,
   R10,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S, P, R1>,
@@ -1520,7 +1520,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R7>,
     ParametricSelector<S, P, R8>,
     ParametricSelector<S, P, R9>,
-    ParametricSelector<S, P, R10>
+    ParametricSelector<S, P, R10>,
   ],
   combiner: (
     res1: R1,
@@ -1560,7 +1560,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R7>,
     ParametricSelector<S, P, R8>,
     ParametricSelector<S, P, R9>,
-    ParametricSelector<S, P, R10>
+    ParametricSelector<S, P, R10>,
   ]
 >;
 
@@ -1578,7 +1578,7 @@ declare function createCachedSelector<
   R9,
   R10,
   R11,
-  T
+  T,
 >(
   selectors: [
     Selector<S, R1>,
@@ -1591,7 +1591,7 @@ declare function createCachedSelector<
     Selector<S, R8>,
     Selector<S, R9>,
     Selector<S, R10>,
-    Selector<S, R11>
+    Selector<S, R11>,
   ],
   combiner: (
     res1: R1,
@@ -1633,7 +1633,7 @@ declare function createCachedSelector<
     Selector<S, R8>,
     Selector<S, R9>,
     Selector<S, R10>,
-    Selector<S, R11>
+    Selector<S, R11>,
   ]
 >;
 declare function createCachedSelector<
@@ -1650,7 +1650,7 @@ declare function createCachedSelector<
   R9,
   R10,
   R11,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S, P, R1>,
@@ -1663,7 +1663,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R8>,
     ParametricSelector<S, P, R9>,
     ParametricSelector<S, P, R10>,
-    ParametricSelector<S, P, R11>
+    ParametricSelector<S, P, R11>,
   ],
   combiner: (
     res1: R1,
@@ -1706,7 +1706,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R8>,
     ParametricSelector<S, P, R9>,
     ParametricSelector<S, P, R10>,
-    ParametricSelector<S, P, R11>
+    ParametricSelector<S, P, R11>,
   ]
 >;
 
@@ -1725,7 +1725,7 @@ declare function createCachedSelector<
   R10,
   R11,
   R12,
-  T
+  T,
 >(
   selectors: [
     Selector<S, R1>,
@@ -1739,7 +1739,7 @@ declare function createCachedSelector<
     Selector<S, R9>,
     Selector<S, R10>,
     Selector<S, R11>,
-    Selector<S, R12>
+    Selector<S, R12>,
   ],
   combiner: (
     res1: R1,
@@ -1784,7 +1784,7 @@ declare function createCachedSelector<
     Selector<S, R9>,
     Selector<S, R10>,
     Selector<S, R11>,
-    Selector<S, R12>
+    Selector<S, R12>,
   ]
 >;
 declare function createCachedSelector<
@@ -1802,7 +1802,7 @@ declare function createCachedSelector<
   R10,
   R11,
   R12,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S, P, R1>,
@@ -1816,7 +1816,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R9>,
     ParametricSelector<S, P, R10>,
     ParametricSelector<S, P, R11>,
-    ParametricSelector<S, P, R12>
+    ParametricSelector<S, P, R12>,
   ],
   combiner: (
     res1: R1,
@@ -1862,7 +1862,7 @@ declare function createCachedSelector<
     ParametricSelector<S, P, R9>,
     ParametricSelector<S, P, R10>,
     ParametricSelector<S, P, R11>,
-    ParametricSelector<S, P, R12>
+    ParametricSelector<S, P, R12>,
   ]
 >;
 
@@ -1934,7 +1934,7 @@ declare function createCachedSelector<S1, S2, S3, P1, P2, P3, R1, R2, R3, T>(
   [
     ParametricSelector<S1, P1, R1>,
     ParametricSelector<S2, P2, R2>,
-    ParametricSelector<S3, P3, R3>
+    ParametricSelector<S3, P3, R3>,
   ]
 >;
 
@@ -1964,7 +1964,7 @@ declare function createCachedSelector<
   R2,
   R3,
   R4,
-  T
+  T,
 >(
   selector1: ParametricSelector<S1, P1, R1>,
   selector2: ParametricSelector<S2, P2, R2>,
@@ -1980,7 +1980,7 @@ declare function createCachedSelector<
     ParametricSelector<S1, P1, R1>,
     ParametricSelector<S2, P2, R2>,
     ParametricSelector<S3, P3, R3>,
-    ParametricSelector<S4, P4, R4>
+    ParametricSelector<S4, P4, R4>,
   ]
 >;
 
@@ -1996,7 +1996,7 @@ declare function createCachedSelector<
   R3,
   R4,
   R5,
-  T
+  T,
 >(
   selector1: Selector<S1, R1>,
   selector2: Selector<S2, R2>,
@@ -2013,7 +2013,7 @@ declare function createCachedSelector<
     Selector<S2, R2>,
     Selector<S3, R3>,
     Selector<S4, R4>,
-    Selector<S5, R5>
+    Selector<S5, R5>,
   ]
 >;
 declare function createCachedSelector<
@@ -2032,7 +2032,7 @@ declare function createCachedSelector<
   R3,
   R4,
   R5,
-  T
+  T,
 >(
   selector1: ParametricSelector<S1, P1, R1>,
   selector2: ParametricSelector<S2, P2, R2>,
@@ -2050,7 +2050,7 @@ declare function createCachedSelector<
     ParametricSelector<S2, P2, R2>,
     ParametricSelector<S3, P3, R3>,
     ParametricSelector<S4, P4, R4>,
-    ParametricSelector<S5, P5, R5>
+    ParametricSelector<S5, P5, R5>,
   ]
 >;
 
@@ -2068,7 +2068,7 @@ declare function createCachedSelector<
   R4,
   R5,
   R6,
-  T
+  T,
 >(
   selector1: Selector<S1, R1>,
   selector2: Selector<S2, R2>,
@@ -2087,7 +2087,7 @@ declare function createCachedSelector<
     Selector<S3, R3>,
     Selector<S4, R4>,
     Selector<S5, R5>,
-    Selector<S6, R6>
+    Selector<S6, R6>,
   ]
 >;
 declare function createCachedSelector<
@@ -2109,7 +2109,7 @@ declare function createCachedSelector<
   R4,
   R5,
   R6,
-  T
+  T,
 >(
   selector1: ParametricSelector<S1, P1, R1>,
   selector2: ParametricSelector<S2, P2, R2>,
@@ -2129,7 +2129,7 @@ declare function createCachedSelector<
     ParametricSelector<S3, P3, R3>,
     ParametricSelector<S4, P4, R4>,
     ParametricSelector<S5, P5, R5>,
-    ParametricSelector<S6, P6, R6>
+    ParametricSelector<S6, P6, R6>,
   ]
 >;
 
@@ -2149,7 +2149,7 @@ declare function createCachedSelector<
   R5,
   R6,
   R7,
-  T
+  T,
 >(
   selector1: Selector<S1, R1>,
   selector2: Selector<S2, R2>,
@@ -2178,7 +2178,7 @@ declare function createCachedSelector<
     Selector<S4, R4>,
     Selector<S5, R5>,
     Selector<S6, R6>,
-    Selector<S7, R7>
+    Selector<S7, R7>,
   ]
 >;
 declare function createCachedSelector<
@@ -2203,7 +2203,7 @@ declare function createCachedSelector<
   R5,
   R6,
   R7,
-  T
+  T,
 >(
   selector1: ParametricSelector<S1, P1, R1>,
   selector2: ParametricSelector<S2, P2, R2>,
@@ -2233,7 +2233,7 @@ declare function createCachedSelector<
     ParametricSelector<S4, P4, R4>,
     ParametricSelector<S5, P5, R5>,
     ParametricSelector<S6, P6, R6>,
-    ParametricSelector<S7, P7, R7>
+    ParametricSelector<S7, P7, R7>,
   ]
 >;
 
@@ -2255,7 +2255,7 @@ declare function createCachedSelector<
   R6,
   R7,
   R8,
-  T
+  T,
 >(
   selector1: Selector<S1, R1>,
   selector2: Selector<S2, R2>,
@@ -2296,7 +2296,7 @@ declare function createCachedSelector<
     Selector<S5, R5>,
     Selector<S6, R6>,
     Selector<S7, R7>,
-    Selector<S8, R8>
+    Selector<S8, R8>,
   ]
 >;
 declare function createCachedSelector<
@@ -2324,7 +2324,7 @@ declare function createCachedSelector<
   R6,
   R7,
   R8,
-  T
+  T,
 >(
   selector1: ParametricSelector<S1, P1, R1>,
   selector2: ParametricSelector<S2, P2, R2>,
@@ -2366,7 +2366,7 @@ declare function createCachedSelector<
     ParametricSelector<S5, P5, R5>,
     ParametricSelector<S6, P6, R6>,
     ParametricSelector<S7, P7, R7>,
-    ParametricSelector<S8, P8, R8>
+    ParametricSelector<S8, P8, R8>,
   ]
 >;
 
@@ -2390,7 +2390,7 @@ declare function createCachedSelector<
   R7,
   R8,
   R9,
-  T
+  T,
 >(
   selector1: Selector<S1, R1>,
   selector2: Selector<S2, R2>,
@@ -2435,7 +2435,7 @@ declare function createCachedSelector<
     Selector<S6, R6>,
     Selector<S7, R7>,
     Selector<S8, R8>,
-    Selector<S9, R9>
+    Selector<S9, R9>,
   ]
 >;
 declare function createCachedSelector<
@@ -2466,7 +2466,7 @@ declare function createCachedSelector<
   R7,
   R8,
   R9,
-  T
+  T,
 >(
   selector1: ParametricSelector<S1, P1, R1>,
   selector2: ParametricSelector<S2, P2, R2>,
@@ -2512,7 +2512,7 @@ declare function createCachedSelector<
     ParametricSelector<S6, P6, R6>,
     ParametricSelector<S7, P7, R7>,
     ParametricSelector<S8, P8, R8>,
-    ParametricSelector<S9, P9, R9>
+    ParametricSelector<S9, P9, R9>,
   ]
 >;
 
@@ -2538,7 +2538,7 @@ declare function createCachedSelector<
   R8,
   R9,
   R10,
-  T
+  T,
 >(
   selector1: Selector<S1, R1>,
   selector2: Selector<S2, R2>,
@@ -2587,7 +2587,7 @@ declare function createCachedSelector<
     Selector<S7, R7>,
     Selector<S8, R8>,
     Selector<S9, R9>,
-    Selector<S10, R10>
+    Selector<S10, R10>,
   ]
 >;
 declare function createCachedSelector<
@@ -2621,7 +2621,7 @@ declare function createCachedSelector<
   R8,
   R9,
   R10,
-  T
+  T,
 >(
   selector1: ParametricSelector<S1, P1, R1>,
   selector2: ParametricSelector<S2, P2, R2>,
@@ -2671,7 +2671,7 @@ declare function createCachedSelector<
     ParametricSelector<S7, P7, R7>,
     ParametricSelector<S8, P8, R8>,
     ParametricSelector<S9, P9, R9>,
-    ParametricSelector<S10, P10, R10>
+    ParametricSelector<S10, P10, R10>,
   ]
 >;
 
@@ -2699,7 +2699,7 @@ declare function createCachedSelector<
   R9,
   R10,
   R11,
-  T
+  T,
 >(
   selector1: Selector<S1, R1>,
   selector2: Selector<S2, R2>,
@@ -2752,7 +2752,7 @@ declare function createCachedSelector<
     Selector<S8, R8>,
     Selector<S9, R9>,
     Selector<S10, R10>,
-    Selector<S11, R11>
+    Selector<S11, R11>,
   ]
 >;
 declare function createCachedSelector<
@@ -2789,7 +2789,7 @@ declare function createCachedSelector<
   R9,
   R10,
   R11,
-  T
+  T,
 >(
   selector1: ParametricSelector<S1, P1, R1>,
   selector2: ParametricSelector<S2, P2, R2>,
@@ -2843,7 +2843,7 @@ declare function createCachedSelector<
     ParametricSelector<S8, P8, R8>,
     ParametricSelector<S9, P9, R9>,
     ParametricSelector<S10, P10, R10>,
-    ParametricSelector<S11, P11, R11>
+    ParametricSelector<S11, P11, R11>,
   ]
 >;
 
@@ -2873,7 +2873,7 @@ declare function createCachedSelector<
   R10,
   R11,
   R12,
-  T
+  T,
 >(
   selector1: Selector<S1, R1>,
   selector2: Selector<S2, R2>,
@@ -2930,7 +2930,7 @@ declare function createCachedSelector<
     Selector<S9, R9>,
     Selector<S10, R10>,
     Selector<S11, R11>,
-    Selector<S12, R12>
+    Selector<S12, R12>,
   ]
 >;
 declare function createCachedSelector<
@@ -2970,7 +2970,7 @@ declare function createCachedSelector<
   R10,
   R11,
   R12,
-  T
+  T,
 >(
   selector1: ParametricSelector<S1, P1, R1>,
   selector2: ParametricSelector<S2, P2, R2>,
@@ -3028,7 +3028,7 @@ declare function createCachedSelector<
     ParametricSelector<S9, P9, R9>,
     ParametricSelector<S10, P10, R10>,
     ParametricSelector<S11, P11, R11>,
-    ParametricSelector<S12, P12, R12>
+    ParametricSelector<S12, P12, R12>,
   ]
 >;
 
@@ -3087,7 +3087,7 @@ declare function createCachedSelector<S1, S2, S3, P1, P2, P3, R1, R2, R3, T>(
   selectors: [
     ParametricSelector<S1, P1, R1>,
     ParametricSelector<S2, P2, R2>,
-    ParametricSelector<S3, P3, R3>
+    ParametricSelector<S3, P3, R3>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3) => T
 ): OutputParametricCachedSelector<
@@ -3098,7 +3098,7 @@ declare function createCachedSelector<S1, S2, S3, P1, P2, P3, R1, R2, R3, T>(
   [
     ParametricSelector<S1, P1, R1>,
     ParametricSelector<S2, P2, R2>,
-    ParametricSelector<S3, P3, R3>
+    ParametricSelector<S3, P3, R3>,
   ]
 >;
 
@@ -3108,7 +3108,7 @@ declare function createCachedSelector<S1, S2, S3, S4, R1, R2, R3, R4, T>(
     Selector<S1, R1>,
     Selector<S2, R2>,
     Selector<S3, R3>,
-    Selector<S4, R4>
+    Selector<S4, R4>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4) => T
 ): OutputCachedSelector<
@@ -3130,13 +3130,13 @@ declare function createCachedSelector<
   R2,
   R3,
   R4,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S1, P1, R1>,
     ParametricSelector<S2, P2, R2>,
     ParametricSelector<S3, P3, R3>,
-    ParametricSelector<S4, P4, R4>
+    ParametricSelector<S4, P4, R4>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4) => T
 ): OutputParametricCachedSelector<
@@ -3148,7 +3148,7 @@ declare function createCachedSelector<
     ParametricSelector<S1, P1, R1>,
     ParametricSelector<S2, P2, R2>,
     ParametricSelector<S3, P3, R3>,
-    ParametricSelector<S4, P4, R4>
+    ParametricSelector<S4, P4, R4>,
   ]
 >;
 
@@ -3164,14 +3164,14 @@ declare function createCachedSelector<
   R3,
   R4,
   R5,
-  T
+  T,
 >(
   selectors: [
     Selector<S1, R1>,
     Selector<S2, R2>,
     Selector<S3, R3>,
     Selector<S4, R4>,
-    Selector<S5, R5>
+    Selector<S5, R5>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4, res5: R5) => T
 ): OutputCachedSelector<
@@ -3183,7 +3183,7 @@ declare function createCachedSelector<
     Selector<S2, R2>,
     Selector<S3, R3>,
     Selector<S4, R4>,
-    Selector<S5, R5>
+    Selector<S5, R5>,
   ]
 >;
 declare function createCachedSelector<
@@ -3202,14 +3202,14 @@ declare function createCachedSelector<
   R3,
   R4,
   R5,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S1, P1, R1>,
     ParametricSelector<S2, P2, R2>,
     ParametricSelector<S3, P3, R3>,
     ParametricSelector<S4, P4, R4>,
-    ParametricSelector<S5, P5, R5>
+    ParametricSelector<S5, P5, R5>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4, res5: R5) => T
 ): OutputParametricCachedSelector<
@@ -3222,7 +3222,7 @@ declare function createCachedSelector<
     ParametricSelector<S2, P2, R2>,
     ParametricSelector<S3, P3, R3>,
     ParametricSelector<S4, P4, R4>,
-    ParametricSelector<S5, P5, R5>
+    ParametricSelector<S5, P5, R5>,
   ]
 >;
 
@@ -3240,7 +3240,7 @@ declare function createCachedSelector<
   R4,
   R5,
   R6,
-  T
+  T,
 >(
   selectors: [
     Selector<S1, R1>,
@@ -3248,7 +3248,7 @@ declare function createCachedSelector<
     Selector<S3, R3>,
     Selector<S4, R4>,
     Selector<S5, R5>,
-    Selector<S6, R6>
+    Selector<S6, R6>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4, res5: R5, res6: R6) => T
 ): OutputCachedSelector<
@@ -3261,7 +3261,7 @@ declare function createCachedSelector<
     Selector<S3, R3>,
     Selector<S4, R4>,
     Selector<S5, R5>,
-    Selector<S6, R6>
+    Selector<S6, R6>,
   ]
 >;
 declare function createCachedSelector<
@@ -3283,7 +3283,7 @@ declare function createCachedSelector<
   R4,
   R5,
   R6,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S1, P1, R1>,
@@ -3291,7 +3291,7 @@ declare function createCachedSelector<
     ParametricSelector<S3, P3, R3>,
     ParametricSelector<S4, P4, R4>,
     ParametricSelector<S5, P5, R5>,
-    ParametricSelector<S6, P6, R6>
+    ParametricSelector<S6, P6, R6>,
   ],
   combiner: (res1: R1, res2: R2, res3: R3, res4: R4, res5: R5, res6: R6) => T
 ): OutputParametricCachedSelector<
@@ -3305,7 +3305,7 @@ declare function createCachedSelector<
     ParametricSelector<S3, P3, R3>,
     ParametricSelector<S4, P4, R4>,
     ParametricSelector<S5, P5, R5>,
-    ParametricSelector<S6, P6, R6>
+    ParametricSelector<S6, P6, R6>,
   ]
 >;
 
@@ -3325,7 +3325,7 @@ declare function createCachedSelector<
   R5,
   R6,
   R7,
-  T
+  T,
 >(
   selectors: [
     Selector<S1, R1>,
@@ -3334,7 +3334,7 @@ declare function createCachedSelector<
     Selector<S4, R4>,
     Selector<S5, R5>,
     Selector<S6, R6>,
-    Selector<S7, R7>
+    Selector<S7, R7>,
   ],
   combiner: (
     res1: R1,
@@ -3356,7 +3356,7 @@ declare function createCachedSelector<
     Selector<S4, R4>,
     Selector<S5, R5>,
     Selector<S6, R6>,
-    Selector<S7, R7>
+    Selector<S7, R7>,
   ]
 >;
 declare function createCachedSelector<
@@ -3381,7 +3381,7 @@ declare function createCachedSelector<
   R5,
   R6,
   R7,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S1, P1, R1>,
@@ -3390,7 +3390,7 @@ declare function createCachedSelector<
     ParametricSelector<S4, P4, R4>,
     ParametricSelector<S5, P5, R5>,
     ParametricSelector<S6, P6, R6>,
-    ParametricSelector<S7, P7, R7>
+    ParametricSelector<S7, P7, R7>,
   ],
   combiner: (
     res1: R1,
@@ -3413,7 +3413,7 @@ declare function createCachedSelector<
     ParametricSelector<S4, P4, R4>,
     ParametricSelector<S5, P5, R5>,
     ParametricSelector<S6, P6, R6>,
-    ParametricSelector<S7, P7, R7>
+    ParametricSelector<S7, P7, R7>,
   ]
 >;
 
@@ -3435,7 +3435,7 @@ declare function createCachedSelector<
   R6,
   R7,
   R8,
-  T
+  T,
 >(
   selectors: [
     Selector<S1, R1>,
@@ -3445,7 +3445,7 @@ declare function createCachedSelector<
     Selector<S5, R5>,
     Selector<S6, R6>,
     Selector<S7, R7>,
-    Selector<S8, R8>
+    Selector<S8, R8>,
   ],
   combiner: (
     res1: R1,
@@ -3478,7 +3478,7 @@ declare function createCachedSelector<
     Selector<S5, R5>,
     Selector<S6, R6>,
     Selector<S7, R7>,
-    Selector<S8, R8>
+    Selector<S8, R8>,
   ]
 >;
 declare function createCachedSelector<
@@ -3506,7 +3506,7 @@ declare function createCachedSelector<
   R6,
   R7,
   R8,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S1, P1, R1>,
@@ -3516,7 +3516,7 @@ declare function createCachedSelector<
     ParametricSelector<S5, P5, R5>,
     ParametricSelector<S6, P6, R6>,
     ParametricSelector<S7, P7, R7>,
-    ParametricSelector<S8, P8, R8>
+    ParametricSelector<S8, P8, R8>,
   ],
   combiner: (
     res1: R1,
@@ -3550,7 +3550,7 @@ declare function createCachedSelector<
     ParametricSelector<S5, P5, R5>,
     ParametricSelector<S6, P6, R6>,
     ParametricSelector<S7, P7, R7>,
-    ParametricSelector<S8, P8, R8>
+    ParametricSelector<S8, P8, R8>,
   ]
 >;
 
@@ -3574,7 +3574,7 @@ declare function createCachedSelector<
   R7,
   R8,
   R9,
-  T
+  T,
 >(
   selectors: [
     Selector<S1, R1>,
@@ -3585,7 +3585,7 @@ declare function createCachedSelector<
     Selector<S6, R6>,
     Selector<S7, R7>,
     Selector<S8, R8>,
-    Selector<S9, R9>
+    Selector<S9, R9>,
   ],
   combiner: (
     res1: R1,
@@ -3621,7 +3621,7 @@ declare function createCachedSelector<
     Selector<S6, R6>,
     Selector<S7, R7>,
     Selector<S8, R8>,
-    Selector<S9, R9>
+    Selector<S9, R9>,
   ]
 >;
 declare function createCachedSelector<
@@ -3653,7 +3653,7 @@ declare function createCachedSelector<
   R7,
   R8,
   R9,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S1, P1, R1>,
@@ -3664,7 +3664,7 @@ declare function createCachedSelector<
     ParametricSelector<S6, P6, R6>,
     ParametricSelector<S7, P7, R7>,
     ParametricSelector<S8, P8, R8>,
-    ParametricSelector<S9, P9, R9>
+    ParametricSelector<S9, P9, R9>,
   ],
   combiner: (
     res1: R1,
@@ -3701,7 +3701,7 @@ declare function createCachedSelector<
     ParametricSelector<S6, P6, R6>,
     ParametricSelector<S7, P7, R7>,
     ParametricSelector<S8, P8, R8>,
-    ParametricSelector<S9, P9, R9>
+    ParametricSelector<S9, P9, R9>,
   ]
 >;
 
@@ -3727,7 +3727,7 @@ declare function createCachedSelector<
   R8,
   R9,
   R10,
-  T
+  T,
 >(
   selectors: [
     Selector<S1, R1>,
@@ -3739,7 +3739,7 @@ declare function createCachedSelector<
     Selector<S7, R7>,
     Selector<S8, R8>,
     Selector<S9, R9>,
-    Selector<S10, R10>
+    Selector<S10, R10>,
   ],
   combiner: (
     res1: R1,
@@ -3778,7 +3778,7 @@ declare function createCachedSelector<
     Selector<S7, R7>,
     Selector<S8, R8>,
     Selector<S9, R9>,
-    Selector<S10, R10>
+    Selector<S10, R10>,
   ]
 >;
 declare function createCachedSelector<
@@ -3812,7 +3812,7 @@ declare function createCachedSelector<
   R8,
   R9,
   R10,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S1, P1, R1>,
@@ -3824,7 +3824,7 @@ declare function createCachedSelector<
     ParametricSelector<S7, P7, R7>,
     ParametricSelector<S8, P8, R8>,
     ParametricSelector<S9, P9, R9>,
-    ParametricSelector<S10, P10, R10>
+    ParametricSelector<S10, P10, R10>,
   ],
   combiner: (
     res1: R1,
@@ -3864,7 +3864,7 @@ declare function createCachedSelector<
     ParametricSelector<S7, P7, R7>,
     ParametricSelector<S8, P8, R8>,
     ParametricSelector<S9, P9, R9>,
-    ParametricSelector<S10, P10, R10>
+    ParametricSelector<S10, P10, R10>,
   ]
 >;
 
@@ -3892,7 +3892,7 @@ declare function createCachedSelector<
   R9,
   R10,
   R11,
-  T
+  T,
 >(
   selectors: [
     Selector<S1, R1>,
@@ -3905,7 +3905,7 @@ declare function createCachedSelector<
     Selector<S8, R8>,
     Selector<S9, R9>,
     Selector<S10, R10>,
-    Selector<S11, R11>
+    Selector<S11, R11>,
   ],
   combiner: (
     res1: R1,
@@ -3947,7 +3947,7 @@ declare function createCachedSelector<
     Selector<S8, R8>,
     Selector<S9, R9>,
     Selector<S10, R10>,
-    Selector<S11, R11>
+    Selector<S11, R11>,
   ]
 >;
 declare function createCachedSelector<
@@ -3984,7 +3984,7 @@ declare function createCachedSelector<
   R9,
   R10,
   R11,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S1, P1, R1>,
@@ -3997,7 +3997,7 @@ declare function createCachedSelector<
     ParametricSelector<S8, P8, R8>,
     ParametricSelector<S9, P9, R9>,
     ParametricSelector<S10, P10, R10>,
-    ParametricSelector<S11, P11, R11>
+    ParametricSelector<S11, P11, R11>,
   ],
   combiner: (
     res1: R1,
@@ -4040,7 +4040,7 @@ declare function createCachedSelector<
     ParametricSelector<S8, P8, R8>,
     ParametricSelector<S9, P9, R9>,
     ParametricSelector<S10, P10, R10>,
-    ParametricSelector<S11, P11, R11>
+    ParametricSelector<S11, P11, R11>,
   ]
 >;
 
@@ -4070,7 +4070,7 @@ declare function createCachedSelector<
   R10,
   R11,
   R12,
-  T
+  T,
 >(
   selectors: [
     Selector<S1, R1>,
@@ -4084,7 +4084,7 @@ declare function createCachedSelector<
     Selector<S9, R9>,
     Selector<S10, R10>,
     Selector<S11, R11>,
-    Selector<S12, R12>
+    Selector<S12, R12>,
   ],
   combiner: (
     res1: R1,
@@ -4129,7 +4129,7 @@ declare function createCachedSelector<
     Selector<S9, R9>,
     Selector<S10, R10>,
     Selector<S11, R11>,
-    Selector<S12, R12>
+    Selector<S12, R12>,
   ]
 >;
 declare function createCachedSelector<
@@ -4169,7 +4169,7 @@ declare function createCachedSelector<
   R10,
   R11,
   R12,
-  T
+  T,
 >(
   selectors: [
     ParametricSelector<S1, P1, R1>,
@@ -4183,7 +4183,7 @@ declare function createCachedSelector<
     ParametricSelector<S9, P9, R9>,
     ParametricSelector<S10, P10, R10>,
     ParametricSelector<S11, P11, R11>,
-    ParametricSelector<S12, P12, R12>
+    ParametricSelector<S12, P12, R12>,
   ],
   combiner: (
     res1: R1,
@@ -4229,7 +4229,7 @@ declare function createCachedSelector<
     ParametricSelector<S9, P9, R9>,
     ParametricSelector<S10, P10, R10>,
     ParametricSelector<S11, P11, R11>,
-    ParametricSelector<S12, P12, R12>
+    ParametricSelector<S12, P12, R12>,
   ]
 >;
 
@@ -4260,7 +4260,7 @@ export {createCachedSelector};
 export function createStructuredCachedSelector<
   T extends {[key: string]: (state: any) => any},
   S = $Values<{[K in keyof T]: Parameters<T[K]>[0]}>,
-  R = {[K in keyof T]: ReturnType<T[K]>}
+  R = {[K in keyof T]: ReturnType<T[K]>},
 >(
   selectors: T
 ): OutputCachedSelector<
@@ -4276,7 +4276,7 @@ export function createStructuredCachedSelector<
   },
   S = $Values<{[K in keyof T]: Parameters<T[K]>[0]}>,
   P = Exclude<$Values<{[K in keyof T]: Parameters<T[K]>[1]}>, undefined>,
-  R = {[K in keyof T]: ReturnType<T[K]>}
+  R = {[K in keyof T]: ReturnType<T[K]>},
 >(
   selectors: T
 ): OutputParametricCachedSelector<

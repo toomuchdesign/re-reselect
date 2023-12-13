@@ -1,6 +1,6 @@
 {
   "name": "re-reselect",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Enhance Reselect selectors with deeper memoization and cache management",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",

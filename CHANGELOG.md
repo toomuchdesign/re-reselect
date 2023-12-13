@@ -1,5 +1,16 @@
 # Change log
 
+## 5.0.0
+
+### New Features
+
+- Support `reselect` v5
+
+### Breaking Changes
+
+- Drop support for `reselect` v4 -
+- Remove `createCachedSelector` default export
+
 ## 4.0.1
 
 - omit `clearCache` from `CreateSelectorInstance` type

@@ -57,7 +57,7 @@
     "prettier": "^3.1.1",
     "reselect": "^5.0.1",
     "rimraf": "^5.0.5",
-    "rollup": "^4.9.2",
+    "rollup": "^4.9.6",
     "rollup-plugin-copy": "^3.5.0",
     "simple-git-hooks": "^2.9.0",
     "ts-jest": "^29.1.1",

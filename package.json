@@ -46,8 +46,8 @@
     "reselect": "^5.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.6",
-    "@babel/preset-env": "^7.23.6",
+    "@babel/core": "^7.23.9",
+    "@babel/preset-env": "^7.23.9",
     "@rollup/plugin-babel": "^6.0.4",
     "@types/jest": "^29.5.11",
     "all-contributors-cli": "^6.26.1",

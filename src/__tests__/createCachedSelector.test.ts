@@ -1,5 +1,6 @@
 import * as reselect from 'reselect';
 import {createCachedSelector, FlatObjectCache, ICacheObject} from '../index';
+import type {CreateSelectorOptions} from 'reselect';
 
 // Cannot natively spyOn es module named exports
 jest.mock('reselect', () => ({
@@ -318,5 +319,30 @@ describe('createCachedSelector', () => {
         });
       });
     });
+  });
+
+  it("accepts and forwards reselect's createSelectorOptions object", () => {
+    const inputSelector1 = (state: string, param1: string) => null;
+    const createSelectorOptions: CreateSelectorOptions = {
+      memoizeOptions: {resultEqualityCheck: () => true},
+    };
+
+    const cachedSelector = createCachedSelector(
+      [inputSelector1],
+      () => {},
+      createSelectorOptions
+    )({keySelector: (state, param1) => param1});
+
+    cachedSelector('foo', 'bar');
+    cachedSelector('foo', 'bar');
+
+    expect(createSelectorSpy).toHaveBeenCalledTimes(1);
+    expect(createSelectorSpy).toHaveBeenCalledWith(
+      [inputSelector1],
+      expect.any(Function),
+      createSelectorOptions
+    );
+
+    expect(cachedSelector.recomputations()).toBe(1);
   });
 });

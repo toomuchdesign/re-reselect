@@ -38,10 +38,34 @@ exports[`UMD bundle is unchanged 1`] = `
   var defaultCacheKeyValidator = function defaultCacheKeyValidator() {
     return true;
   };
-  function createCachedSelector() {
-    for (var _len = arguments.length, funcs = new Array(_len), _key = 0; _key < _len; _key++) {
-      funcs[_key] = arguments[_key];
+  function parseReselectArgs(reselectArgs) {
+    var args = [].concat(reselectArgs);
+    var lastArgument = args[args.length - 1];
+    var resultFunc;
+    var createSelectorOptions = undefined;
+
+    // Last argument is resultFunc
+    if (typeof lastArgument === 'function') {
+      resultFunc = args.pop();
+    } else {
+      // Last argument is createSelectorOptions object
+      createSelectorOptions = args.pop();
+      resultFunc = args.pop();
     }
+    return {
+      inputSelectors: Array.isArray(args[0]) ? args[0] : [].concat(args),
+      resultFunc: resultFunc,
+      createSelectorOptions: createSelectorOptions
+    };
+  }
+  function createCachedSelector() {
+    for (var _len = arguments.length, reselectArgs = new Array(_len), _key = 0; _key < _len; _key++) {
+      reselectArgs[_key] = arguments[_key];
+    }
+    var _parseReselectArgs = parseReselectArgs(reselectArgs),
+      inputSelectors = _parseReselectArgs.inputSelectors,
+      resultFunc = _parseReselectArgs.resultFunc,
+      createSelectorOptions = _parseReselectArgs.createSelectorOptions;
     return function (polymorphicOptions) {
       var options = typeof polymorphicOptions === 'function' ? {
         keySelector: polymorphicOptions
@@ -49,31 +73,34 @@ exports[`UMD bundle is unchanged 1`] = `
 
       // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
       var recomputations = 0;
-      var resultFunc = funcs.pop();
-      var dependencies = Array.isArray(funcs[0]) ? funcs[0] : [].concat(funcs);
       var resultFuncWithRecomputations = function resultFuncWithRecomputations() {
         recomputations++;
         return resultFunc.apply(void 0, arguments);
       };
-      funcs.push(resultFuncWithRecomputations);
+
+      // Patch reselect call arguments with a custom resultFunc
+      var patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
+      if (createSelectorOptions) {
+        patchedReselectArgs.push(createSelectorOptions);
+      }
       var cache = options.cacheObject || new defaultCacheCreator();
       var selectorCreator = options.selectorCreator || reselect.createSelector;
       var isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
       if (options.keySelectorCreator) {
         options.keySelector = options.keySelectorCreator({
           keySelector: options.keySelector,
-          inputSelectors: dependencies,
+          inputSelectors: inputSelectors,
           resultFunc: resultFunc
         });
       }
 
-      // Application receives this function
+      // User receives this function
       var selector = function selector() {
         var cacheKey = options.keySelector.apply(options, arguments);
         if (isValidCacheKey(cacheKey)) {
           var cacheResponse = cache.get(cacheKey);
           if (cacheResponse === undefined) {
-            cacheResponse = selectorCreator.apply(void 0, funcs);
+            cacheResponse = selectorCreator.apply(void 0, patchedReselectArgs);
             cache.set(cacheKey, cacheResponse);
           }
           return cacheResponse.apply(void 0, arguments);
@@ -96,7 +123,7 @@ exports[`UMD bundle is unchanged 1`] = `
         cache.clear();
       };
       selector.resultFunc = resultFunc;
-      selector.dependencies = dependencies;
+      selector.dependencies = inputSelectors;
       selector.cache = cache;
       selector.recomputations = function () {
         return recomputations;

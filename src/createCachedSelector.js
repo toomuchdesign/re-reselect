@@ -4,7 +4,32 @@ import FlatObjectCache from './cache/FlatObjectCache';
 const defaultCacheCreator = FlatObjectCache;
 const defaultCacheKeyValidator = () => true;
 
-function createCachedSelector(...funcs) {
+function parseReselectArgs(reselectArgs) {
+  const args = [...reselectArgs];
+  const lastArgument = args[args.length - 1];
+  let resultFunc;
+  let createSelectorOptions = undefined;
+
+  // Last argument is resultFunc
+  if (typeof lastArgument === 'function') {
+    resultFunc = args.pop();
+  } else {
+    // Last argument is createSelectorOptions object
+    createSelectorOptions = args.pop();
+    resultFunc = args.pop();
+  }
+
+  return {
+    inputSelectors: Array.isArray(args[0]) ? args[0] : [...args],
+    resultFunc,
+    createSelectorOptions,
+  };
+}
+
+function createCachedSelector(...reselectArgs) {
+  const {inputSelectors, resultFunc, createSelectorOptions} =
+    parseReselectArgs(reselectArgs);
+
   return polymorphicOptions => {
     const options =
       typeof polymorphicOptions === 'function'
@@ -13,14 +38,16 @@ function createCachedSelector(...funcs) {
 
     // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
     let recomputations = 0;
-    const resultFunc = funcs.pop();
-    const dependencies = Array.isArray(funcs[0]) ? funcs[0] : [...funcs];
-
     const resultFuncWithRecomputations = (...args) => {
       recomputations++;
       return resultFunc(...args);
     };
-    funcs.push(resultFuncWithRecomputations);
+
+    // Patch reselect call arguments with a custom resultFunc
+    const patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
+    if (createSelectorOptions) {
+      patchedReselectArgs.push(createSelectorOptions);
+    }
 
     const cache = options.cacheObject || new defaultCacheCreator();
     const selectorCreator = options.selectorCreator || createSelector;
@@ -29,12 +56,12 @@ function createCachedSelector(...funcs) {
     if (options.keySelectorCreator) {
       options.keySelector = options.keySelectorCreator({
         keySelector: options.keySelector,
-        inputSelectors: dependencies,
+        inputSelectors,
         resultFunc,
       });
     }
 
-    // Application receives this function
+    // User receives this function
     const selector = function (...args) {
       const cacheKey = options.keySelector(...args);
 
@@ -42,7 +69,7 @@ function createCachedSelector(...funcs) {
         let cacheResponse = cache.get(cacheKey);
 
         if (cacheResponse === undefined) {
-          cacheResponse = selectorCreator(...funcs);
+          cacheResponse = selectorCreator(...patchedReselectArgs);
           cache.set(cacheKey, cacheResponse);
         }
 
@@ -72,7 +99,7 @@ function createCachedSelector(...funcs) {
 
     selector.resultFunc = resultFunc;
 
-    selector.dependencies = dependencies;
+    selector.dependencies = inputSelectors;
 
     selector.cache = cache;
 

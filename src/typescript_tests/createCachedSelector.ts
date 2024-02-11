@@ -421,3 +421,20 @@ function testSelectorCreatorOptionNonLruMemoize() {
     selectorCreator: createSelectorCreator(func => func),
   });
 }
+
+function testReselectOptionObject() {
+  type State = {foo: string};
+
+  createCachedSelector(
+    (state: {foo: string}) => state.foo,
+    (state: {bar: number}) => state.bar,
+    (foo, bar) => 1,
+    {memoizeOptions: {resultEqualityCheck: () => true}}
+  )((state: State) => state.foo);
+
+  createCachedSelector(
+    [(state: {foo: string}) => state.foo, (state: {bar: number}) => state.bar],
+    (foo, bar) => 1,
+    {memoizeOptions: {resultEqualityCheck: () => true}}
+  )((state: State) => state.foo);
+}

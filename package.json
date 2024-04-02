@@ -59,7 +59,7 @@
     "rimraf": "^5.0.5",
     "rollup": "^4.13.2",
     "rollup-plugin-copy": "^3.5.0",
-    "simple-git-hooks": "^2.9.0",
+    "simple-git-hooks": "^2.11.1",
     "ts-jest": "^29.1.2",
     "typescript": "^5.3.3"
   },

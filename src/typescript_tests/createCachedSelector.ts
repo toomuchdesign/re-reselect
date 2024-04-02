@@ -1,4 +1,4 @@
-import {createSelectorCreator, lruMemoize} from 'reselect';
+import {createSelectorCreator, lruMemoize, weakMapMemoize} from 'reselect';
 import {createCachedSelector, KeySelector} from '../index';
 
 function assertType<T>(value: T): T {
@@ -418,7 +418,9 @@ function testSelectorCreatorOptionNonLruMemoize() {
     foo => foo
   )({
     keySelector: (state: State) => state.foo,
-    selectorCreator: createSelectorCreator(func => func),
+    selectorCreator: createSelectorCreator({
+      memoize: weakMapMemoize,
+    }),
   });
 }
 

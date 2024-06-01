@@ -56,7 +56,7 @@
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
     "reselect": "^5.1.0",
-    "rimraf": "^5.0.5",
+    "rimraf": "^5.0.7",
     "rollup": "^4.17.2",
     "rollup-plugin-copy": "^3.5.0",
     "simple-git-hooks": "^2.11.1",

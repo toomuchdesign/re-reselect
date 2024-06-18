@@ -1,0 +1,31 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    groups:
+      jest:
+        patterns:
+          - 'jest'
+          - 'babel-jest'
+          - 'ts-jest'
+          - '@types/jest'
+      rollup:
+        patterns:
+          - 'rollup'
+          - 'rollup-*'
+          - '@rollup/*'
+      babel:
+        patterns:
+          - '@babel/*'
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+    groups:
+      upload-download-artifact:
+        patterns:
+          - 'actions/upload-artifact'
+          - 'actions/download-artifact'

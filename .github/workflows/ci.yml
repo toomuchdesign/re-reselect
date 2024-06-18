@@ -7,20 +7,37 @@ on:
   pull_request:
 
 jobs:
-  build:
+  test-and-build:
+    name: 'Test and build'
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js v20
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
 
       - run: npm ci
 
-      - name: Upload code coverage
-        uses: coverallsapp/github-action@master
+      - uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage
+          path: coverage
+
+  upload-code-coverage:
+    name: 'Upload code coverage'
+    needs: ['test-and-build']
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: code-coverage
+          path: coverage
+
+      - uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

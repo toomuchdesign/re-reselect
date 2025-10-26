@@ -10,7 +10,6 @@ coverage
 
 # Trailing dotted files
 !.all-contributorsrc
-!.babelrc.js
 !.editorconfig
 !.gitignore
 !.npmignore
@@ -18,5 +17,6 @@ coverage
 !.nvmrc
 !.prettierignore
 !.prettierrc
-!.travis.yml
 !.github
+!.changeset
+!.gitattributes

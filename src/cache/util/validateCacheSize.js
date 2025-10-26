@@ -4,7 +4,7 @@ function validateCacheSize(cacheSize) {
   }
   if (!Number.isInteger(cacheSize) || cacheSize <= 0) {
     throw new Error(
-      'The "cacheSize" property must be a positive integer value.'
+      'The "cacheSize" property must be a positive integer value.',
     );
   }
 }

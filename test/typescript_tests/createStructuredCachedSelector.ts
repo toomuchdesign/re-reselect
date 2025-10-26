@@ -1,4 +1,4 @@
-import {createStructuredCachedSelector} from '../../src/index';
+import { createStructuredCachedSelector } from '../../src/index';
 
 function assertType<T>(value: T): T {
   return value;
@@ -24,7 +24,7 @@ function testCreateStructuredCachedSelector() {
   const selector1 = createStructuredCachedSelector({
     x: mySelectorA,
     y: mySelectorB,
-  })(state => assertType<string>(state.a));
+  })((state) => assertType<string>(state.a));
   assertType<(state: State) => Result>(selector1);
   // @ts-expect-error
   assertType<(state: State) => WrongResult>(selector1);
@@ -36,7 +36,7 @@ function testCreateStructuredCachedSelector() {
 function testParametricCreateStructuredCachedSelector() {
   interface State {
     a: string;
-    items: {[key: string]: string};
+    items: { [key: string]: string };
   }
   interface Result {
     x: string;

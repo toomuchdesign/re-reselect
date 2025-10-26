@@ -57,16 +57,16 @@ const makeGetCountryData = country => {
 ### With re-reselect
 
 ```js
-import {createCachedSelector} from 're-reselect';
+import { createCachedSelector } from 're-reselect';
 
-const getWorldData = state => state.world;
+const getWorldData = (state) => state.world;
 
 const getCountryData = createCachedSelector(
   getWorldData,
   (state, country) => country,
-  (world, country) => extractData(world, country)
+  (world, country) => extractData(world, country),
 )(
-  (state, country) => country // Cache selectors by country name
+  (state, country) => country, // Cache selectors by country name
 );
 
 const afghanistan = getCountryData(state, 'afghanistan');

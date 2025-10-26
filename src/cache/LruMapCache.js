@@ -1,7 +1,7 @@
 import validateCacheSize from './util/validateCacheSize';
 
 export default class LruMapCache {
-  constructor({cacheSize} = {}) {
+  constructor({ cacheSize } = {}) {
     validateCacheSize(cacheSize);
     this._cache = new Map();
     this._cacheSize = cacheSize;

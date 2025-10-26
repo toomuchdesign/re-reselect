@@ -1,13 +1,14 @@
-import {describe, expect, it} from 'vitest';
-import type {ICacheObject} from '../../../src/';
+import { describe, expect, it } from 'vitest';
+
+import type { ICacheObject } from '../../../src/';
 import fillCacheWith from './fillCacheWith';
 
 function testFifoBehavior(
-  CacheObject: new (options: {cacheSize: number}) => ICacheObject
+  CacheObject: new (options: { cacheSize: number }) => ICacheObject,
 ) {
   describe('FIFO cache behavior', () => {
     it('limits cache queue by removing the first added items', () => {
-      const cache = new CacheObject({cacheSize: 5});
+      const cache = new CacheObject({ cacheSize: 5 });
       const entries = [1, 2, 3, 4];
       const newEntries = [5, 6, 7];
 
@@ -16,13 +17,13 @@ function testFifoBehavior(
 
       expect(cache.get(1)).toBe(undefined);
       expect(cache.get(2)).toBe(undefined);
-      [4, 5, 6, 7].forEach(entry => {
+      [4, 5, 6, 7].forEach((entry) => {
         expect(cache.get(entry)).toBe(entry);
       });
     });
 
     it('mantains cache updated after removing extraneous entry', () => {
-      const cache = new CacheObject({cacheSize: 5});
+      const cache = new CacheObject({ cacheSize: 5 });
       const entries = [1, 2, 3, 4, 5];
       fillCacheWith(cache, entries);
 
@@ -34,7 +35,7 @@ function testFifoBehavior(
       expect(cache.get(1)).toBe(undefined);
       expect(cache.get(3)).toBe(undefined);
 
-      [2, 4, 5, 6, 7].forEach(entry => {
+      [2, 4, 5, 6, 7].forEach((entry) => {
         expect(cache.get(entry)).toBe(entry);
       });
     });

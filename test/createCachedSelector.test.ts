@@ -1,11 +1,12 @@
-import * as reselect from '../src/reselectWrapper';
+import type { CreateSelectorOptions } from 'reselect';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import {
-  createCachedSelector,
   FlatObjectCache,
   ICacheObject,
+  createCachedSelector,
 } from '../src/index';
-import type {CreateSelectorOptions} from 'reselect';
-import {describe, expect, it, vi, beforeEach} from 'vitest';
+import * as reselect from '../src/reselectWrapper';
 
 beforeEach(() => {
   vi.spyOn(reselect, 'createSelector');
@@ -19,8 +20,8 @@ describe('createCachedSelector', () => {
         it('creates and use the same cached selector', () => {
           const cachedSelector = createCachedSelector(
             [(state: string, param1: string) => null],
-            () => {}
-          )({keySelector: (state, param1) => param1});
+            () => {},
+          )({ keySelector: (state, param1) => param1 });
           cachedSelector('foo', 'bar');
           cachedSelector('foo', 'bar');
 
@@ -33,8 +34,8 @@ describe('createCachedSelector', () => {
         it('creates 2 selectors only and produce 2 recomputations', () => {
           const cachedSelector = createCachedSelector(
             [(state: string, param1: string) => null],
-            () => {}
-          )({keySelector: (state, param1) => param1});
+            () => {},
+          )({ keySelector: (state, param1) => param1 });
           cachedSelector('foo', 'bar');
           cachedSelector('foo', 'moo');
           cachedSelector('foo', 'bar');
@@ -60,9 +61,9 @@ describe('createCachedSelector', () => {
 
             const cachedSelector = createCachedSelector(
               () => {},
-              () => {}
+              () => {},
             )({
-              keySelector: state => state,
+              keySelector: (state) => state,
               cacheObject: cacheObjectMock,
             });
 
@@ -82,9 +83,9 @@ describe('createCachedSelector', () => {
 
             const cachedSelector = createCachedSelector(
               () => {},
-              () => {}
+              () => {},
             )({
-              keySelector: state => state,
+              keySelector: (state) => state,
               cacheObject: cacheObjectMock,
             });
 
@@ -103,9 +104,9 @@ describe('createCachedSelector', () => {
 
             const cachedSelector = createCachedSelector(
               () => {},
-              () => {}
+              () => {},
             )({
-              keySelector: state => state,
+              keySelector: (state) => state,
               cacheObject: cacheObjectMock,
             });
 
@@ -124,7 +125,7 @@ describe('createCachedSelector', () => {
         it('returns underlying reselect selector for a given cache key', () => {
           const cachedSelector = createCachedSelector(
             (state: string, param1: number) => {},
-            () => {}
+            () => {},
           )((state, param1) => param1);
 
           // Retrieve result from re-reselect cached selector
@@ -140,12 +141,12 @@ describe('createCachedSelector', () => {
         it('returns "undefined" when given cache key doesn\'t match any cache entry', () => {
           const cachedSelector = createCachedSelector(
             [(state: string, param1: string) => null],
-            () => {}
-          )({keySelector: (state, param1) => param1});
+            () => {},
+          )({ keySelector: (state, param1) => param1 });
 
           const actual = cachedSelector.getMatchingSelector(
             'foo',
-            'not-existing'
+            'not-existing',
           );
           const expected = undefined;
 
@@ -157,8 +158,8 @@ describe('createCachedSelector', () => {
         it('sets the matching cache entry to "undefined"', () => {
           const cachedSelector = createCachedSelector(
             [(state: string, param1: string) => null],
-            () => {}
-          )({keySelector: (state, param1) => param1});
+            () => {},
+          )({ keySelector: (state, param1) => param1 });
 
           cachedSelector('foo', 'bar'); // add to cache
           cachedSelector('foo', 'moo'); // add to cache
@@ -166,11 +167,11 @@ describe('createCachedSelector', () => {
 
           const firstSelectorActual = cachedSelector.getMatchingSelector(
             'foo',
-            'bar'
+            'bar',
           );
           const secondSelectorActual = cachedSelector.getMatchingSelector(
             'foo',
-            'moo'
+            'moo',
           );
 
           expect(firstSelectorActual).toBe(undefined);
@@ -182,8 +183,8 @@ describe('createCachedSelector', () => {
         it('resets cache', () => {
           const cachedSelector = createCachedSelector(
             [(state: string, param1: string) => null],
-            () => {}
-          )({keySelector: (state, param1) => param1});
+            () => {},
+          )({ keySelector: (state, param1) => param1 });
 
           cachedSelector('foo', 'bar'); // add to cache
           cachedSelector.clearCache();
@@ -197,8 +198,8 @@ describe('createCachedSelector', () => {
         it('resets recomputations', () => {
           const cachedSelector = createCachedSelector(
             [(state: string, param1: string) => null],
-            () => {}
-          )({keySelector: (state, param1) => param1});
+            () => {},
+          )({ keySelector: (state, param1) => param1 });
           cachedSelector('foo', 'bar');
 
           expect(cachedSelector.recomputations()).toBe(1);
@@ -209,15 +210,15 @@ describe('createCachedSelector', () => {
 
       describe('"dependencies" property', () => {
         it('exports an array containing provided inputSelectors', () => {
-          type State = {a: string};
+          type State = { a: string };
           const inputSelector1 = (state: State) => state.a;
           const inputSelector2 = (state: State) => state.a;
 
           const cachedSelector = createCachedSelector(
             inputSelector1,
             inputSelector2,
-            () => {}
-          )(state => state);
+            () => {},
+          )((state) => state);
 
           const actual = cachedSelector.dependencies;
           const expected = [inputSelector1, inputSelector2];
@@ -240,9 +241,9 @@ describe('createCachedSelector', () => {
           const currentCacheObject = new FlatObjectCache();
           const cachedSelector = createCachedSelector(
             () => {},
-            () => {}
+            () => {},
           )({
-            keySelector: state => state,
+            keySelector: (state) => state,
             cacheObject: currentCacheObject,
           });
 
@@ -255,7 +256,7 @@ describe('createCachedSelector', () => {
           const keySelector = () => {};
           const cachedSelector = createCachedSelector(
             () => {},
-            () => {}
+            () => {},
           )(keySelector);
           expect(cachedSelector.keySelector).toBe(keySelector);
         });
@@ -269,7 +270,7 @@ describe('createCachedSelector', () => {
         const keySelectorMock = () => {};
         const cachedSelector = createCachedSelector(
           () => {},
-          () => {}
+          () => {},
         )(keySelectorMock);
 
         expect(cachedSelector.keySelector).toBe(keySelectorMock);
@@ -280,7 +281,7 @@ describe('createCachedSelector', () => {
       it('accepts keySelector, cacheObject and selectorCreator options', () => {
         const cachedSelector = createCachedSelector(
           (state: string, param1: string) => null,
-          () => {}
+          () => {},
         )({
           keySelector: (state, param1) => param1,
           cacheObject: new FlatObjectCache(),
@@ -303,7 +304,7 @@ describe('createCachedSelector', () => {
 
           const cachedSelector = createCachedSelector(
             inputSelector,
-            resultFunc
+            resultFunc,
           )({
             keySelector,
             keySelectorCreator: keySelectorCreatorMock,
@@ -323,14 +324,14 @@ describe('createCachedSelector', () => {
   it("accepts and forwards reselect's createSelectorOptions object", () => {
     const inputSelector1 = (state: string, param1: string) => null;
     const createSelectorOptions: CreateSelectorOptions = {
-      memoizeOptions: {resultEqualityCheck: () => true},
+      memoizeOptions: { resultEqualityCheck: () => true },
     };
 
     const cachedSelector = createCachedSelector(
       [inputSelector1],
       () => {},
-      createSelectorOptions
-    )({keySelector: (state, param1) => param1});
+      createSelectorOptions,
+    )({ keySelector: (state, param1) => param1 });
 
     cachedSelector('foo', 'bar');
     cachedSelector('foo', 'bar');
@@ -339,7 +340,7 @@ describe('createCachedSelector', () => {
     expect(reselect.createSelector).toHaveBeenCalledWith(
       [inputSelector1],
       expect.any(Function),
-      createSelectorOptions
+      createSelectorOptions,
     );
 
     expect(cachedSelector.recomputations()).toBe(1);

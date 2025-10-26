@@ -1,10 +1,10 @@
-import type {ICacheObject} from '../../../src/';
+import type { ICacheObject } from '../../../src/';
 
 function fillCacheWith(
   cache: ICacheObject,
-  entries: unknown[] | Set<unknown> = []
+  entries: unknown[] | Set<unknown> = [],
 ) {
-  entries.forEach(entry => cache.set(entry, entry));
+  entries.forEach((entry) => cache.set(entry, entry));
   return cache;
 }
 

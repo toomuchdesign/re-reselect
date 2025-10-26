@@ -1,14 +1,14 @@
 import {
-  createCachedSelector,
-  FlatObjectCache,
-  FifoObjectCache,
-  LruObjectCache,
-  FlatMapCache,
   FifoMapCache,
+  FifoObjectCache,
+  FlatMapCache,
+  FlatObjectCache,
   LruMapCache,
+  LruObjectCache,
+  createCachedSelector,
 } from '../../src/index';
 
-type State = {foo: string};
+type State = { foo: string };
 const fooSelector = (state: State) => state.foo;
 const combinerSelector = (foo: string) => foo;
 
@@ -16,7 +16,7 @@ function testFlatObjectCache() {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
-    combinerSelector
+    combinerSelector,
   )({
     keySelector: fooSelector,
     cacheObject: new FlatObjectCache(),
@@ -41,17 +41,17 @@ function testFifoObjectCache() {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
-    combinerSelector
+    combinerSelector,
   )({
     keySelector: fooSelector,
-    cacheObject: new FifoObjectCache({cacheSize: 10}),
+    cacheObject: new FifoObjectCache({ cacheSize: 10 }),
   });
 
   // @ts-expect-error
   new FifoObjectCache();
 
   // Exposes the interface
-  const cacheObject = new FifoObjectCache({cacheSize: 10});
+  const cacheObject = new FifoObjectCache({ cacheSize: 10 });
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
   // @ts-expect-error
@@ -69,17 +69,17 @@ function testLruObjectCache() {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
-    combinerSelector
+    combinerSelector,
   )({
     keySelector: fooSelector,
-    cacheObject: new LruObjectCache({cacheSize: 10}),
+    cacheObject: new LruObjectCache({ cacheSize: 10 }),
   });
 
   // @ts-expect-error
   new LruObjectCache();
 
   // Exposes the interface
-  const cacheObject = new LruObjectCache({cacheSize: 10});
+  const cacheObject = new LruObjectCache({ cacheSize: 10 });
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
   // @ts-expect-error
@@ -97,7 +97,7 @@ function testFlatMapCache() {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
-    combinerSelector
+    combinerSelector,
   )({
     keySelector: fooSelector,
     cacheObject: new FlatMapCache(),
@@ -121,17 +121,17 @@ function testFifoMapCache() {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
-    combinerSelector
+    combinerSelector,
   )({
     keySelector: fooSelector,
-    cacheObject: new FifoMapCache({cacheSize: 10}),
+    cacheObject: new FifoMapCache({ cacheSize: 10 }),
   });
 
   // @ts-expect-error
   new FifoMapCache();
 
   // Exposes the interface
-  const cacheObject = new FifoMapCache({cacheSize: 10});
+  const cacheObject = new FifoMapCache({ cacheSize: 10 });
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
   cacheObject.set({}, () => {});
@@ -148,17 +148,17 @@ function testLruMapCache() {
   // Accepts this cache object as an option
   createCachedSelector(
     fooSelector,
-    combinerSelector
+    combinerSelector,
   )({
     keySelector: fooSelector,
-    cacheObject: new LruMapCache({cacheSize: 10}),
+    cacheObject: new LruMapCache({ cacheSize: 10 }),
   });
 
   // @ts-expect-error
   new LruMapCache();
 
   // Exposes the interface
-  const cacheObject = new LruMapCache({cacheSize: 10});
+  const cacheObject = new LruMapCache({ cacheSize: 10 });
   cacheObject.set('foo', () => {});
   cacheObject.set(1, () => {});
   cacheObject.set({}, () => {});

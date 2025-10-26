@@ -1,5 +1,6 @@
-import {describe, expect, it} from 'vitest';
-import type {ICacheObject} from '../../../src/';
+import { describe, expect, it } from 'vitest';
+
+import type { ICacheObject } from '../../../src/';
 import fillCacheWith from './fillCacheWith';
 
 function testBasicBehavior(makeCacheObject: () => ICacheObject) {
@@ -22,7 +23,7 @@ function testBasicBehavior(makeCacheObject: () => ICacheObject) {
       cache.remove(3);
 
       expect(cache.get(3)).toBe(undefined);
-      [1, 2, 4, 5].forEach(entry => {
+      [1, 2, 4, 5].forEach((entry) => {
         expect(cache.get(entry)).toBe(entry);
       });
     });
@@ -34,7 +35,7 @@ function testBasicBehavior(makeCacheObject: () => ICacheObject) {
 
       cache.clear();
 
-      [1, 2, 3, 4, 5].forEach(entry => {
+      [1, 2, 3, 4, 5].forEach((entry) => {
         expect(cache.get(entry)).toBe(undefined);
       });
     });

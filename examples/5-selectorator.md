@@ -5,7 +5,7 @@
 ### Wrap boilerplate code into a reusable create selector function
 
 ```js
-import {createCachedSelector} from 're-reselect';
+import { createCachedSelector } from 're-reselect';
 import createSelectoratorSelector from 'selectorator';
 
 export function createCachedSelectorWithSelectorator(...args) {
@@ -28,16 +28,16 @@ export function createCachedSelectorWithSelectorator(...args) {
 ### Use selectorator in your app
 
 ```js
-import {createCachedSelectorWithSelectorator} from './createCachedSelectorWithSelectorator';
+import { createCachedSelectorWithSelectorator } from './createCachedSelectorWithSelectorator';
 
 // selector created with single method call
 const getBarBaz = createCachedSelectorWithSelectorator(
   ['foo.bar', 'baz'],
-  (bar, baz) => `${bar} ${baz}`
-)(({baz}) => baz);
+  (bar, baz) => `${bar} ${baz}`,
+)(({ baz }) => baz);
 
 const state = {
-  foo: {bar: 'bar'},
+  foo: { bar: 'bar' },
   baz: 'baz',
 };
 

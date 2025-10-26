@@ -5,7 +5,7 @@ on:
 
 jobs:
   dependabot-auto-merge:
-    name: 'Dependabot auto merge'
+    name: Dependabot auto merge
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write

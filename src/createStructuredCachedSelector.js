@@ -1,4 +1,4 @@
-import {createStructuredSelector} from 'reselect';
+import {createStructuredSelector} from './reselectWrapper';
 import createCachedSelector from './createCachedSelector';
 
 function createStructuredCachedSelector(selectors) {

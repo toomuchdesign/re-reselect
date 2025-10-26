@@ -6,7 +6,7 @@ import {
   FlatMapCache,
   FifoMapCache,
   LruMapCache,
-} from '../index';
+} from '../../src/index';
 
 type State = {foo: string};
 const fooSelector = (state: State) => state.foo;

@@ -1,17 +1,16 @@
-import * as reselect from 'reselect';
-import {createCachedSelector, FlatObjectCache, ICacheObject} from '../index';
+import * as reselect from '../src/reselectWrapper';
+import {
+  createCachedSelector,
+  FlatObjectCache,
+  ICacheObject,
+} from '../src/index';
 import type {CreateSelectorOptions} from 'reselect';
+import {describe, expect, it, vi, beforeEach} from 'vitest';
 
-// Cannot natively spyOn es module named exports
-jest.mock('reselect', () => ({
-  __esModule: true,
-  ...jest.requireActual('reselect'),
-}));
-
-const createSelectorSpy = jest.spyOn(reselect, 'createSelector');
-const consoleWarnSpy = jest
-  .spyOn(global.console, 'warn')
-  .mockImplementation(() => {});
+beforeEach(() => {
+  vi.spyOn(reselect, 'createSelector');
+  vi.spyOn(global.console, 'warn').mockImplementation(() => {});
+});
 
 describe('createCachedSelector', () => {
   describe('created selector', () => {
@@ -25,7 +24,7 @@ describe('createCachedSelector', () => {
           cachedSelector('foo', 'bar');
           cachedSelector('foo', 'bar');
 
-          expect(createSelectorSpy).toHaveBeenCalledTimes(1);
+          expect(reselect.createSelector).toHaveBeenCalledTimes(1);
           expect(cachedSelector.recomputations()).toBe(1);
         });
       });
@@ -41,7 +40,7 @@ describe('createCachedSelector', () => {
           cachedSelector('foo', 'bar');
           cachedSelector('foo', 'moo');
 
-          expect(createSelectorSpy).toHaveBeenCalledTimes(2);
+          expect(reselect.createSelector).toHaveBeenCalledTimes(2);
           expect(cachedSelector.recomputations()).toBe(2);
         });
       });
@@ -52,7 +51,7 @@ describe('createCachedSelector', () => {
         describe("doesn't exist", () => {
           it('accepts any value', () => {
             const cacheObjectMock: ICacheObject = {
-              get: jest.fn(() => () => 'foo'),
+              get: vi.fn(() => () => 'foo'),
               set: () => {},
               remove: () => {},
               clear: () => {},
@@ -79,7 +78,7 @@ describe('createCachedSelector', () => {
           it('calls cache.get method', () => {
             const cacheObjectMock = new FlatObjectCache();
             cacheObjectMock.isValidCacheKey = () => true;
-            cacheObjectMock.get = jest.fn();
+            cacheObjectMock.get = vi.fn();
 
             const cachedSelector = createCachedSelector(
               () => {},
@@ -100,7 +99,7 @@ describe('createCachedSelector', () => {
           it('returns "undefined" and calls "console.warn"', () => {
             const cacheObjectMock = new FlatObjectCache();
             cacheObjectMock.isValidCacheKey = () => false;
-            cacheObjectMock.get = jest.fn();
+            cacheObjectMock.get = vi.fn();
 
             const cachedSelector = createCachedSelector(
               () => {},
@@ -114,7 +113,7 @@ describe('createCachedSelector', () => {
 
             expect(actual).toBe(undefined);
             expect(cacheObjectMock.get).not.toHaveBeenCalled();
-            expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
+            expect(console.warn).toHaveBeenCalledTimes(1);
           });
         });
       });
@@ -300,7 +299,7 @@ describe('createCachedSelector', () => {
           const resultFunc = () => {};
           const keySelector = () => {};
           const generatedKeySelector = () => {};
-          const keySelectorCreatorMock = jest.fn(() => generatedKeySelector);
+          const keySelectorCreatorMock = vi.fn(() => generatedKeySelector);
 
           const cachedSelector = createCachedSelector(
             inputSelector,
@@ -336,8 +335,8 @@ describe('createCachedSelector', () => {
     cachedSelector('foo', 'bar');
     cachedSelector('foo', 'bar');
 
-    expect(createSelectorSpy).toHaveBeenCalledTimes(1);
-    expect(createSelectorSpy).toHaveBeenCalledWith(
+    expect(reselect.createSelector).toHaveBeenCalledTimes(1);
+    expect(reselect.createSelector).toHaveBeenCalledWith(
       [inputSelector1],
       expect.any(Function),
       createSelectorOptions

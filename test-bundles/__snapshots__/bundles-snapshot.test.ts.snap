@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`UMD bundle is unchanged 1`] = `
+exports[`UMD bundle > is unchanged 1`] = `
 "(function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('reselect')) :
   typeof define === 'function' && define.amd ? define(['exports', 'reselect'], factory) :
@@ -75,7 +75,7 @@ exports[`UMD bundle is unchanged 1`] = `
       var recomputations = 0;
       var resultFuncWithRecomputations = function resultFuncWithRecomputations() {
         recomputations++;
-        return resultFunc.apply(undefined, arguments);
+        return resultFunc.apply(void 0, arguments);
       };
 
       // Patch reselect call arguments with a custom resultFunc
@@ -100,10 +100,10 @@ exports[`UMD bundle is unchanged 1`] = `
         if (isValidCacheKey(cacheKey)) {
           var cacheResponse = cache.get(cacheKey);
           if (cacheResponse === undefined) {
-            cacheResponse = selectorCreator.apply(undefined, patchedReselectArgs);
+            cacheResponse = selectorCreator.apply(void 0, patchedReselectArgs);
             cache.set(cacheKey, cacheResponse);
           }
-          return cacheResponse.apply(undefined, arguments);
+          return cacheResponse.apply(void 0, arguments);
         }
         console.warn("[re-reselect] Invalid cache key \\"" + cacheKey + "\\" has been returned by keySelector function.");
         return undefined;
@@ -151,7 +151,7 @@ exports[`UMD bundle is unchanged 1`] = `
 
   var FifoObjectCache = /*#__PURE__*/function () {
     function FifoObjectCache(_temp) {
-      var _ref = _temp === undefined ? {} : _temp,
+      var _ref = _temp === void 0 ? {} : _temp,
         cacheSize = _ref.cacheSize;
       validateCacheSize(cacheSize);
       this._cache = {};
@@ -189,7 +189,7 @@ exports[`UMD bundle is unchanged 1`] = `
 
   var LruObjectCache = /*#__PURE__*/function () {
     function LruObjectCache(_temp) {
-      var _ref = _temp === undefined ? {} : _temp,
+      var _ref = _temp === void 0 ? {} : _temp,
         cacheSize = _ref.cacheSize;
       validateCacheSize(cacheSize);
       this._cache = {};
@@ -255,7 +255,7 @@ exports[`UMD bundle is unchanged 1`] = `
 
   var FifoMapCache = /*#__PURE__*/function () {
     function FifoMapCache(_temp) {
-      var _ref = _temp === undefined ? {} : _temp,
+      var _ref = _temp === void 0 ? {} : _temp,
         cacheSize = _ref.cacheSize;
       validateCacheSize(cacheSize);
       this._cache = new Map();
@@ -283,7 +283,7 @@ exports[`UMD bundle is unchanged 1`] = `
 
   var LruMapCache = /*#__PURE__*/function () {
     function LruMapCache(_temp) {
-      var _ref = _temp === undefined ? {} : _temp,
+      var _ref = _temp === void 0 ? {} : _temp,
         cacheSize = _ref.cacheSize;
       validateCacheSize(cacheSize);
       this._cache = new Map();

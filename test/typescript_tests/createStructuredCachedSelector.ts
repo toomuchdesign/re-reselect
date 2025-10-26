@@ -1,4 +1,4 @@
-import {createStructuredCachedSelector} from '../index';
+import {createStructuredCachedSelector} from '../../src/index';
 
 function assertType<T>(value: T): T {
   return value;

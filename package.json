@@ -53,7 +53,6 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@vitest/coverage-v8": "^4.0.3",
     "all-contributors-cli": "^6.26.1",
-    "lint-staged": "^16.1.5",
     "prettier": "^3.2.5",
     "reselect": "^5.1.0",
     "rimraf": "^6.0.1",
@@ -64,15 +63,6 @@
     "vitest": "^4.0.3"
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
-  },
-  "lint-staged": {
-    "**/*.{js,ts}": [
-      "prettier --write",
-      "npm t -- ."
-    ],
-    "**/*.md": [
-      "prettier --write"
-    ]
+    "pre-commit": "npm run prepare"
   }
 }

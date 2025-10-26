@@ -1,0 +1,50 @@
+# Release with OIDC
+# https://github.blog/changelog/2025-07-31-npm-trusted-publishing-with-oidc-is-generally-available/
+# https://docs.npmjs.com/trusted-publishers
+
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write # enable pushing changes to the origin
+  id-token: write # enable generation of an ID token for publishing
+  pull-requests: write # enable opening a PR for the release
+
+jobs:
+  release:
+    name: Version or Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+        # Ensure npm 11.5.1 or later is installed
+      - run: npm install -g npm@latest
+      - run: npm ci --ignore-scripts
+
+      - name: Create Release PR or Publish to npm
+        uses: changesets/action@v1
+        with:
+          publish: npm run release
+          commit: 'chore: update version for release'
+          title: 'chore: update version for release'
+        env:
+          # Ephemeral GITHUB_TOKEN won't be able to trigger actions on release PR
+          # RELEASE_TOKEN can trigger actions on new PR's but seems not to be able to do so on force-pushed PR's.
+          # To publish the PR created by Changesets, the action must first be closed and then
+          # manually retriggered by running the "Release / Version or Publish" action on the master branch.
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

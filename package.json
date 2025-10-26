@@ -12,22 +12,19 @@
     "dist"
   ],
   "scripts": {
-    "test": "jest ./src",
-    "test:typescript": "tsc --noEmit",
+    "build": "rimraf ./dist && rollup -c --bundleConfigAsCjs",
+    "test": "jest ./src --coverage",
     "test:bundles": "npm run test:bundles:snapshot && npm run test:bundles:unit",
     "test:bundles:unit": "jest ./src --config ./jest/es.config.js && jest ./src --config ./jest/cjs.config.js && jest ./src --config ./jest/umd.config.js",
     "test:bundles:snapshot": "jest ./jest/bundles-snapshot.test.ts",
-    "test:source": "npm run test:typescript && npm run test -- --coverage",
-    "test:update": "npm run compile && npm run test:bundles:snapshot -- -u",
-    "clean": "rimraf dist",
-    "compile": "npm run clean && rollup -c --bundleConfigAsCjs",
-    "contrib:add": "all-contributors add",
-    "contrib:generate": "all-contributors generate",
-    "preversion": "npm run prepare",
-    "version": "git add package.json",
-    "postversion": "git push && git push --tags",
-    "prepare": "npx simple-git-hooks && npm run test:source && npm run compile && npm run test:bundles",
-    "format": "prettier --write \"**/*.{js,ts,json,md}\""
+    "test:update": "npm run build && npm run test:bundles:snapshot -- -u",
+    "prepare": "npx simple-git-hooks && npm run source:check && npm run test && npm run build && npm run test:bundles",
+    "release": "npm run prepare && npx changeset publish",
+    "prettier:check": "prettier . --check",
+    "prettier:fix": "npm run prettier:check -- --write",
+    "type:check": "tsc --noEmit",
+    "source:check": "npm run prettier:check && npm run type:check",
+    "source:fix": "npm run prettier:fix"
   },
   "keywords": [
     "react",
@@ -48,6 +45,8 @@
   "devDependencies": {
     "@babel/core": "^7.24.6",
     "@babel/preset-env": "^7.24.6",
+    "@changesets/changelog-github": "^0.5.1",
+    "@changesets/cli": "^2.29.7",
     "@rollup/plugin-babel": "^6.0.4",
     "@types/jest": "^29.5.12",
     "all-contributors-cli": "^6.26.1",

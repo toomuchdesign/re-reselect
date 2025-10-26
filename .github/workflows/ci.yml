@@ -1,16 +1,21 @@
 name: CI
+
 on:
   push:
     branches:
       - master
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   CI: true
 
 jobs:
   test-and-build:
-    name: 'Test and build'
+    name: Test and build
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +33,7 @@ jobs:
           path: coverage
 
   upload-code-coverage:
-    name: 'Upload code coverage'
+    name: Upload code coverage
     needs: ['test-and-build']
     runs-on: ubuntu-latest
 

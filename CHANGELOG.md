@@ -1,4 +1,4 @@
-# Change log
+# re-reselect
 
 ## 5.0.0
 

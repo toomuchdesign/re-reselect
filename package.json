@@ -45,7 +45,6 @@
     "reselect": "^5.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.6",
     "@babel/preset-env": "^7.24.6",
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.7",

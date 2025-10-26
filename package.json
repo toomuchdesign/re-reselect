@@ -52,7 +52,6 @@
     "@changesets/cli": "^2.29.7",
     "@rollup/plugin-babel": "^6.0.4",
     "@vitest/coverage-v8": "^4.0.3",
-    "all-contributors-cli": "^6.26.1",
     "prettier": "^3.2.5",
     "reselect": "^5.1.0",
     "rimraf": "^6.0.1",

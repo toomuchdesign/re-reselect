@@ -12,9 +12,9 @@ export default defineConfig({
       reporter: [['lcov', { projectRoot: './' }], ['text']],
     },
     // Typecheck seems to have issues
-    // typecheck: {
-    //   enabled: true,
-    //   include: defaultInclude,
-    // },
+    typecheck: {
+      enabled: true,
+      include: defaultInclude,
+    },
   },
 });

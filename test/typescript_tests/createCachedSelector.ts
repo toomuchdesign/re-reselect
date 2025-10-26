@@ -1,5 +1,5 @@
 import {createSelectorCreator, lruMemoize, weakMapMemoize} from 'reselect';
-import {createCachedSelector, KeySelector} from '../index';
+import {createCachedSelector, KeySelector} from '../../src/index';
 
 function assertType<T>(value: T): T {
   return value;

@@ -13,18 +13,18 @@
   ],
   "scripts": {
     "build": "rimraf ./dist && rollup -c --bundleConfigAsCjs",
-    "test": "jest ./src --coverage",
+    "test": "vitest --config ./vitest.config.mts",
     "test:bundles": "npm run test:bundles:snapshot && npm run test:bundles:unit",
-    "test:bundles:unit": "jest ./src --config ./jest/es.config.js && jest ./src --config ./jest/cjs.config.js && jest ./src --config ./jest/umd.config.js",
-    "test:bundles:snapshot": "jest ./jest/bundles-snapshot.test.ts",
-    "test:update": "npm run build && npm run test:bundles:snapshot -- -u",
-    "prepare": "npx simple-git-hooks && npm run source:check && npm run test && npm run build && npm run test:bundles",
+    "test:bundles:unit": "vitest run --config ./test-bundles/cjs.vitest.config.mts && vitest run --config ./test-bundles/es.vitest.config.mts && vitest run --config ./test-bundles/umd.vitest.config.mts",
+    "test:bundles:snapshot": "vitest run --dir ./test-bundles --coverage.enabled false",
+    "prepare": "npx simple-git-hooks && npm run source:check && npm run test -- --run && npm run build && npm run test:bundles",
     "release": "npm run prepare && npx changeset publish",
     "prettier:check": "prettier . --check",
     "prettier:fix": "npm run prettier:check -- --write",
     "type:check": "tsc --noEmit",
     "source:check": "npm run prettier:check && npm run type:check",
-    "source:fix": "npm run prettier:fix"
+    "source:fix": "npm run prettier:fix",
+    "format": "prettier --write \"**/*.{js,ts,json,md}\""
   },
   "keywords": [
     "react",
@@ -33,6 +33,9 @@
     "memoize",
     "cache"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/toomuchdesign/re-reselect.git"
@@ -48,10 +51,8 @@
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.7",
     "@rollup/plugin-babel": "^6.0.4",
-    "@types/jest": "^29.5.12",
+    "@vitest/coverage-v8": "^4.0.3",
     "all-contributors-cli": "^6.26.1",
-    "babel-jest": "^29.7.0",
-    "jest": "^29.7.0",
     "lint-staged": "^16.1.5",
     "prettier": "^3.2.5",
     "reselect": "^5.1.0",
@@ -59,26 +60,8 @@
     "rollup": "^4.17.2",
     "rollup-plugin-copy": "^3.5.0",
     "simple-git-hooks": "^2.11.1",
-    "ts-jest": "^29.1.4",
-    "typescript": "^5.4.5"
-  },
-  "jest": {
-    "preset": "ts-jest/presets/js-with-ts",
-    "moduleFileExtensions": [
-      "js",
-      "ts"
-    ],
-    "coverageReporters": [
-      "text",
-      "lcov"
-    ],
-    "coveragePathIgnorePatterns": [
-      "__util__"
-    ],
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "<rootDir>/jest.setup.ts"
-    ]
+    "typescript": "^5.4.5",
+    "vitest": "^4.0.3"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"

@@ -1,4 +1,4 @@
-import {createSelector} from 'reselect';
+import {createSelector} from './reselectWrapper';
 import FlatObjectCache from './cache/FlatObjectCache';
 
 const defaultCacheCreator = FlatObjectCache;

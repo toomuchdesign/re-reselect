@@ -1,4 +1,4 @@
-import type {ICacheObject} from '../../index';
+import type {ICacheObject} from '../../../src/';
 
 function fillCacheWith(
   cache: ICacheObject,

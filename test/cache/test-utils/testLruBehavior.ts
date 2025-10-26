@@ -1,4 +1,5 @@
-import type {ICacheObject} from '../../index';
+import {describe, expect, it} from 'vitest';
+import type {ICacheObject} from '../../../src/';
 import fillCacheWith from './fillCacheWith';
 
 function testLruBehavior(

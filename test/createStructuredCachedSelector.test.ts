@@ -1,4 +1,5 @@
-import {createStructuredCachedSelector} from '../index';
+import {describe, expect, it} from 'vitest';
+import {createStructuredCachedSelector} from '../src/index';
 
 describe('createStructuredCachedSelector', () => {
   it('returns expected cachedSelector', () => {

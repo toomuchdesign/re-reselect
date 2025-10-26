@@ -1,9 +1,16 @@
-import type { CreateSelectorOptions } from 'reselect';
+import { expectTypeOf } from 'expect-type';
+import {
+  type CreateSelectorOptions,
+  createSelectorCreator,
+  lruMemoize,
+  weakMapMemoize,
+} from 'reselect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   FlatObjectCache,
-  ICacheObject,
+  type ICacheObject,
+  type KeySelector,
   createCachedSelector,
 } from '../src/index';
 import * as reselect from '../src/reselectWrapper';
@@ -14,13 +21,140 @@ beforeEach(() => {
 });
 
 describe('createCachedSelector', () => {
-  describe('created selector', () => {
+  describe('selector', () => {
+    describe('input selectors as array', () => {
+      it('returns expected values', () => {
+        type State = {
+          todos: { id: number; completed: boolean; user: string }[];
+        };
+
+        const state: State = {
+          todos: [
+            { id: 0, completed: false, user: 'max' },
+            { id: 1, completed: true, user: 'max' },
+            { id: 2, completed: false, user: 'tom' },
+            { id: 3, completed: true, user: 'tom' },
+          ],
+        };
+
+        const selector = createCachedSelector(
+          [(state: State) => state.todos, (state: State, user: string) => user],
+          (todos, user) => {
+            return todos
+              .filter((todo) => todo.completed === true)
+              .filter((todo) => todo.user === user);
+          },
+        )({
+          keySelector: (state, user) => {
+            expectTypeOf(state).toEqualTypeOf<State>();
+            expectTypeOf(user).toEqualTypeOf<string>();
+
+            return user;
+          },
+        });
+
+        expectTypeOf(selector).parameters.toEqualTypeOf<
+          [State, string, ...args: any[]]
+        >();
+
+        // Selector return expectations
+        {
+          const actual = selector(state, 'max');
+          expect(actual).toEqual([{ id: 1, completed: true, user: 'max' }]);
+          expectTypeOf(actual).toEqualTypeOf<State['todos']>;
+        }
+
+        {
+          const actual = selector(state, 'tom');
+          expect(actual).toEqual([{ id: 3, completed: true, user: 'tom' }]);
+          expectTypeOf(actual).toEqualTypeOf<State['todos']>;
+        }
+
+        {
+          const actual = selector(state, 'max');
+          expect(actual).toEqual([{ id: 1, completed: true, user: 'max' }]);
+        }
+
+        {
+          const actual = selector(state, 'tom');
+          expect(actual).toEqual([{ id: 3, completed: true, user: 'tom' }]);
+        }
+
+        expect(reselect.createSelector).toHaveBeenCalledTimes(2);
+        expect(selector.recomputations()).toBe(2);
+      });
+    });
+
+    describe('input selector as arguments (parametric)', () => {
+      it('returns expected values', () => {
+        type State = {
+          todos: { id: number; completed: boolean; user: string }[];
+        };
+
+        const state: State = {
+          todos: [
+            { id: 0, completed: false, user: 'max' },
+            { id: 1, completed: true, user: 'max' },
+            { id: 2, completed: false, user: 'tom' },
+            { id: 3, completed: true, user: 'tom' },
+          ],
+        };
+
+        const selector = createCachedSelector(
+          (state: State) => state.todos,
+          (state: State, user: string) => user,
+          (todos, user) => {
+            return todos
+              .filter((todo) => todo.completed === true)
+              .filter((todo) => todo.user === user);
+          },
+        )({
+          keySelector: (state, user) => {
+            expectTypeOf(state).toEqualTypeOf<State>();
+            expectTypeOf(user).toEqualTypeOf<string>();
+
+            return user;
+          },
+        });
+
+        expectTypeOf(selector).parameters.toEqualTypeOf<
+          [State, string, ...args: any[]]
+        >();
+
+        // Selector return expectations
+        {
+          const actual = selector(state, 'max');
+          expect(actual).toEqual([{ id: 1, completed: true, user: 'max' }]);
+          expectTypeOf(actual).toEqualTypeOf<State['todos']>;
+        }
+
+        {
+          const actual = selector(state, 'tom');
+          expect(actual).toEqual([{ id: 3, completed: true, user: 'tom' }]);
+          expectTypeOf(actual).toEqualTypeOf<State['todos']>;
+        }
+
+        {
+          const actual = selector(state, 'max');
+          expect(actual).toEqual([{ id: 1, completed: true, user: 'max' }]);
+        }
+
+        {
+          const actual = selector(state, 'tom');
+          expect(actual).toEqual([{ id: 3, completed: true, user: 'tom' }]);
+        }
+
+        expect(reselect.createSelector).toHaveBeenCalledTimes(2);
+        expect(selector.recomputations()).toBe(2);
+      });
+    });
+
     describe('cache retention', () => {
       describe('calls producing identical cacheKey', () => {
         it('creates and use the same cached selector', () => {
           const cachedSelector = createCachedSelector(
             [(state: string, param1: string) => null],
-            () => {},
+            () => 'result',
           )({ keySelector: (state, param1) => param1 });
           cachedSelector('foo', 'bar');
           cachedSelector('foo', 'bar');
@@ -115,12 +249,15 @@ describe('createCachedSelector', () => {
             expect(actual).toBe(undefined);
             expect(cacheObjectMock.get).not.toHaveBeenCalled();
             expect(console.warn).toHaveBeenCalledTimes(1);
+            expect(console.warn).toHaveBeenCalledWith(
+              '[re-reselect] Invalid cache key "foo" has been returned by keySelector function.',
+            );
           });
         });
       });
     });
 
-    describe('available methods', () => {
+    describe('selector methods', () => {
       describe('getMatchingSelector()', () => {
         it('returns underlying reselect selector for a given cache key', () => {
           const cachedSelector = createCachedSelector(
@@ -136,6 +273,9 @@ describe('createCachedSelector', () => {
           const expectedResultFromSelector = reselectSelector('foo', 1);
 
           expect(actualResult).toBe(expectedResultFromSelector);
+
+          // @ts-expect-error type check error when unexpected inputs provided
+          cachedSelector.getMatchingSelector('foo', 'string');
         });
 
         it('returns "undefined" when given cache key doesn\'t match any cache entry', () => {
@@ -176,6 +316,9 @@ describe('createCachedSelector', () => {
 
           expect(firstSelectorActual).toBe(undefined);
           expect(secondSelectorActual).not.toBe(undefined);
+
+          // @ts-expect-error type check error when unexpected inputs provided
+          cachedSelector.removeMatchingSelector('foo', 123);
         });
       });
 
@@ -194,7 +337,7 @@ describe('createCachedSelector', () => {
         });
       });
 
-      describe('resetRecomputations()', () => {
+      describe('recomputations() & resetRecomputations()', () => {
         it('resets recomputations', () => {
           const cachedSelector = createCachedSelector(
             [(state: string, param1: string) => null],
@@ -205,6 +348,9 @@ describe('createCachedSelector', () => {
           expect(cachedSelector.recomputations()).toBe(1);
           cachedSelector.resetRecomputations();
           expect(cachedSelector.recomputations()).toBe(0);
+
+          expectTypeOf(cachedSelector.recomputations()).toBeNumber();
+          expectTypeOf(cachedSelector.resetRecomputations()).toBeNumber();
         });
       });
 
@@ -223,16 +369,27 @@ describe('createCachedSelector', () => {
           const actual = cachedSelector.dependencies;
           const expected = [inputSelector1, inputSelector2];
           expect(actual).toEqual(expected);
+
+          const _dependencies: [
+            (state: State) => string,
+            (state: State) => string,
+          ] = cachedSelector.dependencies;
         });
       });
 
       describe('"resultFunc" property', () => {
         it('points to provided result function', () => {
-          const resultFunc = () => {};
-          const cachedSelector = createCachedSelector(() => {}, resultFunc)({
+          type State = { a: string };
+          const resultFunc = (a: string) => 'result';
+          const cachedSelector = createCachedSelector(
+            (state: State) => state.a,
+            resultFunc,
+          )({
             keySelector: (state, param1) => param1,
           });
+
           expect(cachedSelector.resultFunc).toBe(resultFunc);
+          expectTypeOf(cachedSelector.resultFunc).toEqualTypeOf(resultFunc);
         });
       });
 
@@ -253,19 +410,24 @@ describe('createCachedSelector', () => {
 
       describe('"keySelector" property', () => {
         it('points to provided keySelector', () => {
-          const keySelector = () => {};
+          type State = { a: string };
+          const keySelector = (state: State) => 'key';
           const cachedSelector = createCachedSelector(
-            () => {},
+            (state: State) => {},
             () => {},
           )(keySelector);
+
           expect(cachedSelector.keySelector).toBe(keySelector);
+          expectTypeOf(cachedSelector.keySelector).toEqualTypeOf<
+            KeySelector<State>
+          >();
         });
       });
     });
   });
 
   describe('options', () => {
-    describe('as single function', () => {
+    describe('as function', () => {
       it('accepts keySelector function', () => {
         const keySelectorMock = () => {};
         const cachedSelector = createCachedSelector(
@@ -277,7 +439,7 @@ describe('createCachedSelector', () => {
       });
     });
 
-    describe('as single object', () => {
+    describe('as object', () => {
       it('accepts keySelector, cacheObject and selectorCreator options', () => {
         const cachedSelector = createCachedSelector(
           (state: string, param1: string) => null,
@@ -294,28 +456,74 @@ describe('createCachedSelector', () => {
         expect(cachedSelector.recomputations()).toBe(1);
       });
 
+      describe('"selectorCreator" option', () => {
+        it("accepts reselect's createSelectorCreator", () => {
+          type State = { foo: string };
+
+          expect(() =>
+            createCachedSelector(
+              (state: State) => state.foo,
+              (foo) => foo,
+            )({
+              keySelector: (state: State) => state.foo,
+              selectorCreator: createSelectorCreator(lruMemoize),
+            }),
+          ).not.toThrow();
+
+          expect(() =>
+            createCachedSelector(
+              (state: State) => state.foo,
+              (foo) => foo,
+            )({
+              keySelector: (state: State) => state.foo,
+              selectorCreator: createSelectorCreator({
+                memoize: weakMapMemoize,
+              }),
+            }),
+          ).not.toThrow();
+        });
+      });
+
       describe('"keySelectorCreator" option', () => {
         it('overrides "keySelector" with provided function result', () => {
-          const inputSelector = () => {};
-          const resultFunc = () => {};
-          const keySelector = () => {};
-          const generatedKeySelector = () => {};
-          const keySelectorCreatorMock = vi.fn(() => generatedKeySelector);
+          type State = { foo: string };
+          const state: State = { foo: 'bar' };
+          const inputSelector = (state: State) => state.foo;
+          const resultFunc = (input: string) => input;
+          const keySelector = (state: State) => state.foo;
+          const generatedKeySelector = (state: State) => state.foo;
+          const keySelectorCreatorMock = vi.fn();
 
           const cachedSelector = createCachedSelector(
+            inputSelector,
             inputSelector,
             resultFunc,
           )({
             keySelector,
-            keySelectorCreator: keySelectorCreatorMock,
+            keySelectorCreator: (args) => {
+              const { inputSelectors, resultFunc, keySelector } = args;
+              expectTypeOf(inputSelectors).toEqualTypeOf<
+                [typeof inputSelector, typeof inputSelector]
+              >();
+              expectTypeOf(resultFunc).toEqualTypeOf(resultFunc);
+              expectTypeOf(keySelector).toEqualTypeOf(keySelector);
+
+              keySelectorCreatorMock(args);
+              return generatedKeySelector;
+            },
           });
 
           expect(keySelectorCreatorMock).toHaveBeenCalledWith({
-            inputSelectors: [inputSelector],
+            inputSelectors: [inputSelector, inputSelector],
             resultFunc: resultFunc,
             keySelector: keySelector,
           });
+
           expect(cachedSelector.keySelector).toBe(generatedKeySelector);
+
+          const result = cachedSelector(state);
+          expect(result).toEqual('bar');
+          expectTypeOf(result).toBeString();
         });
       });
     });

@@ -17,16 +17,16 @@ Since we don't want to know the number of provided `inputSelectors` upfront, we'
 #### `keySelectorCombiner.js`
 
 ```js
-function keySelectorCombiner({inputSelectors = []} = {}) {
+function keySelectorCombiner({ inputSelectors = [] } = {}) {
   const keySelectors = inputSelectors
-    .map(entry => entry.keySelector)
-    .filter(keySelector => typeof keySelector === 'function');
+    .map((entry) => entry.keySelector)
+    .filter((keySelector) => typeof keySelector === 'function');
 
   // The actual keySelector
   return (...args) => {
     return keySelectors
-      .map(keySelector => keySelector(...args))
-      .filter(value => {
+      .map((keySelector) => keySelector(...args))
+      .filter((value) => {
         const valueType = typeof value;
         return valueType === 'string' || valueType === 'number';
       })
@@ -38,7 +38,8 @@ function keySelectorCombiner({inputSelectors = []} = {}) {
 #### `composedSelector.js`
 
 ```js
-import {createCachedSelector} from 're-reselect';
+import { createCachedSelector } from 're-reselect';
+
 import keySelectorCombiner from './keySelectorCombiner';
 
 const composedSelector = createCachedSelector(
@@ -48,7 +49,7 @@ const composedSelector = createCachedSelector(
   (first, second, third) => ({
     first,
     second,
-  })
+  }),
 )({
   keySelectorCreator: keySelectorCombiner,
 });

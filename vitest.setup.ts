@@ -1,5 +1,5 @@
-import {setGlobalDevModeChecks} from 'reselect';
-import {beforeAll} from 'vitest';
+import { setGlobalDevModeChecks } from 'reselect';
+import { beforeAll } from 'vitest';
 
 beforeAll(() => {
   setGlobalDevModeChecks({

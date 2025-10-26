@@ -1,5 +1,5 @@
-import {createSelector} from './reselectWrapper';
 import FlatObjectCache from './cache/FlatObjectCache';
+import { createSelector } from './reselectWrapper';
 
 const defaultCacheCreator = FlatObjectCache;
 const defaultCacheKeyValidator = () => true;
@@ -27,13 +27,13 @@ function parseReselectArgs(reselectArgs) {
 }
 
 function createCachedSelector(...reselectArgs) {
-  const {inputSelectors, resultFunc, createSelectorOptions} =
+  const { inputSelectors, resultFunc, createSelectorOptions } =
     parseReselectArgs(reselectArgs);
 
-  return polymorphicOptions => {
+  return (polymorphicOptions) => {
     const options =
       typeof polymorphicOptions === 'function'
-        ? {keySelector: polymorphicOptions}
+        ? { keySelector: polymorphicOptions }
         : Object.assign({}, polymorphicOptions);
 
     // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
@@ -76,7 +76,7 @@ function createCachedSelector(...reselectArgs) {
         return cacheResponse(...args);
       }
       console.warn(
-        `[re-reselect] Invalid cache key "${cacheKey}" has been returned by keySelector function.`
+        `[re-reselect] Invalid cache key "${cacheKey}" has been returned by keySelector function.`,
       );
       return undefined;
     };

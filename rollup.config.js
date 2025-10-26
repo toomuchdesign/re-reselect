@@ -1,4 +1,4 @@
-import {babel} from '@rollup/plugin-babel';
+import { babel } from '@rollup/plugin-babel';
 import copy from 'rollup-plugin-copy';
 
 let pkg = require('./package.json');
@@ -10,7 +10,7 @@ let plugins = [
     babelHelpers: 'bundled',
   }),
   copy({
-    targets: [{src: 'src/index.d.ts', dest: 'dist/types'}],
+    targets: [{ src: 'src/index.d.ts', dest: 'dist/types' }],
   }),
 ];
 

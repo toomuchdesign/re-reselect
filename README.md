@@ -171,13 +171,13 @@ Given your `reselect` selectors:
   <!-- prettier-ignore -->
 
 ```js
-import {createSelector} from 'reselect';
+import { createSelector } from 'reselect';
 
 export const getMyData = createSelector(
   selectorA,
   selectorB,
   selectorC,
-  (A, B, C) => doSomethingWith(A, B, C)
+  (A, B, C) => doSomethingWith(A, B, C),
 );
 ```
 
@@ -186,15 +186,15 @@ export const getMyData = createSelector(
   <!-- prettier-ignore -->
 
 ```js
-import {createCachedSelector} from 're-reselect';
+import { createCachedSelector } from 're-reselect';
 
 export const getMyData = createCachedSelector(
   selectorA,
   selectorB,
   selectorC,
-  (A, B, C) => doSomethingWith(A, B, C)
+  (A, B, C) => doSomethingWith(A, B, C),
 )(
-  (state, arg1, arg2) => arg2 // Use arg2 as cacheKey
+  (state, arg1, arg2) => arg2, // Use arg2 as cacheKey
 );
 ```
 

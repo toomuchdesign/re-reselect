@@ -1,8 +1,8 @@
-import validateCacheSize from './util/validateCacheSize';
 import isStringOrNumber from './util/isStringOrNumber';
+import validateCacheSize from './util/validateCacheSize';
 
 export default class FifoObjectCache {
-  constructor({cacheSize} = {}) {
+  constructor({ cacheSize } = {}) {
     validateCacheSize(cacheSize);
     this._cache = {};
     this._cacheOrdering = [];

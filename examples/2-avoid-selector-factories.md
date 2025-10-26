@@ -41,10 +41,11 @@ export default getVisibleTodos;
 #### `containers/VisibleTodoList.js`
 
 ```js
-import {connect} from 'react-redux';
-import {toggleTodo} from '../actions';
+import { connect } from 'react-redux';
+
+import { toggleTodo } from '../actions';
 import TodoList from '../components/TodoList';
-import {getVisibleTodos} from '../selectors';
+import { getVisibleTodos } from '../selectors';
 
 // No need for makeMapStateToProps function:
 // use getVisibleTodos as a normal selector

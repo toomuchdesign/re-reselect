@@ -1,4 +1,4 @@
-import {defaultInclude, defineConfig} from 'vitest/config';
+import { defaultInclude, defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -9,7 +9,7 @@ export default defineConfig({
       provider: 'v8',
       include: ['src/**.{ts,js}'],
       enabled: true,
-      reporter: [['lcov', {projectRoot: './'}], ['text']],
+      reporter: [['lcov', { projectRoot: './' }], ['text']],
     },
     // Typecheck seems to have issues
     // typecheck: {

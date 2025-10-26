@@ -1,5 +1,6 @@
-import {describe, expect, it} from 'vitest';
-import {createStructuredCachedSelector} from '../src/index';
+import { describe, expect, it } from 'vitest';
+
+import { createStructuredCachedSelector } from '../src/index';
 
 describe('createStructuredCachedSelector', () => {
   it('returns expected cachedSelector', () => {
@@ -17,7 +18,7 @@ describe('createStructuredCachedSelector', () => {
       y: mySelectorB,
     })(keySelector);
 
-    expect(structuredSelector({a: 'moo', b: 101})).toEqual({
+    expect(structuredSelector({ a: 'moo', b: 101 })).toEqual({
       x: 'moo',
       y: 101,
     });
@@ -26,9 +27,9 @@ describe('createStructuredCachedSelector', () => {
     expect(structuredSelector.dependencies).toEqual([mySelectorA, mySelectorB]);
 
     // Dependencies
-    const expectedResultFunc = (a: string, b: number) => ({x: a, y: b});
+    const expectedResultFunc = (a: string, b: number) => ({ x: a, y: b });
     expect(structuredSelector.resultFunc('foo', 10)).toEqual(
-      expectedResultFunc('foo', 10)
+      expectedResultFunc('foo', 10),
     );
 
     // keySelector

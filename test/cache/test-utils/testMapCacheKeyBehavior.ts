@@ -1,5 +1,6 @@
-import {describe, expect, it} from 'vitest';
-import type {ICacheObject} from '../../../src/';
+import { describe, expect, it } from 'vitest';
+
+import type { ICacheObject } from '../../../src/';
 import fillCacheWith from './fillCacheWith';
 
 function testMapCacheKeyBehavior(makeCacheObject: () => ICacheObject) {
@@ -17,7 +18,7 @@ function testMapCacheKeyBehavior(makeCacheObject: () => ICacheObject) {
 
       fillCacheWith(cache, entries);
 
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         expect(cache.get(entry)).toBe(entry);
       });
     });

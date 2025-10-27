@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.6",
+    "@babel/preset-typescript": "^7.28.5",
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.7",
     "@rollup/plugin-babel": "^6.0.4",

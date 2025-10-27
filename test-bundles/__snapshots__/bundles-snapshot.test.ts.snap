@@ -141,22 +141,22 @@ exports[`UMD bundle > is unchanged 1`] = `
   }
 
   function validateCacheSize(cacheSize) {
+    if (typeof cacheSize === 'number' && Number.isInteger(cacheSize) && cacheSize > 0) {
+      return;
+    }
     if (cacheSize === undefined) {
       throw new Error('Missing the required property "cacheSize".');
     }
-    if (!Number.isInteger(cacheSize) || cacheSize <= 0) {
-      throw new Error('The "cacheSize" property must be a positive integer value.');
-    }
+    throw new Error('The "cacheSize" property must be a positive integer value.');
   }
 
   var FifoObjectCache = /*#__PURE__*/function () {
-    function FifoObjectCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
+    function FifoObjectCache(options) {
       this._cache = {};
       this._cacheOrdering = [];
-      this._cacheSize = cacheSize;
+      this._cacheSize = void 0;
+      validateCacheSize(options.cacheSize);
+      this._cacheSize = options.cacheSize;
     }
     var _proto = FifoObjectCache.prototype;
     _proto.set = function set(key, selectorFn) {
@@ -188,13 +188,14 @@ exports[`UMD bundle > is unchanged 1`] = `
   }();
 
   var LruObjectCache = /*#__PURE__*/function () {
-    function LruObjectCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
+    function LruObjectCache(options) {
       this._cache = {};
       this._cacheOrdering = [];
-      this._cacheSize = cacheSize;
+      this._cacheSize = void 0;
+      validateCacheSize(options.cacheSize);
+      this._cache = {};
+      this._cacheOrdering = [];
+      this._cacheSize = options.cacheSize;
     }
     var _proto = LruObjectCache.prototype;
     _proto.set = function set(key, selectorFn) {
@@ -254,12 +255,11 @@ exports[`UMD bundle > is unchanged 1`] = `
   }();
 
   var FifoMapCache = /*#__PURE__*/function () {
-    function FifoMapCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
+    function FifoMapCache(options) {
       this._cache = new Map();
-      this._cacheSize = cacheSize;
+      this._cacheSize = void 0;
+      validateCacheSize(options.cacheSize);
+      this._cacheSize = options.cacheSize;
     }
     var _proto = FifoMapCache.prototype;
     _proto.set = function set(key, selectorFn) {
@@ -282,12 +282,12 @@ exports[`UMD bundle > is unchanged 1`] = `
   }();
 
   var LruMapCache = /*#__PURE__*/function () {
-    function LruMapCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
+    function LruMapCache(options) {
+      this._cache = {};
+      this._cacheSize = void 0;
+      validateCacheSize(options.cacheSize);
       this._cache = new Map();
-      this._cacheSize = cacheSize;
+      this._cacheSize = options.cacheSize;
     }
     var _proto = LruMapCache.prototype;
     _proto.set = function set(key, selectorFn) {

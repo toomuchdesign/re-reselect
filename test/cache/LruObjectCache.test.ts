@@ -29,7 +29,7 @@ describe('LruObjectCache', () => {
 
     expect(() => {
       // @ts-expect-error
-      new LruObjectCache();
+      new LruObjectCache({});
     }).toThrow('Missing the required property "cacheSize".');
 
     // Exposes the interface

@@ -1,12 +1,16 @@
-import validateCacheSize from './util/validateCacheSize';
+import type { ICacheObject } from '../types';
+import validateCacheSize from './util/validateCacheSize.ts';
 
-export default class LruMapCache {
-  constructor({ cacheSize } = {}) {
-    validateCacheSize(cacheSize);
+export default class LruMapCache implements ICacheObject {
+  private _cache: Record<any, any> = {};
+  private _cacheSize: number;
+
+  constructor(options: { cacheSize: number }) {
+    validateCacheSize(options.cacheSize);
     this._cache = new Map();
-    this._cacheSize = cacheSize;
+    this._cacheSize = options.cacheSize;
   }
-  set(key, selectorFn) {
+  set(key: any, selectorFn: any) {
     this._cache.set(key, selectorFn);
 
     if (this._cache.size > this._cacheSize) {
@@ -14,7 +18,7 @@ export default class LruMapCache {
       this.remove(earliest);
     }
   }
-  get(key) {
+  get(key: any) {
     const value = this._cache.get(key);
 
     // Register cache hit
@@ -24,7 +28,7 @@ export default class LruMapCache {
     }
     return value;
   }
-  remove(key) {
+  remove(key: any) {
     this._cache.delete(key);
   }
   clear() {

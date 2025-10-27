@@ -6,7 +6,8 @@
     "esModuleInterop": true,
     "lib": ["es6"],
     "moduleResolution": "Bundler",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true
   },
   "exclude": ["./dist"]
 }

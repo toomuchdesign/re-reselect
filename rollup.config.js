@@ -8,6 +8,7 @@ let plugins = [
   babel({
     exclude: 'node_modules/**',
     babelHelpers: 'bundled',
+    extensions: ['.js', '.ts'],
   }),
   copy({
     targets: [{ src: 'src/index.d.ts', dest: 'dist/types' }],

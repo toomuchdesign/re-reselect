@@ -1,5 +1,5 @@
 import FlatObjectCache from './cache/FlatObjectCache.ts';
-import { createSelector } from './reselectWrapper';
+import { createSelector } from './reselectWrapper.ts';
 
 const defaultCacheCreator = FlatObjectCache;
 const defaultCacheKeyValidator = () => true;

@@ -8,9 +8,11 @@ function testCacheSizeOptionValidation(
   describe('cacheSize option validation', () => {
     it('throws error if not defined', () => {
       expect(() => {
-        // @ts-expect-error option object required
-        const cache = new CacheObject();
-      }).toThrow(/Missing/);
+        const cache = new CacheObject({
+          // @ts-expect-error
+          cacheSize: undefined,
+        });
+      }).toThrow('Missing the required property "cacheSize".');
     });
 
     it('throws error if not a positive integer', () => {
@@ -19,7 +21,9 @@ function testCacheSizeOptionValidation(
       wrongValues.forEach((value) => {
         expect(() => {
           const cache = new CacheObject({ cacheSize: value });
-        }).toThrow(/a positive integer/);
+        }).toThrow(
+          'The "cacheSize" property must be a positive integer value.',
+        );
       });
     });
 

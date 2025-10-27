@@ -2,7 +2,7 @@ import type { ICacheObject } from '../types';
 import isStringOrNumber from './util/isStringOrNumber.ts';
 import validateCacheSize from './util/validateCacheSize.ts';
 
-export default class FifoObjectCache implements ICacheObject {
+export class FifoObjectCache implements ICacheObject {
   private _cache: Record<any, any> = {};
   private _cacheOrdering: any[] = [];
   private _cacheSize: number;

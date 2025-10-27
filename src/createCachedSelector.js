@@ -1,4 +1,4 @@
-import FlatObjectCache from './cache/FlatObjectCache.ts';
+import { FlatObjectCache } from './cache/FlatObjectCache.ts';
 import { createSelector } from './reselectWrapper.ts';
 
 const defaultCacheCreator = FlatObjectCache;
@@ -26,7 +26,7 @@ function parseReselectArgs(reselectArgs) {
   };
 }
 
-function createCachedSelector(...reselectArgs) {
+export function createCachedSelector(...reselectArgs) {
   const { inputSelectors, resultFunc, createSelectorOptions } =
     parseReselectArgs(reselectArgs);
 
@@ -112,5 +112,3 @@ function createCachedSelector(...reselectArgs) {
     return selector;
   };
 }
-
-export default createCachedSelector;

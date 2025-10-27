@@ -1,8 +1,6 @@
-import createCachedSelector from './createCachedSelector';
+import { createCachedSelector } from './createCachedSelector';
 import { createStructuredSelector } from './reselectWrapper.ts';
 
-function createStructuredCachedSelector(selectors) {
+export function createStructuredCachedSelector(selectors) {
   return createStructuredSelector(selectors, createCachedSelector);
 }
-
-export default createStructuredCachedSelector;

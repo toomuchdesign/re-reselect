@@ -1,7 +1,7 @@
 import type { ICacheObject } from '../types';
 import validateCacheSize from './util/validateCacheSize.ts';
 
-export default class LruMapCache implements ICacheObject {
+export class LruMapCache implements ICacheObject {
   private _cache: Record<any, any> = {};
   private _cacheSize: number;
 

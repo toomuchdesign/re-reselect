@@ -1,5 +1,11 @@
 # re-reselect
 
+## 5.2.0
+
+### Minor Changes
+
+- [#391](https://github.com/toomuchdesign/re-reselect/pull/391) [`e70c893`](https://github.com/toomuchdesign/re-reselect/commit/e70c893d33d36bcf1ad08710e2616522d44f935c) Thanks [@toomuchdesign](https://github.com/toomuchdesign)! - Migrate tests to vitest
+
 ## 5.0.0
 
 ### New Features

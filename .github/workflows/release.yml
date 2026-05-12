@@ -36,7 +36,7 @@ jobs:
       - run: npm ci --ignore-scripts
 
       - name: Create Release PR or Publish to npm
-        uses: changesets/action@v1.7.0
+        uses: changesets/action@v1.8.0
         with:
           publish: npm run release
           commit: 'chore: update version for release'

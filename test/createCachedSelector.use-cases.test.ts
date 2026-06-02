@@ -39,6 +39,11 @@ describe('createCachedSelector use cases', () => {
     });
   });
 
+  // TODO: revisit type assertions in this block after the v5/TS migration.
+  // The 10-input-selector call mixes annotated and unannotated `(state) => ...`
+  // selectors. Reselect v5's stricter inference may need the unannotated ones
+  // explicitly typed as `(state: State) => ...` for the inner `expectTypeOf`
+  // assertions to resolve; runtime behavior is unaffected.
   describe('multiple parametric selectors', () => {
     it('works', () => {
       type State = { foo: string };

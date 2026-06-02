@@ -1,12 +1,17 @@
+import type { ICacheObject } from './types';
 import validateCacheSize from './util/validateCacheSize';
 
-export default class FifoMapCache {
-  constructor({ cacheSize } = {}) {
+export default class FifoMapCache implements ICacheObject {
+  private _cache: Map<any, any> = new Map();
+  private _cacheSize: number;
+
+  constructor(options: { cacheSize: number }) {
+    const { cacheSize } = options ?? ({} as { cacheSize: number });
     validateCacheSize(cacheSize);
-    this._cache = new Map();
     this._cacheSize = cacheSize;
   }
-  set(key, selectorFn) {
+
+  set(key: any, selectorFn: any): void {
     this._cache.set(key, selectorFn);
 
     if (this._cache.size > this._cacheSize) {
@@ -14,13 +19,16 @@ export default class FifoMapCache {
       this.remove(earliest);
     }
   }
-  get(key) {
+
+  get(key: any): any {
     return this._cache.get(key);
   }
-  remove(key) {
+
+  remove(key: any): void {
     this._cache.delete(key);
   }
-  clear() {
+
+  clear(): void {
     this._cache.clear();
   }
 }

@@ -1,14 +1,19 @@
+import type { ICacheObject, ObjectCacheKey } from './types';
 import isStringOrNumber from './util/isStringOrNumber';
 import validateCacheSize from './util/validateCacheSize';
 
-export default class LruObjectCache {
-  constructor({ cacheSize } = {}) {
+export default class LruObjectCache implements ICacheObject {
+  private _cache: Record<string, any> = {};
+  private _cacheOrdering: ObjectCacheKey[] = [];
+  private _cacheSize: number;
+
+  constructor(options: { cacheSize: number }) {
+    const { cacheSize } = options ?? ({} as { cacheSize: number });
     validateCacheSize(cacheSize);
-    this._cache = {};
-    this._cacheOrdering = [];
     this._cacheSize = cacheSize;
   }
-  set(key, selectorFn) {
+
+  set(key: ObjectCacheKey, selectorFn: any): void {
     this._cache[key] = selectorFn;
     this._registerCacheHit(key);
 
@@ -17,29 +22,35 @@ export default class LruObjectCache {
       this.remove(earliest);
     }
   }
-  get(key) {
+
+  get(key: ObjectCacheKey): any {
     this._registerCacheHit(key);
     return this._cache[key];
   }
-  remove(key) {
+
+  remove(key: ObjectCacheKey): void {
     this._deleteCacheHit(key);
     delete this._cache[key];
   }
-  clear() {
+
+  clear(): void {
     this._cache = {};
     this._cacheOrdering = [];
   }
-  _registerCacheHit(key) {
+
+  isValidCacheKey(cacheKey: ObjectCacheKey): boolean {
+    return isStringOrNumber(cacheKey);
+  }
+
+  private _registerCacheHit(key: ObjectCacheKey): void {
     this._deleteCacheHit(key);
     this._cacheOrdering.push(key);
   }
-  _deleteCacheHit(key) {
+
+  private _deleteCacheHit(key: ObjectCacheKey): void {
     const index = this._cacheOrdering.indexOf(key);
     if (index > -1) {
       this._cacheOrdering.splice(index, 1);
     }
-  }
-  isValidCacheKey(cacheKey) {
-    return isStringOrNumber(cacheKey);
   }
 }

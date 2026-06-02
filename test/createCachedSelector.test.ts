@@ -53,9 +53,7 @@ describe('createCachedSelector', () => {
           },
         });
 
-        expectTypeOf(selector).parameters.toEqualTypeOf<
-          [State, string, ...args: any[]]
-        >();
+        expectTypeOf(selector).parameters.toEqualTypeOf<[State, string]>();
 
         // Selector return expectations
         {
@@ -117,9 +115,7 @@ describe('createCachedSelector', () => {
           },
         });
 
-        expectTypeOf(selector).parameters.toEqualTypeOf<
-          [State, string, ...args: any[]]
-        >();
+        expectTypeOf(selector).parameters.toEqualTypeOf<[State, string]>();
 
         // Selector return expectations
         {
@@ -184,7 +180,7 @@ describe('createCachedSelector', () => {
     describe('cacheKey validation', () => {
       describe('cacheObject.isValidCacheKey', () => {
         describe("doesn't exist", () => {
-          it('accepts any value', () => {
+          it('selector accepts any value', () => {
             const cacheObjectMock: ICacheObject = {
               get: vi.fn(() => () => 'foo'),
               set: () => {},
@@ -194,7 +190,7 @@ describe('createCachedSelector', () => {
             const values = [{}, [], null, undefined, 12, 'bar'];
 
             const cachedSelector = createCachedSelector(
-              () => {},
+              (state: any) => {},
               () => {},
             )({
               keySelector: (state) => state,
@@ -216,14 +212,14 @@ describe('createCachedSelector', () => {
             cacheObjectMock.get = vi.fn();
 
             const cachedSelector = createCachedSelector(
-              () => {},
+              (state: string, param1: string) => {},
               () => {},
             )({
               keySelector: (state) => state,
               cacheObject: cacheObjectMock,
             });
 
-            cachedSelector('foo');
+            cachedSelector('foo', '');
 
             expect(cacheObjectMock.get).toHaveBeenCalledTimes(1);
             expect(cacheObjectMock.get).toHaveBeenCalledWith('foo');
@@ -237,14 +233,14 @@ describe('createCachedSelector', () => {
             cacheObjectMock.get = vi.fn();
 
             const cachedSelector = createCachedSelector(
-              () => {},
+              (state: string, param1: string) => {},
               () => {},
             )({
               keySelector: (state) => state,
               cacheObject: cacheObjectMock,
             });
 
-            const actual = cachedSelector('foo');
+            const actual = cachedSelector('foo', 'param1');
 
             expect(actual).toBe(undefined);
             expect(cacheObjectMock.get).not.toHaveBeenCalled();
@@ -350,7 +346,7 @@ describe('createCachedSelector', () => {
           expect(cachedSelector.recomputations()).toBe(0);
 
           expectTypeOf(cachedSelector.recomputations()).toBeNumber();
-          expectTypeOf(cachedSelector.resetRecomputations()).toBeNumber();
+          expectTypeOf(cachedSelector.resetRecomputations()).toBeVoid();
         });
       });
 
@@ -385,7 +381,7 @@ describe('createCachedSelector', () => {
             (state: State) => state.a,
             resultFunc,
           )({
-            keySelector: (state, param1) => param1,
+            keySelector: (state) => state,
           });
 
           expect(cachedSelector.resultFunc).toBe(resultFunc);

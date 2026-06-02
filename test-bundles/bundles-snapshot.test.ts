@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 describe('UMD bundle', () => {
   it('is unchanged', () => {
     const bundle = readFileSync(
-      join(__dirname, '..', 'dist/umd/index.js'),
+      join(__dirname, '..', 'dist/umd/index.umd.js'),
       'utf8',
     );
     expect(bundle).toMatchSnapshot();

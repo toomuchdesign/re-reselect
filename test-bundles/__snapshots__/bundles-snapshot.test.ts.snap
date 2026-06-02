@@ -1,331 +1,279 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`UMD bundle > is unchanged 1`] = `
-"(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('reselect')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'reselect'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global["Re-reselect"] = {}, global.Reselect));
-})(this, (function (exports, reselect) { 'use strict';
+"(function(global, factory) {
+	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) : typeof define === "function" && define.amd ? define(["exports"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global["Re-reselect"] = {}));
+})(this, function(exports) {
+	Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+	//#region src/cache/util/isStringOrNumber.ts
+	function isStringOrNumber(value) {
+		return typeof value === "string" || typeof value === "number";
+	}
+	//#endregion
+	//#region src/cache/FlatObjectCache.ts
+	var FlatObjectCache = class {
+		constructor() {
+			this._cache = {};
+		}
+		set(key, selectorFn) {
+			this._cache[key] = selectorFn;
+		}
+		get(key) {
+			return this._cache[key];
+		}
+		remove(key) {
+			delete this._cache[key];
+		}
+		clear() {
+			this._cache = {};
+		}
+		isValidCacheKey(cacheKey) {
+			return isStringOrNumber(cacheKey);
+		}
+	};
+	//#endregion
+	//#region src/createCachedSelector.ts
+	const defaultCacheKeyValidator = () => true;
+	function parseReselectArgs(reselectArgs) {
+		const args = [...reselectArgs];
+		const lastArgument = args[args.length - 1];
+		let resultFunc;
+		let createSelectorOptions = void 0;
+		if (typeof lastArgument === "function") resultFunc = args.pop();
+		else {
+			createSelectorOptions = args.pop();
+			resultFunc = args.pop();
+		}
+		return {
+			inputSelectors: Array.isArray(args[0]) ? args[0] : [...args],
+			resultFunc,
+			createSelectorOptions
+		};
+	}
+	const createCachedSelector = ((...reselectArgs) => {
+		const { inputSelectors, resultFunc, createSelectorOptions } = parseReselectArgs(reselectArgs);
+		return (polymorphicOptions) => {
+			const options = typeof polymorphicOptions === "function" ? { keySelector: polymorphicOptions } : { ...polymorphicOptions };
+			let recomputations = 0;
+			const resultFuncWithRecomputations = (...args) => {
+				recomputations++;
+				return resultFunc(...args);
+			};
+			const patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
+			if (createSelectorOptions) patchedReselectArgs.push(createSelectorOptions);
+			const cache = options.cacheObject || new FlatObjectCache();
+			const selectorCreator = options.selectorCreator || reselect.createSelector;
+			const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
+			if (options.keySelectorCreator) options.keySelector = options.keySelectorCreator({
+				keySelector: options.keySelector,
+				inputSelectors,
+				resultFunc
+			});
+			const selector = function(...args) {
+				const cacheKey = options.keySelector(...args);
+				if (isValidCacheKey(cacheKey)) {
+					let cacheResponse = cache.get(cacheKey);
+					if (cacheResponse === void 0) {
+						cacheResponse = selectorCreator(...patchedReselectArgs);
+						cache.set(cacheKey, cacheResponse);
+					}
+					return cacheResponse(...args);
+				}
+				console.warn(\`[re-reselect] Invalid cache key "\${String(cacheKey)}" has been returned by keySelector function.\`);
+			};
+			selector.getMatchingSelector = (...args) => {
+				const cacheKey = options.keySelector(...args);
+				return cache.get(cacheKey);
+			};
+			selector.removeMatchingSelector = (...args) => {
+				const cacheKey = options.keySelector(...args);
+				cache.remove(cacheKey);
+			};
+			selector.clearCache = () => {
+				cache.clear();
+			};
+			selector.resultFunc = resultFunc;
+			selector.dependencies = inputSelectors;
+			selector.cache = cache;
+			selector.recomputations = () => recomputations;
+			selector.resetRecomputations = () => recomputations = 0;
+			selector.keySelector = options.keySelector;
+			return selector;
+		};
+	});
+	//#endregion
+	//#region src/createStructuredCachedSelector.ts
+	function createStructuredCachedSelector(selectors) {
+		return (0, reselect.createStructuredSelector)(selectors, createCachedSelector);
+	}
+	//#endregion
+	//#region src/cache/util/validateCacheSize.ts
+	function validateCacheSize(cacheSize) {
+		if (cacheSize === void 0) throw new Error("Missing the required property \\"cacheSize\\".");
+		if (!Number.isInteger(cacheSize) || cacheSize <= 0) throw new Error("The \\"cacheSize\\" property must be a positive integer value.");
+	}
+	//#endregion
+	//#region src/cache/FifoObjectCache.ts
+	var FifoObjectCache = class {
+		constructor(options) {
+			this._cache = {};
+			this._cacheOrdering = [];
+			const { cacheSize } = options ?? {};
+			validateCacheSize(cacheSize);
+			this._cacheSize = cacheSize;
+		}
+		set(key, selectorFn) {
+			this._cache[key] = selectorFn;
+			this._cacheOrdering.push(key);
+			if (this._cacheOrdering.length > this._cacheSize) {
+				const earliest = this._cacheOrdering[0];
+				this.remove(earliest);
+			}
+		}
+		get(key) {
+			return this._cache[key];
+		}
+		remove(key) {
+			const index = this._cacheOrdering.indexOf(key);
+			if (index > -1) this._cacheOrdering.splice(index, 1);
+			delete this._cache[key];
+		}
+		clear() {
+			this._cache = {};
+			this._cacheOrdering = [];
+		}
+		isValidCacheKey(cacheKey) {
+			return isStringOrNumber(cacheKey);
+		}
+	};
+	//#endregion
+	//#region src/cache/LruObjectCache.ts
+	var LruObjectCache = class {
+		constructor(options) {
+			this._cache = {};
+			this._cacheOrdering = [];
+			const { cacheSize } = options ?? {};
+			validateCacheSize(cacheSize);
+			this._cacheSize = cacheSize;
+		}
+		set(key, selectorFn) {
+			this._cache[key] = selectorFn;
+			this._registerCacheHit(key);
+			if (this._cacheOrdering.length > this._cacheSize) {
+				const earliest = this._cacheOrdering[0];
+				this.remove(earliest);
+			}
+		}
+		get(key) {
+			this._registerCacheHit(key);
+			return this._cache[key];
+		}
+		remove(key) {
+			this._deleteCacheHit(key);
+			delete this._cache[key];
+		}
+		clear() {
+			this._cache = {};
+			this._cacheOrdering = [];
+		}
+		isValidCacheKey(cacheKey) {
+			return isStringOrNumber(cacheKey);
+		}
+		_registerCacheHit(key) {
+			this._deleteCacheHit(key);
+			this._cacheOrdering.push(key);
+		}
+		_deleteCacheHit(key) {
+			const index = this._cacheOrdering.indexOf(key);
+			if (index > -1) this._cacheOrdering.splice(index, 1);
+		}
+	};
+	//#endregion
+	//#region src/cache/FlatMapCache.ts
+	var FlatMapCache = class {
+		constructor() {
+			this._cache = /* @__PURE__ */ new Map();
+		}
+		set(key, selectorFn) {
+			this._cache.set(key, selectorFn);
+		}
+		get(key) {
+			return this._cache.get(key);
+		}
+		remove(key) {
+			this._cache.delete(key);
+		}
+		clear() {
+			this._cache.clear();
+		}
+	};
+	//#endregion
+	//#region src/cache/FifoMapCache.ts
+	var FifoMapCache = class {
+		constructor(options) {
+			this._cache = /* @__PURE__ */ new Map();
+			const { cacheSize } = options ?? {};
+			validateCacheSize(cacheSize);
+			this._cacheSize = cacheSize;
+		}
+		set(key, selectorFn) {
+			this._cache.set(key, selectorFn);
+			if (this._cache.size > this._cacheSize) {
+				const earliest = this._cache.keys().next().value;
+				this.remove(earliest);
+			}
+		}
+		get(key) {
+			return this._cache.get(key);
+		}
+		remove(key) {
+			this._cache.delete(key);
+		}
+		clear() {
+			this._cache.clear();
+		}
+	};
+	//#endregion
+	//#region src/cache/LruMapCache.ts
+	var LruMapCache = class {
+		constructor(options) {
+			this._cache = /* @__PURE__ */ new Map();
+			const { cacheSize } = options ?? {};
+			validateCacheSize(cacheSize);
+			this._cacheSize = cacheSize;
+		}
+		set(key, selectorFn) {
+			this._cache.set(key, selectorFn);
+			if (this._cache.size > this._cacheSize) {
+				const earliest = this._cache.keys().next().value;
+				this.remove(earliest);
+			}
+		}
+		get(key) {
+			const value = this._cache.get(key);
+			if (this._cache.has(key)) {
+				this.remove(key);
+				this._cache.set(key, value);
+			}
+			return value;
+		}
+		remove(key) {
+			this._cache.delete(key);
+		}
+		clear() {
+			this._cache.clear();
+		}
+	};
+	//#endregion
+	exports.FifoMapCache = FifoMapCache;
+	exports.FifoObjectCache = FifoObjectCache;
+	exports.FlatMapCache = FlatMapCache;
+	exports.FlatObjectCache = FlatObjectCache;
+	exports.LruMapCache = LruMapCache;
+	exports.LruObjectCache = LruObjectCache;
+	exports.createCachedSelector = createCachedSelector;
+	exports.createStructuredCachedSelector = createStructuredCachedSelector;
+});
 
-  function isStringOrNumber(value) {
-    return typeof value === 'string' || typeof value === 'number';
-  }
-
-  var FlatObjectCache = /*#__PURE__*/function () {
-    function FlatObjectCache() {
-      this._cache = {};
-    }
-    var _proto = FlatObjectCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache[key] = selectorFn;
-    };
-    _proto.get = function get(key) {
-      return this._cache[key];
-    };
-    _proto.remove = function remove(key) {
-      delete this._cache[key];
-    };
-    _proto.clear = function clear() {
-      this._cache = {};
-    };
-    _proto.isValidCacheKey = function isValidCacheKey(cacheKey) {
-      return isStringOrNumber(cacheKey);
-    };
-    return FlatObjectCache;
-  }();
-
-  var defaultCacheCreator = FlatObjectCache;
-  var defaultCacheKeyValidator = function defaultCacheKeyValidator() {
-    return true;
-  };
-  function parseReselectArgs(reselectArgs) {
-    var args = [].concat(reselectArgs);
-    var lastArgument = args[args.length - 1];
-    var resultFunc;
-    var createSelectorOptions = undefined;
-
-    // Last argument is resultFunc
-    if (typeof lastArgument === 'function') {
-      resultFunc = args.pop();
-    } else {
-      // Last argument is createSelectorOptions object
-      createSelectorOptions = args.pop();
-      resultFunc = args.pop();
-    }
-    return {
-      inputSelectors: Array.isArray(args[0]) ? args[0] : [].concat(args),
-      resultFunc: resultFunc,
-      createSelectorOptions: createSelectorOptions
-    };
-  }
-  function createCachedSelector() {
-    for (var _len = arguments.length, reselectArgs = new Array(_len), _key = 0; _key < _len; _key++) {
-      reselectArgs[_key] = arguments[_key];
-    }
-    var _parseReselectArgs = parseReselectArgs(reselectArgs),
-      inputSelectors = _parseReselectArgs.inputSelectors,
-      resultFunc = _parseReselectArgs.resultFunc,
-      createSelectorOptions = _parseReselectArgs.createSelectorOptions;
-    return function (polymorphicOptions) {
-      var options = typeof polymorphicOptions === 'function' ? {
-        keySelector: polymorphicOptions
-      } : Object.assign({}, polymorphicOptions);
-
-      // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
-      var recomputations = 0;
-      var resultFuncWithRecomputations = function resultFuncWithRecomputations() {
-        recomputations++;
-        return resultFunc.apply(void 0, arguments);
-      };
-
-      // Patch reselect call arguments with a custom resultFunc
-      var patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
-      if (createSelectorOptions) {
-        patchedReselectArgs.push(createSelectorOptions);
-      }
-      var cache = options.cacheObject || new defaultCacheCreator();
-      var selectorCreator = options.selectorCreator || reselect.createSelector;
-      var isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
-      if (options.keySelectorCreator) {
-        options.keySelector = options.keySelectorCreator({
-          keySelector: options.keySelector,
-          inputSelectors: inputSelectors,
-          resultFunc: resultFunc
-        });
-      }
-
-      // User receives this function
-      var selector = function selector() {
-        var cacheKey = options.keySelector.apply(options, arguments);
-        if (isValidCacheKey(cacheKey)) {
-          var cacheResponse = cache.get(cacheKey);
-          if (cacheResponse === undefined) {
-            cacheResponse = selectorCreator.apply(void 0, patchedReselectArgs);
-            cache.set(cacheKey, cacheResponse);
-          }
-          return cacheResponse.apply(void 0, arguments);
-        }
-        console.warn("[re-reselect] Invalid cache key \\"" + cacheKey + "\\" has been returned by keySelector function.");
-        return undefined;
-      };
-
-      // Further selector methods
-      selector.getMatchingSelector = function () {
-        var cacheKey = options.keySelector.apply(options, arguments);
-        // @NOTE It might update cache hit count in LRU-like caches
-        return cache.get(cacheKey);
-      };
-      selector.removeMatchingSelector = function () {
-        var cacheKey = options.keySelector.apply(options, arguments);
-        cache.remove(cacheKey);
-      };
-      selector.clearCache = function () {
-        cache.clear();
-      };
-      selector.resultFunc = resultFunc;
-      selector.dependencies = inputSelectors;
-      selector.cache = cache;
-      selector.recomputations = function () {
-        return recomputations;
-      };
-      selector.resetRecomputations = function () {
-        return recomputations = 0;
-      };
-      selector.keySelector = options.keySelector;
-      return selector;
-    };
-  }
-
-  function createStructuredCachedSelector(selectors) {
-    return reselect.createStructuredSelector(selectors, createCachedSelector);
-  }
-
-  function validateCacheSize(cacheSize) {
-    if (cacheSize === undefined) {
-      throw new Error('Missing the required property "cacheSize".');
-    }
-    if (!Number.isInteger(cacheSize) || cacheSize <= 0) {
-      throw new Error('The "cacheSize" property must be a positive integer value.');
-    }
-  }
-
-  var FifoObjectCache = /*#__PURE__*/function () {
-    function FifoObjectCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
-      this._cache = {};
-      this._cacheOrdering = [];
-      this._cacheSize = cacheSize;
-    }
-    var _proto = FifoObjectCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache[key] = selectorFn;
-      this._cacheOrdering.push(key);
-      if (this._cacheOrdering.length > this._cacheSize) {
-        var earliest = this._cacheOrdering[0];
-        this.remove(earliest);
-      }
-    };
-    _proto.get = function get(key) {
-      return this._cache[key];
-    };
-    _proto.remove = function remove(key) {
-      var index = this._cacheOrdering.indexOf(key);
-      if (index > -1) {
-        this._cacheOrdering.splice(index, 1);
-      }
-      delete this._cache[key];
-    };
-    _proto.clear = function clear() {
-      this._cache = {};
-      this._cacheOrdering = [];
-    };
-    _proto.isValidCacheKey = function isValidCacheKey(cacheKey) {
-      return isStringOrNumber(cacheKey);
-    };
-    return FifoObjectCache;
-  }();
-
-  var LruObjectCache = /*#__PURE__*/function () {
-    function LruObjectCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
-      this._cache = {};
-      this._cacheOrdering = [];
-      this._cacheSize = cacheSize;
-    }
-    var _proto = LruObjectCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache[key] = selectorFn;
-      this._registerCacheHit(key);
-      if (this._cacheOrdering.length > this._cacheSize) {
-        var earliest = this._cacheOrdering[0];
-        this.remove(earliest);
-      }
-    };
-    _proto.get = function get(key) {
-      this._registerCacheHit(key);
-      return this._cache[key];
-    };
-    _proto.remove = function remove(key) {
-      this._deleteCacheHit(key);
-      delete this._cache[key];
-    };
-    _proto.clear = function clear() {
-      this._cache = {};
-      this._cacheOrdering = [];
-    };
-    _proto._registerCacheHit = function _registerCacheHit(key) {
-      this._deleteCacheHit(key);
-      this._cacheOrdering.push(key);
-    };
-    _proto._deleteCacheHit = function _deleteCacheHit(key) {
-      var index = this._cacheOrdering.indexOf(key);
-      if (index > -1) {
-        this._cacheOrdering.splice(index, 1);
-      }
-    };
-    _proto.isValidCacheKey = function isValidCacheKey(cacheKey) {
-      return isStringOrNumber(cacheKey);
-    };
-    return LruObjectCache;
-  }();
-
-  var FlatMapCache = /*#__PURE__*/function () {
-    function FlatMapCache() {
-      this._cache = new Map();
-    }
-    var _proto = FlatMapCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache.set(key, selectorFn);
-    };
-    _proto.get = function get(key) {
-      return this._cache.get(key);
-    };
-    _proto.remove = function remove(key) {
-      this._cache["delete"](key);
-    };
-    _proto.clear = function clear() {
-      this._cache.clear();
-    };
-    return FlatMapCache;
-  }();
-
-  var FifoMapCache = /*#__PURE__*/function () {
-    function FifoMapCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
-      this._cache = new Map();
-      this._cacheSize = cacheSize;
-    }
-    var _proto = FifoMapCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache.set(key, selectorFn);
-      if (this._cache.size > this._cacheSize) {
-        var earliest = this._cache.keys().next().value;
-        this.remove(earliest);
-      }
-    };
-    _proto.get = function get(key) {
-      return this._cache.get(key);
-    };
-    _proto.remove = function remove(key) {
-      this._cache["delete"](key);
-    };
-    _proto.clear = function clear() {
-      this._cache.clear();
-    };
-    return FifoMapCache;
-  }();
-
-  var LruMapCache = /*#__PURE__*/function () {
-    function LruMapCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
-      this._cache = new Map();
-      this._cacheSize = cacheSize;
-    }
-    var _proto = LruMapCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache.set(key, selectorFn);
-      if (this._cache.size > this._cacheSize) {
-        var earliest = this._cache.keys().next().value;
-        this.remove(earliest);
-      }
-    };
-    _proto.get = function get(key) {
-      var value = this._cache.get(key);
-
-      // Register cache hit
-      if (this._cache.has(key)) {
-        this.remove(key);
-        this._cache.set(key, value);
-      }
-      return value;
-    };
-    _proto.remove = function remove(key) {
-      this._cache["delete"](key);
-    };
-    _proto.clear = function clear() {
-      this._cache.clear();
-    };
-    return LruMapCache;
-  }();
-
-  exports.FifoMapCache = FifoMapCache;
-  exports.FifoObjectCache = FifoObjectCache;
-  exports.FlatMapCache = FlatMapCache;
-  exports.FlatObjectCache = FlatObjectCache;
-  exports.LruMapCache = LruMapCache;
-  exports.LruObjectCache = LruObjectCache;
-  exports.createCachedSelector = createCachedSelector;
-  exports.createStructuredCachedSelector = createStructuredCachedSelector;
-
-}));
-//# sourceMappingURL=index.js.map
-"
+//# sourceMappingURL=index.umd.js.map"
 `;

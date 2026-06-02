@@ -5,14 +5,14 @@
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
   "jsnext:main": "dist/es/index.js",
-  "browser": "dist/umd/index.js",
-  "types": "dist/types/index.d.ts",
+  "browser": "dist/umd/index.umd.js",
+  "types": "dist/es/index.d.ts",
   "sideEffects": false,
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rimraf ./dist && rollup -c --bundleConfigAsCjs",
+    "build": "tsdown",
     "test": "vitest --config ./vitest.config.mts",
     "test:bundles": "npm run test:bundles:snapshot && npm run test:bundles:unit",
     "test:bundles:unit": "vitest run --config ./test-bundles/cjs.vitest.config.mts && vitest run --config ./test-bundles/es.vitest.config.mts && vitest run --config ./test-bundles/umd.vitest.config.mts",
@@ -45,19 +45,15 @@
     "reselect": "^5.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.24.6",
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.29.7",
-    "@rollup/plugin-babel": "^6.0.4",
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
     "@vitest/coverage-v8": "^3.0.0",
     "expect-type": "^1.2.2",
     "prettier": "^3.2.5",
     "reselect": "^5.1.0",
-    "rimraf": "^6.0.1",
-    "rollup": "^4.17.2",
-    "rollup-plugin-copy": "^3.5.0",
     "simple-git-hooks": "^2.11.1",
+    "tsdown": "^0.22.1",
     "typescript": "^5.4.5",
     "vitest": "^3.0.0"
   },

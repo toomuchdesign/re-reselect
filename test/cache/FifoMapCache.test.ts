@@ -29,7 +29,7 @@ describe('FifoMapCache', () => {
 
     expect(() => {
       // @ts-expect-error
-      new FifoMapCache();
+      new FifoMapCache({});
     }).toThrow('Missing the required property "cacheSize".');
 
     // Exposes the interface

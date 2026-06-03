@@ -1,4 +1,4 @@
-´import type {
+import type {
   Combiner,
   CreateSelectorFunction,
   CreateSelectorOptions,
@@ -35,7 +35,7 @@ export type KeySelectorCreator<
 > = (selectorInputs: {
   inputSelectors: InputSelectors;
   resultFunc: Combiner<InputSelectors, Result>;
-  keySelector: TypedKeySelector<InputSelectors> | undefined;
+  keySelector?: TypedKeySelector<InputSelectors>;
 }) => TypedKeySelector<InputSelectors>;
 
 export type CreateCachedSelectorOptions<
@@ -82,14 +82,19 @@ export type PolymorphicCachedOptions<
   | CreateCachedSelectorOptions<InputSelectors, Result>;
 
 /**
- * Mirrors reselect's `CreateSelectorFunction` pattern: a single interface
- * with three overloads (variadic, variadic+options, array+options) using
- * tuple inference instead of per-arity overload duplication.
+ * Just the callable signatures of `createCachedSelector`, without `withTypes`.
+ * Split out so the runtime implementation can be typed against it directly
+ * (TypeScript's `Omit` strips call signatures, so this can't be derived from
+ * `CreateCachedSelector` after the fact).
+ *
+ * Three overloads (variadic, variadic+options, array+options) using tuple
+ * inference instead of per-arity overload duplication, mirroring reselect's
+ * `CreateSelectorFunction` pattern.
  *
  * `StateType` is the state type shared by all input selectors. It defaults to
  * `any` and is narrowed via `withTypes` to pre-type the selector creator.
  */
-export interface CreateCachedSelectorFunction<StateType = any> {
+export interface CreateCachedSelectorImpl<StateType = any> {
   <InputSelectors extends SelectorArray<StateType>, Result>(
     ...createSelectorArgs: [
       ...inputSelectors: InputSelectors,
@@ -116,7 +121,15 @@ export interface CreateCachedSelectorFunction<StateType = any> {
   ): (
     polymorphicOptions: PolymorphicCachedOptions<InputSelectors, Result>,
   ) => OutputCachedSelector<InputSelectors, Result>;
+}
 
+/**
+ * The full `createCachedSelector` surface: callable signatures plus the
+ * `withTypes` helper for pre-typing the state.
+ */
+export interface CreateCachedSelector<
+  StateType = any,
+> extends CreateCachedSelectorImpl<StateType> {
   /**
    * Creates a "pre-typed" version of `createCachedSelector` where the `state`
    * type is predefined.
@@ -128,5 +141,5 @@ export interface CreateCachedSelectorFunction<StateType = any> {
    */
   withTypes: <
     OverrideStateType extends StateType,
-  >() => CreateCachedSelectorFunction<OverrideStateType>;
+  >() => CreateCachedSelector<OverrideStateType>;
 }

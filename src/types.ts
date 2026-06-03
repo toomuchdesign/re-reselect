@@ -1,4 +1,4 @@
-import type {
+´import type {
   Combiner,
   CreateSelectorFunction,
   CreateSelectorOptions,
@@ -85,9 +85,12 @@ export type PolymorphicCachedOptions<
  * Mirrors reselect's `CreateSelectorFunction` pattern: a single interface
  * with three overloads (variadic, variadic+options, array+options) using
  * tuple inference instead of per-arity overload duplication.
+ *
+ * `StateType` is the state type shared by all input selectors. It defaults to
+ * `any` and is narrowed via `withTypes` to pre-type the selector creator.
  */
-export interface CreateCachedSelectorFunction {
-  <InputSelectors extends SelectorArray, Result>(
+export interface CreateCachedSelectorFunction<StateType = any> {
+  <InputSelectors extends SelectorArray<StateType>, Result>(
     ...createSelectorArgs: [
       ...inputSelectors: InputSelectors,
       combiner: Combiner<InputSelectors, Result>,
@@ -96,7 +99,7 @@ export interface CreateCachedSelectorFunction {
     polymorphicOptions: PolymorphicCachedOptions<InputSelectors, Result>,
   ) => OutputCachedSelector<InputSelectors, Result>;
 
-  <InputSelectors extends SelectorArray, Result>(
+  <InputSelectors extends SelectorArray<StateType>, Result>(
     ...createSelectorArgs: [
       ...inputSelectors: InputSelectors,
       combiner: Combiner<InputSelectors, Result>,
@@ -106,11 +109,24 @@ export interface CreateCachedSelectorFunction {
     polymorphicOptions: PolymorphicCachedOptions<InputSelectors, Result>,
   ) => OutputCachedSelector<InputSelectors, Result>;
 
-  <InputSelectors extends SelectorArray, Result>(
+  <InputSelectors extends SelectorArray<StateType>, Result>(
     inputSelectors: [...InputSelectors],
     combiner: Combiner<InputSelectors, Result>,
     createSelectorOptions?: CreateSelectorOptions,
   ): (
     polymorphicOptions: PolymorphicCachedOptions<InputSelectors, Result>,
   ) => OutputCachedSelector<InputSelectors, Result>;
+
+  /**
+   * Creates a "pre-typed" version of `createCachedSelector` where the `state`
+   * type is predefined.
+   *
+   * This lets you set the `state` type once, removing the need to specify it
+   * on every input selector across all `createCachedSelector` calls.
+   *
+   * @returns A pre-typed `createCachedSelector` with the state type baked in.
+   */
+  withTypes: <
+    OverrideStateType extends StateType,
+  >() => CreateCachedSelectorFunction<OverrideStateType>;
 }

@@ -7,13 +7,11 @@ import type { CreateCachedSelectorFunction } from './types';
 
 const defaultCacheKeyValidator = () => true;
 
-type ParsedReselectArgs = {
+function parseReselectArgs(reselectArgs: readonly unknown[]): {
   inputSelectors: readonly unknown[];
   resultFunc: (...args: any[]) => unknown;
   createSelectorOptions: CreateSelectorOptions | undefined;
-};
-
-function parseReselectArgs(reselectArgs: readonly unknown[]): ParsedReselectArgs {
+} {
   const args = [...reselectArgs];
   const lastArgument = args[args.length - 1];
   let resultFunc: (...args: any[]) => unknown;
@@ -130,5 +128,9 @@ const createCachedSelector = ((...reselectArgs: unknown[]) => {
     return selector;
   };
 }) as CreateCachedSelectorFunction;
+
+// `withTypes` only refines the static types; at runtime it returns the same
+// creator unchanged (mirrors reselect's implementation).
+createCachedSelector.withTypes = () => createCachedSelector;
 
 export default createCachedSelector;

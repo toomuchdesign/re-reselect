@@ -549,4 +549,74 @@ describe('createCachedSelector', () => {
 
     expect(cachedSelector.recomputations()).toBe(1);
   });
+
+  describe('withTypes', () => {
+    it('returns the same creator at runtime', () => {
+      // Act
+      const createTypedCachedSelector = createCachedSelector.withTypes<{
+        foo: string;
+      }>();
+
+      // Assert
+      expect(createTypedCachedSelector).toBe(createCachedSelector);
+    });
+
+    describe('pre-typed creator', () => {
+      it('pre-types input selectors with the provided state', () => {
+        // Arrange
+        type State = { foo: string };
+        const state: State = { foo: 'fizz' };
+
+        // Act
+        const selector = createCachedSelector.withTypes<State>()(
+          [
+            // `state` is inferred as `State`, no annotation needed
+            (state) => {
+              expectTypeOf(state).toEqualTypeOf<State>();
+              return state.foo;
+            },
+            (state) => {
+              expectTypeOf(state).toEqualTypeOf<State>();
+              return state.foo;
+            },
+          ],
+          (input1, input2) => {
+            expectTypeOf(input1).toBeString();
+            expectTypeOf(input2).toBeString();
+
+            return {
+              input1,
+              input2,
+            };
+          },
+        )((state) => {
+          expectTypeOf(state).toEqualTypeOf<State>();
+          return 'key';
+        });
+
+        // Assert
+        const actual = selector(state);
+        expect(actual).toEqual({
+          input1: 'fizz',
+          input2: 'fizz',
+        });
+        expectTypeOf(actual).toEqualTypeOf<{
+          input1: string;
+          input2: string;
+        }>();
+      });
+
+      it('rejects input selectors operating on a mismatched state', () => {
+        // Arrange
+        type State = { foo: string };
+
+        // Act / Assert
+        // @ts-expect-error input selector `state` must match the pre-typed `State`
+        createCachedSelector.withTypes<State>()(
+          [(state: { bar: number }) => state.bar],
+          (bar) => bar,
+        )(() => 'key');
+      });
+    });
+  });
 });

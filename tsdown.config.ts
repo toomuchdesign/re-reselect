@@ -10,7 +10,6 @@ export default defineConfig([
     outExtensions: () => ({ js: '.js' }),
     sourcemap: true,
     deps,
-    dts: { resolve: false },
     clean: true,
     unbundle: false,
   },

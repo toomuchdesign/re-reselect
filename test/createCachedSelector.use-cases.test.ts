@@ -1,4 +1,5 @@
 import { expectTypeOf } from 'expect-type';
+import { createSelector } from 'reselect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createCachedSelector } from '../src/index';
@@ -20,7 +21,10 @@ describe('createCachedSelector use cases', () => {
       )((state: State) => state.foo);
 
       const selector = createCachedSelector(
-        [nestedSelector, (state) => state.baz],
+        // `state` must be annotated: reselect v5 cannot contextually type an
+        // inline input selector while inferring the input tuple (see the
+        // "unannotated inline input selectors" block below for the bare repro).
+        [nestedSelector, (state: State) => state.baz],
         (result1, result2) => {
           expectTypeOf(result1).toEqualTypeOf<{ foo: string; bar: number }>();
           expectTypeOf(result2).toBeBoolean();
@@ -39,26 +43,84 @@ describe('createCachedSelector use cases', () => {
     });
   });
 
-  // TODO: revisit type assertions in this block after the v5/TS migration.
-  // The 10-input-selector call mixes annotated and unannotated `(state) => ...`
-  // selectors. Reselect v5's stricter inference may need the unannotated ones
-  // explicitly typed as `(state: State) => ...` for the inner `expectTypeOf`
-  // assertions to resolve; runtime behavior is unaffected.
+  // Documents a known reselect v5 type-inference limitation that the previous
+  // hand-written `index.d.ts` (per-arity overloads) used to paper over: an
+  // inline input selector whose `state` is NOT annotated cannot be
+  // contextually typed while the input tuple is being inferred, so `state`
+  // collapses to `any` and that `any` propagates to the combiner and result.
+  // Runtime behavior is unaffected; only the static type degrades.
+  describe('unannotated inline input selectors', () => {
+    describe('via createCachedSelector', () => {
+      it('degrades the inferred result type to `any`', () => {
+        type State = { foo: boolean };
+
+        // No annotation on `state` in one inline input selector.
+        const selector = createCachedSelector(
+          [(state: State) => state.foo, (state) => state.foo],
+          (input1, input2) => {
+            expectTypeOf(input1).toBeBoolean();
+            // The inferred type has degraded to `any`
+            expectTypeOf(input2).toBeAny();
+
+            return { input1, input2 };
+          },
+        )((state: State) => String(state.foo));
+
+        const actual = selector({ foo: true });
+
+        expect(actual).toEqual({ input1: true, input2: true });
+        expectTypeOf(actual).toEqualTypeOf<{
+          input1: boolean;
+          // The inferred type has degraded to `any`
+          input2: any;
+        }>();
+      });
+    });
+
+    describe('reselect createSelector', () => {
+      it('degrades the inferred result type to `any`', () => {
+        type State = { foo: boolean };
+
+        // Same shortcoming reproduced with plain reselect, confirming the
+        // limitation originates upstream and not in re-reselect's wrapper.
+        const selector = createSelector(
+          [(state: State) => state.foo, (state) => state.foo],
+          (input1, input2) => {
+            expectTypeOf(input1).toBeBoolean();
+            // The inferred type has degraded to `any`
+            expectTypeOf(input2).toBeAny();
+
+            return { input1, input2 };
+          },
+        );
+
+        const actual = selector({ foo: true });
+
+        expect(actual).toEqual({ input1: true, input2: true });
+        expectTypeOf(actual).toEqualTypeOf<{
+          input1: boolean;
+          // The inferred type has degraded to `any`
+          input2: any;
+        }>();
+      });
+    });
+  });
+
   describe('multiple parametric selectors', () => {
     it('works', () => {
       type State = { foo: string };
       type Props = { bar: number };
 
       const selector = createCachedSelector(
-        (state) => state.foo,
-        (state) => state.foo,
         (state: State) => state.foo,
-        (state) => state.foo,
-        (state) => state.foo,
-        (state) => state.foo,
         (state: State) => state.foo,
-        (state) => state.foo,
-        (state) => state.foo,
+        (state: State) => state.foo,
+        (state: State) => state.foo,
+        (state: State) => state.foo,
+        (state: State) => state.foo,
+        (state: State) => state.foo,
+        (state: State) => state.foo,
+        (state: State) => state.foo,
         (state: State, props: Props) => props.bar,
 
         (
@@ -104,13 +166,7 @@ describe('createCachedSelector use cases', () => {
         return props.bar;
       });
 
-      selector(
-        { foo: 'fizz' },
-        {
-          // @ts-expect-error
-          bar: 'wrong-argument',
-        },
-      );
+      expectTypeOf(selector).parameters.toEqualTypeOf<[State, Props]>();
 
       const actual = selector({ foo: 'fizz' }, { bar: 42 });
       expect(actual).toEqual({
@@ -148,15 +204,15 @@ describe('createCachedSelector use cases', () => {
 
       const selector = createCachedSelector(
         [
-          (state) => state.foo,
-          (state) => state.foo,
           (state: State) => state.foo,
-          (state) => state.foo,
-          (state) => state.foo,
           (state: State) => state.foo,
-          (state) => state.foo,
-          (state) => state.foo,
-          (state) => state.foo,
+          (state: State) => state.foo,
+          (state: State) => state.foo,
+          (state: State) => state.foo,
+          (state: State) => state.foo,
+          (state: State) => state.foo,
+          (state: State) => state.foo,
+          (state: State) => state.foo,
           (state: State, props: Props) => props.bar,
         ],
 
@@ -203,13 +259,7 @@ describe('createCachedSelector use cases', () => {
         return props.bar;
       });
 
-      selector(
-        { foo: 'fizz' },
-        {
-          // @ts-expect-error
-          bar: 'wrong-argument',
-        },
-      );
+      expectTypeOf(selector).parameters.toEqualTypeOf<[State, Props]>();
 
       const actual = selector({ foo: 'fizz' }, { bar: 42 });
       expect(actual).toEqual({

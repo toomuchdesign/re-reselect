@@ -107,6 +107,28 @@ describe('createStructuredCachedSelector', () => {
         >();
         expectTypeOf(selector2).returns.toEqualTypeOf<Result>();
 
+        // 1.3 One selector has an *optional* second param.
+        // See https://github.com/toomuchdesign/re-reselect/issues/155
+        // The resulting selector must accept the props argument as optional:
+        // both `selector3(state)` and `selector3(state, id)` must type-check.
+        const mySelectorE = (state: State) => state.a;
+        const mySelectorF = (state: State, id?: string) =>
+          id ? state.items[id] : state.a;
+        const selector3 = createStructuredCachedSelector({
+          x: mySelectorE,
+          y: mySelectorF,
+        })((state, id?: string) => id ?? '');
+
+        const state: State = { a: 'foo', items: { id1: 'bar' } };
+        // Both call signatures must be valid (this is the actual bug repro).
+        expectTypeOf(selector3(state)).toEqualTypeOf<Result>();
+        expectTypeOf(selector3(state, 'id1')).toEqualTypeOf<Result>();
+
+        expectTypeOf(selector3).parameters.toEqualTypeOf<
+          [State, (string | undefined)?, ...any[]]
+        >();
+        expectTypeOf(selector3).returns.toEqualTypeOf<Result>();
+
         // 2. Explicitly set State and Parameter types for all selector functions
         // => not supported
       });

@@ -28,7 +28,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run prepare
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: code-coverage
           path: coverage

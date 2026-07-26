@@ -1,4 +1,6 @@
-function validateCacheSize(cacheSize: number | undefined): asserts cacheSize is number {
+function validateCacheSize(
+  cacheSize: number | undefined,
+): asserts cacheSize is number {
   if (cacheSize === undefined) {
     throw new Error('Missing the required property "cacheSize".');
   }

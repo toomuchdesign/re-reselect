@@ -332,6 +332,14 @@ Takes the same arguments as reselect's [`createSelector`][reselect-create-select
 
 **Returns** a [selector instance][selector-instance-docs].
 
+#### createCachedSelector.withTypes\<State\>()
+
+Creates a **pre-typed** version of `createCachedSelector` with the `state` type baked in, mirroring reselect's [`createSelector.withTypes`][reselect-with-types]. Set the `state` type once instead of annotating it on every input selector:
+
+```ts
+const createAppCachedSelector = createCachedSelector.withTypes<RootState>();
+```
+
 ### createStructuredCachedSelector
 
 <!-- prettier-ignore -->
@@ -456,7 +464,6 @@ Get `keySelector` for utility compositions or testing.
 ## Todo's
 
 - Improve tests readability
-- Port to native TS based on reselect v5 approach
 - Find out whether `re-reselect` should be deprecated in favour of `reselect` memoization/cache options
 
 ## Contributors
@@ -520,6 +527,7 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [reselect-create-selector]: https://github.com/reactjs/reselect/tree/v4.0.0#createselectorinputselectors--inputselectors-resultfunc
 [reselect-create-structured-selector]: https://github.com/reduxjs/reselect/tree/v4.0.0#createstructuredselectorinputselectors-selectorcreator--createselector
 [reselect-create-selector-creator]: https://github.com/reactjs/reselect/tree/v4.0.0#createselectorcreatormemoize-memoizeoptions
+[reselect-with-types]: https://reselect.js.org/api/createselector#createselectorwithtypes
 [lodash-memoize]: https://lodash.com/docs/4.17.4#memoize
 [ci-badge]: https://github.com/toomuchdesign/re-reselect/actions/workflows/ci.yml/badge.svg
 [ci]: https://github.com/toomuchdesign/re-reselect/actions/workflows/ci.yml

@@ -611,10 +611,10 @@ describe('createCachedSelector', () => {
         type State = { foo: string };
 
         // Act / Assert
-        // @ts-expect-error input selector `state` must match the pre-typed `State`
         createCachedSelector.withTypes<State>()(
+          // @ts-expect-error input selector `state` must match the pre-typed `State`
           [(state: { bar: number }) => state.bar],
-          (bar) => bar,
+          (bar: number) => bar,
         )(() => 'key');
       });
     });

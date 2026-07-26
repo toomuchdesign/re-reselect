@@ -13,14 +13,6 @@ updates:
           - 'babel-jest'
           - 'ts-jest'
           - '@types/jest'
-      rollup:
-        patterns:
-          - 'rollup'
-          - 'rollup-*'
-          - '@rollup/*'
-      babel:
-        patterns:
-          - '@babel/*'
 
   - package-ecosystem: 'github-actions'
     directory: '/'

@@ -89,9 +89,7 @@ describe('createStructuredCachedSelector', () => {
           return id;
         });
 
-        expectTypeOf(selector1).parameters.toEqualTypeOf<
-          [State, string, ...any[]]
-        >;
+        expectTypeOf(selector1).parameters.toEqualTypeOf<[State, string]>();
         expectTypeOf(selector1).returns.toEqualTypeOf<Result>();
 
         // 1.2 Infer selector type based on the selector functions. One selector doesn't have a param.
@@ -102,9 +100,7 @@ describe('createStructuredCachedSelector', () => {
           y: mySelectorD,
         })((state, id) => assertType<string>(id));
 
-        expectTypeOf(selector2).parameters.toEqualTypeOf<
-          [State, string, ...any[]]
-        >();
+        expectTypeOf(selector2).parameters.toEqualTypeOf<[State, string]>();
         expectTypeOf(selector2).returns.toEqualTypeOf<Result>();
 
         // 2. Explicitly set State and Parameter types for all selector functions

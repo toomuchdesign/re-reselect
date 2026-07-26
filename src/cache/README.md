@@ -29,9 +29,9 @@ createCachedSelector(
 });
 ```
 
-**[*]ObjectCache** strategy objects treat `cacheKey` of type `number` like strings, since they are used as arguments of JS objects.
+**[\*]ObjectCache** strategy objects treat `cacheKey` of type `number` like strings, since they are used as arguments of JS objects.
 
-**[*]MapCache** strategy objects need a **Map objects polyfill** in order to use them on non-supporting browsers.
+**[\*]MapCache** strategy objects need a **Map objects polyfill** in order to use them on non-supporting browsers.
 
 ## Write your custom cache object
 

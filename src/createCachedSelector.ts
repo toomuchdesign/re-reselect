@@ -145,7 +145,7 @@ const createCachedSelectorImpl: CreateCachedSelectorImpl = (
       keySelector: options.keySelector,
     });
   };
-}
+};
 
 // `Object.assign` keeps `createCachedSelectorImpl` callable while attaching
 // the `withTypes` property; a plain object spread (`{ ...fn }`) would only

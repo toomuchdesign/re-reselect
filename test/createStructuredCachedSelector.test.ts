@@ -106,6 +106,43 @@ describe('createStructuredCachedSelector', () => {
         // 2. Explicitly set State and Parameter types for all selector functions
         // => not supported
       });
+
+      it('keeps the second argument optional when every selector accepts it optionally', () => {
+        interface State {
+          a: string;
+          items: { [key: string]: string };
+        }
+        interface Result {
+          x: string;
+          y: string;
+        }
+
+        const mySelectorA = (state: State, id?: string) => state.a;
+        const mySelectorB = (state: State, id?: string) =>
+          id === undefined ? '' : state.items[id];
+        const selector = createStructuredCachedSelector({
+          x: mySelectorA,
+          y: mySelectorB,
+        })((state, id) => {
+          expectTypeOf(id).toEqualTypeOf<string | undefined>();
+          return id ?? 'key';
+        });
+
+        // Runtime: callable both with and without the optional argument
+        expect(selector({ a: 'moo', items: { item1: 'foo' } })).toEqual({
+          x: 'moo',
+          y: '',
+        });
+        expect(
+          selector({ a: 'moo', items: { item1: 'foo' } }, 'item1'),
+        ).toEqual({ x: 'moo', y: 'foo' });
+
+        // Types: the second argument stays optional
+        expectTypeOf(selector).toBeCallableWith({ a: 'a', items: {} });
+        expectTypeOf(selector).toBeCallableWith({ a: 'a', items: {} }, 'item1');
+        expectTypeOf(selector).parameters.toEqualTypeOf<[State, string?]>();
+        expectTypeOf(selector).returns.toEqualTypeOf<Result>();
+      });
     });
   });
 });

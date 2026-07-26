@@ -34,26 +34,31 @@ exports[`UMD bundle > is unchanged 1`] = `
 	//#endregion
 	//#region src/createCachedSelector.ts
 	const defaultCacheKeyValidator = () => true;
+	function isFunction(value) {
+		return typeof value === "function";
+	}
 	function parseReselectArgs(reselectArgs) {
 		const args = [...reselectArgs];
-		const lastArgument = args[args.length - 1];
+		const last = args.pop();
 		let resultFunc;
-		let createSelectorOptions = void 0;
-		if (typeof lastArgument === "function") resultFunc = args.pop();
-		else {
-			createSelectorOptions = args.pop();
+		let createSelectorOptions;
+		if (isFunction(last)) {
+			resultFunc = last;
+			createSelectorOptions = void 0;
+		} else {
 			resultFunc = args.pop();
+			createSelectorOptions = last;
 		}
 		return {
-			inputSelectors: Array.isArray(args[0]) ? args[0] : [...args],
+			inputSelectors: Array.isArray(args[0]) ? args[0] : args,
 			resultFunc,
 			createSelectorOptions
 		};
 	}
-	const createCachedSelector = ((...reselectArgs) => {
+	const createCachedSelectorImpl = (...reselectArgs) => {
 		const { inputSelectors, resultFunc, createSelectorOptions } = parseReselectArgs(reselectArgs);
 		return (polymorphicOptions) => {
-			const options = typeof polymorphicOptions === "function" ? { keySelector: polymorphicOptions } : { ...polymorphicOptions };
+			const options = isFunction(polymorphicOptions) ? { keySelector: polymorphicOptions } : polymorphicOptions;
 			let recomputations = 0;
 			const resultFuncWithRecomputations = (...args) => {
 				recomputations++;
@@ -61,46 +66,54 @@ exports[`UMD bundle > is unchanged 1`] = `
 			};
 			const patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
 			if (createSelectorOptions) patchedReselectArgs.push(createSelectorOptions);
-			const cache = options.cacheObject || new FlatObjectCache();
-			const selectorCreator = options.selectorCreator || reselect.createSelector;
-			const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
+			const cache = options.cacheObject ?? new FlatObjectCache();
+			const selectorCreator = options.selectorCreator ?? reselect.createSelector;
+			const isValidCacheKey = cache.isValidCacheKey ?? defaultCacheKeyValidator;
 			if (options.keySelectorCreator) options.keySelector = options.keySelectorCreator({
 				keySelector: options.keySelector,
 				inputSelectors,
 				resultFunc
 			});
-			const selector = function(...args) {
-				const cacheKey = options.keySelector(...args);
-				if (isValidCacheKey(cacheKey)) {
-					let cacheResponse = cache.get(cacheKey);
-					if (cacheResponse === void 0) {
-						cacheResponse = selectorCreator(...patchedReselectArgs);
-						cache.set(cacheKey, cacheResponse);
-					}
-					return cacheResponse(...args);
+			function selector(...args) {
+				const [state, ...rest] = args;
+				const cacheKey = options.keySelector(state, ...rest);
+				if (!isValidCacheKey(cacheKey)) {
+					console.warn(\`[re-reselect] Invalid cache key "\${String(cacheKey)}" has been returned by keySelector function.\`);
+					return;
 				}
-				console.warn(\`[re-reselect] Invalid cache key "\${String(cacheKey)}" has been returned by keySelector function.\`);
-			};
-			selector.getMatchingSelector = (...args) => {
-				const cacheKey = options.keySelector(...args);
-				return cache.get(cacheKey);
-			};
-			selector.removeMatchingSelector = (...args) => {
-				const cacheKey = options.keySelector(...args);
-				cache.remove(cacheKey);
-			};
-			selector.clearCache = () => {
-				cache.clear();
-			};
-			selector.resultFunc = resultFunc;
-			selector.dependencies = inputSelectors;
-			selector.cache = cache;
-			selector.recomputations = () => recomputations;
-			selector.resetRecomputations = () => recomputations = 0;
-			selector.keySelector = options.keySelector;
-			return selector;
+				let cacheResponse = cache.get(cacheKey);
+				if (!cacheResponse) {
+					cacheResponse = selectorCreator(...patchedReselectArgs);
+					cache.set(cacheKey, cacheResponse);
+				}
+				return cacheResponse(...args);
+			}
+			return Object.assign(selector, {
+				getMatchingSelector: (...args) => {
+					const [state, ...rest] = args;
+					const cacheKey = options.keySelector(state, ...rest);
+					return cache.get(cacheKey);
+				},
+				removeMatchingSelector: (...args) => {
+					const [state, ...rest] = args;
+					const cacheKey = options.keySelector(state, ...rest);
+					cache.remove(cacheKey);
+				},
+				clearCache: () => {
+					cache.clear();
+				},
+				resultFunc,
+				dependencies: inputSelectors,
+				cache,
+				recomputations: () => recomputations,
+				resetRecomputations: () => {
+					recomputations = 0;
+				},
+				keySelector: options.keySelector
+			});
 		};
-	});
+	};
+	const createCachedSelector = Object.assign(createCachedSelectorImpl, { withTypes: () => createCachedSelector });
 	//#endregion
 	//#region src/createStructuredCachedSelector.ts
 	function createStructuredCachedSelector(selectors) {
@@ -115,10 +128,9 @@ exports[`UMD bundle > is unchanged 1`] = `
 	//#endregion
 	//#region src/cache/FifoObjectCache.ts
 	var FifoObjectCache = class {
-		constructor(options) {
+		constructor({ cacheSize }) {
 			this._cache = {};
 			this._cacheOrdering = [];
-			const { cacheSize } = options ?? {};
 			validateCacheSize(cacheSize);
 			this._cacheSize = cacheSize;
 		}
@@ -149,10 +161,9 @@ exports[`UMD bundle > is unchanged 1`] = `
 	//#endregion
 	//#region src/cache/LruObjectCache.ts
 	var LruObjectCache = class {
-		constructor(options) {
+		constructor({ cacheSize }) {
 			this._cache = {};
 			this._cacheOrdering = [];
-			const { cacheSize } = options ?? {};
 			validateCacheSize(cacheSize);
 			this._cacheSize = cacheSize;
 		}
@@ -210,9 +221,8 @@ exports[`UMD bundle > is unchanged 1`] = `
 	//#endregion
 	//#region src/cache/FifoMapCache.ts
 	var FifoMapCache = class {
-		constructor(options) {
+		constructor({ cacheSize }) {
 			this._cache = /* @__PURE__ */ new Map();
-			const { cacheSize } = options ?? {};
 			validateCacheSize(cacheSize);
 			this._cacheSize = cacheSize;
 		}
@@ -236,9 +246,8 @@ exports[`UMD bundle > is unchanged 1`] = `
 	//#endregion
 	//#region src/cache/LruMapCache.ts
 	var LruMapCache = class {
-		constructor(options) {
+		constructor({ cacheSize }) {
 			this._cache = /* @__PURE__ */ new Map();
-			const { cacheSize } = options ?? {};
 			validateCacheSize(cacheSize);
 			this._cacheSize = cacheSize;
 		}

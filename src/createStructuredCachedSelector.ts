@@ -5,16 +5,35 @@ import { createStructuredSelector } from './reselectWrapper';
 import type { OutputCachedSelector, PolymorphicCachedOptions } from './types';
 
 /**
- * Convert a SelectorsObject `{ foo: Selector, bar: Selector }` to the tuple
- * `[Selector, Selector]` that reselect's input-selector inference expects.
- * `keyof T` is unordered, but for tuple inference reselect only needs the
- * union of selectors — `Array<T[keyof T]>` is sufficient for state/params
- * extraction via `MergeParameters`.
+ * Type-level `Object.values()`: converts a SelectorsObject
+ * `{ foo: Selector, bar: Selector }` into the ordered tuple
+ * `[Selector, Selector]` that reselect's `MergeParameters` needs to infer
+ * state and params. An unordered `Array<T[keyof T]>` collapses the selectors
+ * to a union and loses per-position params (second args resolve to `never`),
+ * so a real tuple is required. Mirrors reselect's internal
+ * `ObjectValuesToTuple` (not exported from the package).
  */
-type SelectorsObjectToTuple<T extends SelectorsObject<any>> = Array<T[keyof T]>;
-
-type StructuredCachedSelectorState<T extends SelectorsObject<any>> =
-  T extends SelectorsObject<infer S> ? S : never;
+type UnionToIntersection<Union> = (
+  Union extends unknown ? (distributedUnion: Union) => void : never
+) extends (mergedIntersection: infer Intersection) => void
+  ? Intersection
+  : never;
+type LastOf<T> =
+  UnionToIntersection<T extends any ? () => T : never> extends () => infer R
+    ? R
+    : never;
+type TuplifyUnion<
+  T,
+  L = LastOf<T>,
+  N = [T] extends [never] ? true : false,
+> = true extends N ? [] : [...TuplifyUnion<Exclude<T, L>>, L];
+type SelectorsObjectToTuple<
+  T extends SelectorsObject<any>,
+  KS extends any[] = TuplifyUnion<keyof T>,
+  R extends Selector[] = [],
+> = KS extends [infer K, ...infer KT]
+  ? SelectorsObjectToTuple<T, KT, [...R, T[K & keyof T]]>
+  : R;
 
 /**
  * The returned thunk preserves the cached-selector public surface
@@ -26,13 +45,11 @@ type StructuredCachedSelector<
   InputSelectorsObject extends SelectorsObject<any>,
 > = (
   polymorphicOptions: PolymorphicCachedOptions<
-    SelectorsObjectToTuple<InputSelectorsObject> &
-      ReadonlyArray<Selector<StructuredCachedSelectorState<InputSelectorsObject>>>,
+    SelectorsObjectToTuple<InputSelectorsObject>,
     SelectorResultsMap<InputSelectorsObject>
   >,
 ) => OutputCachedSelector<
-  SelectorsObjectToTuple<InputSelectorsObject> &
-    ReadonlyArray<Selector<StructuredCachedSelectorState<InputSelectorsObject>>>,
+  SelectorsObjectToTuple<InputSelectorsObject>,
   SelectorResultsMap<InputSelectorsObject>
 >;
 

@@ -2,4 +2,4 @@
 're-reselect': patch
 ---
 
-Fix `createStructuredCachedSelector` type error when a selector has an optional argument
+Fix `createStructuredCachedSelector` type error when a selector has a second optional argument

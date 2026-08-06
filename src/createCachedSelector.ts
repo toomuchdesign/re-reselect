@@ -92,11 +92,30 @@ const createCachedSelectorImpl: CreateCachedSelectorImpl = (
       });
     }
 
-    function selector(...args: readonly unknown[]): unknown {
-      // Destructure to satisfy keySelector's `(state, ...rest)` shape from
-      // a fully-variadic `unknown[]` — direct spread would be rejected.
-      const [state, ...rest] = args;
-      const cacheKey = options.keySelector!(state, ...rest);
+    // Hoisted out of the call: resolving `options.keySelector` per invocation is a
+    // property load on a shared object in the hottest path in the library.
+    const keySelector = options.keySelector as UnknownFunction;
+
+    /**
+     * Selectors are reached as `(state)` or `(state, props)` in all but exotic
+     * cases, and those two arities are dispatched directly.
+     *
+     * A rest parameter allocates an array on every call, and forwarding it costs a
+     * spread at each of the two call sites below — all of it paid on a cache hit,
+     * which is what the overwhelming majority of calls are. The arity is matched
+     * exactly rather than always forwarding two arguments, because reselect memoizes
+     * on the argument list and handing a one-argument selector a second `undefined`
+     * would change its cache key.
+     */
+    function selector(state: unknown, props?: unknown): unknown {
+      const argumentCount = arguments.length;
+
+      const cacheKey =
+        argumentCount === 2
+          ? keySelector(state, props)
+          : argumentCount === 1
+            ? keySelector(state)
+            : keySelector.apply(null, arguments as unknown as unknown[]);
 
       if (!isValidCacheKey(cacheKey)) {
         console.warn(
@@ -117,7 +136,11 @@ const createCachedSelectorImpl: CreateCachedSelectorImpl = (
         cache.set(cacheKey, cacheResponse);
       }
 
-      return cacheResponse(...args);
+      return argumentCount === 2
+        ? cacheResponse(state, props)
+        : argumentCount === 1
+          ? cacheResponse(state)
+          : cacheResponse.apply(null, arguments as unknown as unknown[]);
     }
 
     return Object.assign(selector, {

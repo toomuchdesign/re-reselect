@@ -145,6 +145,55 @@ describe('createCachedSelector', () => {
       });
     });
 
+    describe('call arity', () => {
+      /**
+       * The selector dispatches the one- and two-argument shapes directly and only
+       * falls back to `apply` beyond that, so each arity is a separate path through
+       * the same function. What every one of them must preserve is that the
+       * arguments reaching the keySelector and the memoized instance are exactly the
+       * arguments the caller passed — no padding with `undefined`, no truncation —
+       * because reselect memoizes on that list.
+       */
+      type State = { value: number };
+
+      const state: State = { value: 1 };
+
+      it('forwards a single argument without padding it', () => {
+        const keySelector = vi.fn((_state: State) => 'key');
+        const inputSelector = vi.fn((_state: State) => 'value');
+
+        const selector = createCachedSelector(
+          inputSelector,
+          (value) => value,
+        )(keySelector);
+
+        expect(selector(state)).toBe('value');
+
+        // `toHaveBeenCalledWith` is exact on arity, which is the assertion that
+        // matters here: a second `undefined` would be a different argument list.
+        expect(keySelector).toHaveBeenCalledWith(state);
+        expect(inputSelector).toHaveBeenCalledWith(state);
+      });
+
+      it('forwards arguments beyond the second', () => {
+        const keySelector = vi.fn(
+          (_state: State, first: string, second: string) => first + second,
+        );
+        const inputSelector = vi.fn(
+          (_state: State, first: string, second: string) => first + second,
+        );
+
+        const selector = createCachedSelector(
+          inputSelector,
+          (joined) => joined,
+        )(keySelector);
+
+        expect(selector(state, 'a', 'b')).toBe('ab');
+        expect(keySelector).toHaveBeenCalledWith(state, 'a', 'b');
+        expect(inputSelector).toHaveBeenCalledWith(state, 'a', 'b');
+      });
+    });
+
     describe('cache retention', () => {
       describe('calls producing identical cacheKey', () => {
         it('creates and use the same cached selector', () => {

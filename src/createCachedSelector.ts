@@ -16,8 +16,6 @@ import type {
 
 type UnknownFunction = (...args: readonly unknown[]) => unknown;
 
-const defaultCacheKeyValidator = () => true;
-
 function isFunction(value: unknown): value is UnknownFunction {
   return typeof value === 'function';
 }
@@ -99,7 +97,6 @@ const createCachedSelectorImpl = ((
 
     const cache: ICacheObject = options.cacheObject || new FlatObjectCache();
     const selectorCreator = options.selectorCreator || createSelector;
-    const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
 
     if (options.keySelectorCreator) {
       options.keySelector = options.keySelectorCreator({
@@ -140,7 +137,15 @@ const createCachedSelectorImpl = ((
             ? keySelector(state)
             : keySelector.apply(null, arguments as unknown as unknown[]);
 
-      if (!isValidCacheKey(cacheKey)) {
+      // Invoked as a method on the cache rather than through a detached reference,
+      // so an implementation whose validator reads `this` — a tree-shaped cache
+      // consulting its own root, say — is callable at all. Reading the property per
+      // call also lets a cache install or replace its validator after the selector
+      // has been created.
+      if (
+        cache.isValidCacheKey !== undefined &&
+        !cache.isValidCacheKey(cacheKey)
+      ) {
         console.warn(
           `[re-reselect] Invalid cache key "${String(
             cacheKey,

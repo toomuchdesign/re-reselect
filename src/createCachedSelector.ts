@@ -1,4 +1,9 @@
-import type { Combiner, CreateSelectorOptions, SelectorArray } from 'reselect';
+import {
+  type Combiner,
+  type CreateSelectorOptions,
+  type SelectorArray,
+  lruMemoize,
+} from 'reselect';
 
 import FlatObjectCache from './cache/FlatObjectCache';
 import type { ICacheObject } from './cache/types';
@@ -70,13 +75,26 @@ const createCachedSelectorImpl: CreateCachedSelectorImpl = (
       return resultFunc(...args);
     };
 
+    /**
+     * Instances default to a size-1 argument cache rather than reselect's
+     * `weakMapMemoize`.
+     *
+     * A cached selector has already chosen the instance by key before calling it, so
+     * the instance sees one argument shape and needs no cache of its own beyond the
+     * previous call. `weakMapMemoize` instead keys on the argument list, and the
+     * first of those arguments is the state — which a store replaces on every write,
+     * so the lookup misses every time and allocates a node to record the miss. What
+     * makes the result reusable is the memoization on *input values* below it, and
+     * that is untouched: recomputation counts do not change.
+     *
+     * `createSelectorOptions` is spread last, so a caller who wants the previous
+     * behaviour passes `argsMemoize` explicitly and gets it.
+     */
     const patchedReselectArgs: unknown[] = [
       inputSelectors,
       resultFuncWithRecomputations,
+      { argsMemoize: lruMemoize, ...createSelectorOptions },
     ];
-    if (createSelectorOptions) {
-      patchedReselectArgs.push(createSelectorOptions);
-    }
 
     const cache: ICacheObject = options.cacheObject ?? new FlatObjectCache();
     const selectorCreator = options.selectorCreator ?? createSelector;

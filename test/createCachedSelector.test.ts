@@ -628,10 +628,28 @@ describe('createCachedSelector', () => {
     expect(reselect.createSelector).toHaveBeenCalledWith(
       [inputSelector1],
       expect.any(Function),
-      createSelectorOptions,
+      // The caller's options are merged over the instance defaults rather than
+      // replacing them, so `argsMemoize` arrives alongside whatever was passed.
+      { argsMemoize: lruMemoize, ...createSelectorOptions },
     );
 
     expect(cachedSelector.recomputations()).toBe(1);
+  });
+
+  it('lets createSelectorOptions override the default argsMemoize', () => {
+    const inputSelector = (state: string, param1: string) => null;
+
+    const cachedSelector = createCachedSelector([inputSelector], () => {}, {
+      argsMemoize: weakMapMemoize,
+    })({ keySelector: (state, param1) => param1 });
+
+    cachedSelector('foo', 'bar');
+
+    expect(reselect.createSelector).toHaveBeenCalledWith(
+      [inputSelector],
+      expect.any(Function),
+      { argsMemoize: weakMapMemoize },
+    );
   });
 
   describe('withTypes', () => {

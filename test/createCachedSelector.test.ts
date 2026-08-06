@@ -299,6 +299,41 @@ describe('createCachedSelector', () => {
             );
           });
         });
+
+        describe('reads `this`', () => {
+          it('is invoked as a method on the cache object', () => {
+            /**
+             * A cache whose notion of a valid key depends on its own state — a
+             * tree-shaped cache consulting its root, for instance — can only answer
+             * if it is called as a method. Detaching the validator into a local and
+             * calling it bare leaves `this` undefined and throws on the first
+             * lookup, which makes the whole cache unusable rather than merely slow.
+             */
+            class SelfReferencingCache extends FlatObjectCache {
+              public accepted = ['foo'];
+
+              public override isValidCacheKey(cacheKey: unknown) {
+                return this.accepted.includes(cacheKey as string);
+              }
+            }
+
+            const cacheObject = new SelfReferencingCache();
+
+            const cachedSelector = createCachedSelector(
+              (state: string) => state,
+              (state) => state,
+            )({
+              keySelector: (state) => state,
+              cacheObject,
+            });
+
+            expect(() => cachedSelector('foo')).not.toThrow();
+            expect(cachedSelector('foo')).toBe('foo');
+
+            expect(cachedSelector('bar')).toBe(undefined);
+            expect(console.warn).toHaveBeenCalledTimes(1);
+          });
+        });
       });
     });
 

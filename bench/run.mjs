@@ -1,9 +1,8 @@
 /**
- * Per-call cost of `createCachedSelector`, in time and in bytes.
+ * Per-call cost of `createCachedSelector`.
  *
- * Run with `npm run bench`, which passes `--expose-gc` — without it the allocation
- * column is meaningless, because a heap delta measured across an uncontrolled
- * collection says more about when V8 felt like collecting than about the code.
+ * Run with `npm run bench`, which passes `--expose-gc` so each round starts from a
+ * collected heap instead of inheriting whatever the previous one left behind.
  *
  * Two things this deliberately does *not* do. It does not report an average of
  * every round: a benchmark round that lost the CPU to something else is not a
@@ -19,6 +18,21 @@ import {
   createInitialState,
   createProps,
 } from './workload.mjs';
+
+/**
+ * There is no allocation column, and that is deliberate rather than an omission.
+ *
+ * Two ways to add one were tried and both measure something other than what they
+ * claim. A delta between two `heapUsed` readings reports what the collector had not
+ * got round to freeing at the instant of the second reading — it moves with V8's
+ * scheduling, and on a change that removed two array allocations per call it went
+ * *up*. And `PerformanceObserver` lists `gc` among its supported entry types but
+ * emits no entries on this runtime, under forced collection or sustained pressure
+ * alike, so a GC-time column would read zero regardless of what the code does.
+ *
+ * Allocation is not invisible here: it is paid in the time column, which is where a
+ * caller feels it too. A metric that cannot be trusted is worse than no metric.
+ */
 
 const TICKS = 200;
 const ROUNDS = 7;
@@ -48,7 +62,6 @@ function runRound(createCase, props) {
   }
 
   collectGarbage();
-  const heapBefore = process.memoryUsage().heapUsed;
   const startedAt = performance.now();
 
   for (let tick = 0; tick < TICKS; tick += 1) {
@@ -60,11 +73,9 @@ function runRound(createCase, props) {
   }
 
   const elapsed = performance.now() - startedAt;
-  const heapAfter = process.memoryUsage().heapUsed;
 
   return {
     elapsed,
-    heapDelta: heapAfter - heapBefore,
     recomputations: instance.recomputations(),
   };
 }
@@ -80,20 +91,17 @@ function measure(createCase, props) {
   }
 
   const times = rounds.map((round) => round.elapsed).sort((a, b) => a - b);
-  const heaps = rounds.map((round) => round.heapDelta).sort((a, b) => a - b);
 
   const min = times[0];
   const max = times[times.length - 1];
+  const middle = (rounds.length / 2) | 0;
 
   return {
     name: createCase().name,
     minMs: min,
-    medianMs: times[(times.length / 2) | 0],
+    medianMs: times[middle],
     spread: min > 0 ? (max - min) / min : 0,
     nsPerCall: (min * 1e6) / CALLS_PER_ROUND,
-    // The median heap delta, because a round that happened to span a major GC
-    // can report a negative delta and would drag a mean below zero.
-    bytesPerCall: heaps[(heaps.length / 2) | 0] / CALLS_PER_ROUND,
     recomputations: rounds[0].recomputations,
   };
 }
@@ -115,7 +123,7 @@ function main() {
 
   if (!exposedGc) {
     console.log(
-      'WARNING: run with --expose-gc, the bytes/call column is noise without it',
+      'WARNING: run with --expose-gc, rounds start from an uncontrolled heap',
     );
   }
 
@@ -124,7 +132,7 @@ function main() {
   console.log('');
   console.log(
     `${pad('case', 38)} ${pad('min ms', 9)} ${pad('ns/call', 9)} ` +
-      `${pad('bytes/call', 11)} ${pad('spread', 7)} ${pad('recomputes', 11)}`,
+      `${pad('spread', 7)} ${pad('recomputes', 11)}`,
   );
 
   const baseline = results[0];
@@ -135,7 +143,6 @@ function main() {
     console.log(
       `${pad(result.name, 38)} ${pad(result.minMs.toFixed(1), 9)} ` +
         `${pad(result.nsPerCall.toFixed(1), 9)} ` +
-        `${pad(result.bytesPerCall.toFixed(1), 11)} ` +
         `${pad((result.spread * 100).toFixed(0) + '%', 7)} ` +
         `${pad(result.recomputations.toLocaleString('en-US'), 11)}` +
         (result === baseline ? '' : `   ${ratio.toFixed(2)}x`),

@@ -32,7 +32,7 @@ jobs:
           node-version-file: .nvmrc
 
         # Ensure npm 11.5.1 or later is installed
-      - run: npm install -g npm@latest
+      - run: npm install -g npm@11
       - run: npm ci --ignore-scripts
 
       - name: Create Release PR or Publish to npm

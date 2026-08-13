@@ -1,5 +1,11 @@
 # re-reselect
 
+## 5.1.1
+
+### Patch Changes
+
+- [#477](https://github.com/toomuchdesign/re-reselect/pull/477) [`8a98e4d`](https://github.com/toomuchdesign/re-reselect/commit/8a98e4d5ed0562914b12bd1049ba40069a7e28a5) Thanks [@veksa](https://github.com/veksa)! - Fix `createStructuredCachedSelector` type error when a selector has a second optional argument
+
 ## 5.0.0
 
 ### New Features

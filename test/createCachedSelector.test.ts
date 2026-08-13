@@ -145,6 +145,55 @@ describe('createCachedSelector', () => {
       });
     });
 
+    describe('call arity', () => {
+      /**
+       * The selector dispatches the one- and two-argument shapes directly and only
+       * falls back to `apply` beyond that, so each arity is a separate path through
+       * the same function. What every one of them must preserve is that the
+       * arguments reaching the keySelector and the memoized instance are exactly the
+       * arguments the caller passed — no padding with `undefined`, no truncation —
+       * because reselect memoizes on that list.
+       */
+      type State = { value: number };
+
+      const state: State = { value: 1 };
+
+      it('forwards a single argument without padding it', () => {
+        const keySelector = vi.fn((_state: State) => 'key');
+        const inputSelector = vi.fn((_state: State) => 'value');
+
+        const selector = createCachedSelector(
+          inputSelector,
+          (value) => value,
+        )(keySelector);
+
+        expect(selector(state)).toBe('value');
+
+        // `toHaveBeenCalledWith` is exact on arity, which is the assertion that
+        // matters here: a second `undefined` would be a different argument list.
+        expect(keySelector).toHaveBeenCalledWith(state);
+        expect(inputSelector).toHaveBeenCalledWith(state);
+      });
+
+      it('forwards arguments beyond the second', () => {
+        const keySelector = vi.fn(
+          (_state: State, first: string, second: string) => first + second,
+        );
+        const inputSelector = vi.fn(
+          (_state: State, first: string, second: string) => first + second,
+        );
+
+        const selector = createCachedSelector(
+          inputSelector,
+          (joined) => joined,
+        )(keySelector);
+
+        expect(selector(state, 'a', 'b')).toBe('ab');
+        expect(keySelector).toHaveBeenCalledWith(state, 'a', 'b');
+        expect(inputSelector).toHaveBeenCalledWith(state, 'a', 'b');
+      });
+    });
+
     describe('cache retention', () => {
       describe('calls producing identical cacheKey', () => {
         it('creates and use the same cached selector', () => {
@@ -248,6 +297,41 @@ describe('createCachedSelector', () => {
             expect(console.warn).toHaveBeenCalledWith(
               '[re-reselect] Invalid cache key "foo" has been returned by keySelector function.',
             );
+          });
+        });
+
+        describe('reads `this`', () => {
+          it('is invoked as a method on the cache object', () => {
+            /**
+             * A cache whose notion of a valid key depends on its own state — a
+             * tree-shaped cache consulting its root, for instance — can only answer
+             * if it is called as a method. Detaching the validator into a local and
+             * calling it bare leaves `this` undefined and throws on the first
+             * lookup, which makes the whole cache unusable rather than merely slow.
+             */
+            class SelfReferencingCache extends FlatObjectCache {
+              public accepted = ['foo'];
+
+              public override isValidCacheKey(cacheKey: unknown) {
+                return this.accepted.includes(cacheKey as string);
+              }
+            }
+
+            const cacheObject = new SelfReferencingCache();
+
+            const cachedSelector = createCachedSelector(
+              (state: string) => state,
+              (state) => state,
+            )({
+              keySelector: (state) => state,
+              cacheObject,
+            });
+
+            expect(() => cachedSelector('foo')).not.toThrow();
+            expect(cachedSelector('foo')).toBe('foo');
+
+            expect(cachedSelector('bar')).toBe(undefined);
+            expect(console.warn).toHaveBeenCalledTimes(1);
           });
         });
       });
@@ -544,10 +628,28 @@ describe('createCachedSelector', () => {
     expect(reselect.createSelector).toHaveBeenCalledWith(
       [inputSelector1],
       expect.any(Function),
-      createSelectorOptions,
+      // The caller's options are merged over the instance defaults rather than
+      // replacing them, so `argsMemoize` arrives alongside whatever was passed.
+      { argsMemoize: lruMemoize, ...createSelectorOptions },
     );
 
     expect(cachedSelector.recomputations()).toBe(1);
+  });
+
+  it('lets createSelectorOptions override the default argsMemoize', () => {
+    const inputSelector = (state: string, param1: string) => null;
+
+    const cachedSelector = createCachedSelector([inputSelector], () => {}, {
+      argsMemoize: weakMapMemoize,
+    })({ keySelector: (state, param1) => param1 });
+
+    cachedSelector('foo', 'bar');
+
+    expect(reselect.createSelector).toHaveBeenCalledWith(
+      [inputSelector],
+      expect.any(Function),
+      { argsMemoize: weakMapMemoize },
+    );
   });
 
   describe('withTypes', () => {

@@ -23,7 +23,8 @@
     "prettier:fix": "npm run prettier:check -- --write",
     "type:check": "tsc --noEmit",
     "source:check": "npm run prettier:check && npm run type:check",
-    "source:fix": "npm run prettier:fix"
+    "source:fix": "npm run prettier:fix",
+    "bench": "npm run build && node --expose-gc bench/run.mjs"
   },
   "keywords": [
     "react",

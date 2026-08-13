@@ -121,7 +121,7 @@ describe('createStructuredCachedSelector', () => {
         expectTypeOf(selector3(state, 'id1')).toEqualTypeOf<Result>();
 
         expectTypeOf(selector3).parameters.toEqualTypeOf<
-          [State, (string | undefined)?, ...any[]]
+          [State, (string | undefined)?]
         >();
         expectTypeOf(selector3).returns.toEqualTypeOf<Result>();
 

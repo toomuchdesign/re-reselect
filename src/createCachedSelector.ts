@@ -43,16 +43,24 @@ function parseReselectArgs(reselectArgs: readonly unknown[]): {
 
   const inputSelectors = Array.isArray(args[0]) ? args[0] : args;
 
-  // @ts-expect-error single point of variadic-to-typed narrowing. The public
-  // overloads guarantee shapes at compile time; the runtime impl reconstructs
-  // them from the erased argv.
-  return { inputSelectors, resultFunc, createSelectorOptions };
+  // Single point of variadic-to-typed narrowing: the public overloads
+  // guarantee these shapes at compile time; the runtime impl reconstructs them
+  // from the erased argv. Cast each field rather than suppressing the whole
+  // return, so the property names stay checked against the declared type.
+  return {
+    inputSelectors: inputSelectors as SelectorArray,
+    resultFunc: resultFunc as Combiner<SelectorArray, unknown>,
+    createSelectorOptions: createSelectorOptions as
+      CreateSelectorOptions | undefined,
+  };
 }
 
-// @ts-expect-error the impl's variadic single signature cannot directly
-// satisfy `CreateCachedSelectorImpl`'s three precisely-typed overloads;
-// public callers see the typed surface, the body operates on erased args.
-const createCachedSelectorImpl: CreateCachedSelectorImpl = (
+// The impl is a single variadic function; it cannot structurally satisfy
+// `CreateCachedSelectorImpl`'s three precisely-typed overloads (reselect's own
+// `createSelector` casts for the same reason). Public callers see the typed
+// overloads; the body operates on erased args. Scoped to this one cast, so any
+// *other* type error in the body still surfaces.
+const createCachedSelectorImpl = ((
   ...reselectArgs: readonly unknown[]
 ): unknown => {
   const { inputSelectors, resultFunc, createSelectorOptions } =
@@ -110,10 +118,13 @@ const createCachedSelectorImpl: CreateCachedSelectorImpl = (
       let cacheResponse: UnknownFunction | undefined = cache.get(cacheKey);
 
       if (!cacheResponse) {
-        // @ts-expect-error reselect's typed overloads reject a variadic
-        // `readonly unknown[]` spread; the runtime contract guarantees
-        // the patched args match one of the overloads.
-        cacheResponse = selectorCreator(...patchedReselectArgs);
+        // reselect's typed overloads reject a variadic `readonly unknown[]`
+        // spread; the runtime contract guarantees the patched args match one
+        // overload. Loosen only selectorCreator's call signature — the result
+        // is still checked against `cacheResponse`'s `UnknownFunction` type.
+        cacheResponse = (
+          selectorCreator as unknown as (...args: unknown[]) => UnknownFunction
+        )(...patchedReselectArgs);
         cache.set(cacheKey, cacheResponse);
       }
 
@@ -145,7 +156,7 @@ const createCachedSelectorImpl: CreateCachedSelectorImpl = (
       keySelector: options.keySelector,
     });
   };
-};
+}) as CreateCachedSelectorImpl;
 
 // `Object.assign` keeps `createCachedSelectorImpl` callable while attaching
 // the `withTypes` property; a plain object spread (`{ ...fn }`) would only

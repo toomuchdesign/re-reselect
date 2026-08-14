@@ -2,6 +2,11 @@ import { defineConfig } from 'tsdown';
 
 const deps = { neverBundle: ['reselect'] };
 
+// The root `tsconfig.json` spans the whole repo (sources, tests, tooling
+// configs) so `npm run type:check` covers everything. The bundler needs the
+// narrower `src`-only view instead.
+const tsconfig = './tsconfig.build.json';
+
 export default defineConfig([
   {
     entry: ['src/index.ts', 'src/reselectWrapper.ts'],
@@ -10,6 +15,7 @@ export default defineConfig([
     outExtensions: () => ({ js: '.js' }),
     sourcemap: true,
     deps,
+    tsconfig,
     clean: true,
     unbundle: false,
   },
@@ -20,6 +26,7 @@ export default defineConfig([
     outExtensions: () => ({ js: '.js' }),
     sourcemap: true,
     deps,
+    tsconfig,
     dts: false,
     clean: false,
     unbundle: false,
@@ -30,6 +37,7 @@ export default defineConfig([
     outDir: 'dist/umd',
     sourcemap: true,
     deps,
+    tsconfig,
     globalName: 'Re-reselect',
     dts: false,
     clean: false,

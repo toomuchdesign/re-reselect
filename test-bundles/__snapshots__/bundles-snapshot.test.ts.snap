@@ -55,7 +55,7 @@ exports[`UMD bundle > is unchanged 1`] = `
 			createSelectorOptions
 		};
 	}
-	const createCachedSelectorImpl = (...reselectArgs) => {
+	const createCachedSelectorImpl = ((...reselectArgs) => {
 		const { inputSelectors, resultFunc, createSelectorOptions } = parseReselectArgs(reselectArgs);
 		return (polymorphicOptions) => {
 			const options = isFunction(polymorphicOptions) ? { keySelector: polymorphicOptions } : polymorphicOptions;
@@ -112,7 +112,7 @@ exports[`UMD bundle > is unchanged 1`] = `
 				keySelector: options.keySelector
 			});
 		};
-	};
+	});
 	const createCachedSelector = Object.assign(createCachedSelectorImpl, { withTypes: () => createCachedSelector });
 	//#endregion
 	//#region src/createStructuredCachedSelector.ts

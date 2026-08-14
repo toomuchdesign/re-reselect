@@ -419,6 +419,45 @@ describe('createCachedSelector', () => {
           >();
         });
       });
+
+      describe('reselect-only OutputSelector members', () => {
+        it('does not advertise members absent from the cached selector at runtime', () => {
+          type State = { a: string };
+          const cachedSelector = createCachedSelector(
+            (state: State) => state.a,
+            (a) => a,
+          )((state) => state.a);
+
+          // These members live only on the *inner*, per-cache-key reselect
+          // selectors — never on the cached selector returned here. They must
+          // not be typed as present, otherwise consumers would type-check and
+          // then crash at runtime (`... is not a function` / `undefined`).
+          expectTypeOf(cachedSelector).not.toHaveProperty('lastResult');
+          expectTypeOf(cachedSelector).not.toHaveProperty('memoizedResultFunc');
+          expectTypeOf(cachedSelector).not.toHaveProperty(
+            'dependencyRecomputations',
+          );
+          expectTypeOf(cachedSelector).not.toHaveProperty(
+            'resetDependencyRecomputations',
+          );
+          expectTypeOf(cachedSelector).not.toHaveProperty('memoize');
+          expectTypeOf(cachedSelector).not.toHaveProperty('argsMemoize');
+
+          // Sanity: they really are absent at runtime.
+          expect('lastResult' in cachedSelector).toBe(false);
+          expect('memoizedResultFunc' in cachedSelector).toBe(false);
+          expect('dependencyRecomputations' in cachedSelector).toBe(false);
+          expect('memoize' in cachedSelector).toBe(false);
+          expect('argsMemoize' in cachedSelector).toBe(false);
+
+          // ...whereas `getMatchingSelector` returns a genuine reselect
+          // selector, which *does* carry those members (type-level only —
+          // no matching selector exists in the cache here).
+          type Inner = ReturnType<typeof cachedSelector.getMatchingSelector>;
+          expectTypeOf<Inner>().toHaveProperty('lastResult');
+          expectTypeOf<Inner>().toHaveProperty('memoizedResultFunc');
+        });
+      });
     });
   });
 

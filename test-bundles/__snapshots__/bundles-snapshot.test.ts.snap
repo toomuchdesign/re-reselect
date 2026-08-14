@@ -2,8 +2,8 @@
 
 exports[`UMD bundle > is unchanged 1`] = `
 "(function(global, factory) {
-	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) : typeof define === "function" && define.amd ? define(["exports"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global["Re-reselect"] = {}));
-})(this, function(exports) {
+	typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("reselect")) : typeof define === "function" && define.amd ? define(["exports", "reselect"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global["Re-reselect"] = {}, global.Reselect));
+})(this, function(exports, reselect) {
 	Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 	//#region src/cache/util/isStringOrNumber.ts
 	function isStringOrNumber(value) {

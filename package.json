@@ -14,9 +14,10 @@
   "scripts": {
     "build": "tsdown",
     "test": "vitest --config ./vitest.config.mts",
-    "test:bundles": "npm run test:bundles:snapshot && npm run test:bundles:unit",
+    "test:bundles": "npm run test:bundles:snapshot && npm run test:bundles:unit && npm run test:bundles:runtime",
     "test:bundles:unit": "vitest run --config ./test-bundles/cjs.vitest.config.mts && vitest run --config ./test-bundles/es.vitest.config.mts && vitest run --config ./test-bundles/umd.vitest.config.mts",
-    "test:bundles:snapshot": "vitest run --dir ./test-bundles --coverage.enabled false",
+    "test:bundles:snapshot": "vitest run bundles-snapshot.test.ts --dir ./test-bundles --coverage.enabled false",
+    "test:bundles:runtime": "vitest run umd-runtime.test.ts --dir ./test-bundles --coverage.enabled false",
     "prepare": "npx simple-git-hooks && npm run source:check && npm run test -- --run && npm run build && npm run test:bundles",
     "release": "npm run prepare && npx changeset publish",
     "prettier:check": "prettier . --check",

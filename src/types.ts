@@ -5,6 +5,7 @@ import type {
   GetParamsFromSelectors,
   GetStateFromSelectors,
   OutputSelector,
+  Selector,
   SelectorArray,
 } from 'reselect';
 
@@ -50,7 +51,18 @@ export type CreateCachedSelectorOptions<
 
 /**
  * The selector instance returned by `createCachedSelector(...)(...)`.
- * Extends reselect's OutputSelector with cache-management methods.
+ *
+ * This type is reconstructed from a plain reselect `Selector` plus **only** the
+ * members re-reselect actually attaches at runtime (see
+ * `createCachedSelector.ts`'s `Object.assign`). It intentionally does **not**
+ * inherit reselect's full `OutputSelector`: that would advertise members which
+ * only exist on the inner, per-cache-key reselect selectors (`memoizedResultFunc`,
+ * `lastResult`, `dependencyRecomputations`, `resetDependencyRecomputations`,
+ * `memoize`, `argsMemoize`, …) — they are absent on the cached selector at
+ * runtime, so surfacing them would type-check and then crash.
+ *
+ * `getMatchingSelector` returns the full `OutputSelector` because the inner
+ * cached selector genuinely is a reselect selector.
  *
  * `.keySelector` is exposed using the loose `KeySelector<State>` shape rather
  * than the precise `TypedKeySelector<InputSelectors>` for back-compat with
@@ -59,17 +71,28 @@ export type CreateCachedSelectorOptions<
 export type OutputCachedSelector<
   InputSelectors extends SelectorArray,
   Result,
-> = OutputSelector<InputSelectors, Result> & {
-  getMatchingSelector: (
-    ...args: Parameters<OutputSelector<InputSelectors, Result>>
-  ) => OutputSelector<InputSelectors, Result>;
-  removeMatchingSelector: (
-    ...args: Parameters<OutputSelector<InputSelectors, Result>>
-  ) => void;
-  clearCache: () => void;
-  cache: ICacheObject;
-  keySelector: KeySelector<GetStateFromSelectors<InputSelectors>>;
-};
+> = Selector<
+  GetStateFromSelectors<InputSelectors>,
+  Result,
+  GetParamsFromSelectors<InputSelectors>
+> &
+  // Re-use reselect's own field types, but `Pick` only the ones re-reselect
+  // actually attaches at runtime. The call signature is supplied by the
+  // `Selector<…>` base above, since it can't be `Pick`ed off `OutputSelector`.
+  Pick<
+    OutputSelector<InputSelectors, Result>,
+    'resultFunc' | 'dependencies' | 'recomputations' | 'resetRecomputations'
+  > & {
+    getMatchingSelector: (
+      ...args: Parameters<OutputSelector<InputSelectors, Result>>
+    ) => OutputSelector<InputSelectors, Result>;
+    removeMatchingSelector: (
+      ...args: Parameters<OutputSelector<InputSelectors, Result>>
+    ) => void;
+    clearCache: () => void;
+    cache: ICacheObject;
+    keySelector: KeySelector<GetStateFromSelectors<InputSelectors>>;
+  };
 
 /**
  * The curried second-call argument: a `keySelector` function or an options object.

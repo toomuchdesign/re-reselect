@@ -68,65 +68,90 @@ describe('createStructuredCachedSelector', () => {
     });
 
     describe('parametric', () => {
-      it('exposes expected types', () => {
-        interface State {
-          a: string;
-          items: { [key: string]: string };
-        }
-        interface Result {
-          x: string;
-          y: string;
-        }
+      describe('1.1 infers selector type based on the selector functions. Selectors have the same signature', () => {
+        it('exposes expected types', () => {
+          interface State {
+            a: string;
+            items: { [key: string]: string };
+          }
+          interface Result {
+            x: string;
+            y: string;
+          }
 
-        // 1.1 Infer selector type based on the selector functions. Selectors have the same signature.
-        const mySelectorA = (state: State, id: string) => state.a;
-        const mySelectorB = (state: State, id: string) => state.items[id];
-        const selector1 = createStructuredCachedSelector({
-          x: mySelectorA,
-          y: mySelectorB,
-        })((state, id) => {
-          expectTypeOf(id).toBeString();
-          return id;
+          const mySelectorA = (state: State, id: string) => state.a;
+          const mySelectorB = (state: State, id: string) => state.items[id];
+          const selector1 = createStructuredCachedSelector({
+            x: mySelectorA,
+            y: mySelectorB,
+          })((state, id) => {
+            expectTypeOf(id).toBeString();
+            return id;
+          });
+
+          expectTypeOf(selector1).parameters.toEqualTypeOf<[State, string]>();
+          expectTypeOf(selector1).returns.toEqualTypeOf<Result>();
         });
+      });
 
-        expectTypeOf(selector1).parameters.toEqualTypeOf<[State, string]>();
-        expectTypeOf(selector1).returns.toEqualTypeOf<Result>();
+      describe("1.2 infers selector type based on the selector functions. One selector doesn't have a param", () => {
+        it('exposes expected types', () => {
+          interface State {
+            a: string;
+            items: { [key: string]: string };
+          }
+          interface Result {
+            x: string;
+            y: string;
+          }
 
-        // 1.2 Infer selector type based on the selector functions. One selector doesn't have a param.
-        const mySelectorC = (state: State) => state.a;
-        const mySelectorD = (state: State, id: string) => state.items[id];
-        const selector2 = createStructuredCachedSelector({
-          x: mySelectorC,
-          y: mySelectorD,
-        })((state, id) => assertType<string>(id));
+          const mySelectorC = (state: State) => state.a;
+          const mySelectorD = (state: State, id: string) => state.items[id];
+          const selector2 = createStructuredCachedSelector({
+            x: mySelectorC,
+            y: mySelectorD,
+          })((state, id) => assertType<string>(id));
 
-        expectTypeOf(selector2).parameters.toEqualTypeOf<[State, string]>();
-        expectTypeOf(selector2).returns.toEqualTypeOf<Result>();
+          expectTypeOf(selector2).parameters.toEqualTypeOf<[State, string]>();
+          expectTypeOf(selector2).returns.toEqualTypeOf<Result>();
+        });
+      });
 
-        // 1.3 One selector has an *optional* second param.
-        // See https://github.com/toomuchdesign/re-reselect/issues/155
-        // The resulting selector must accept the props argument as optional:
-        // both `selector3(state)` and `selector3(state, id)` must type-check.
-        const mySelectorE = (state: State) => state.a;
-        const mySelectorF = (state: State, id?: string) =>
-          id ? state.items[id] : state.a;
-        const selector3 = createStructuredCachedSelector({
-          x: mySelectorE,
-          y: mySelectorF,
-        })((state, id?: string) => id ?? '');
+      describe('1.3 one selector has an *optional* second param', () => {
+        it('exposes expected types', () => {
+          interface State {
+            a: string;
+            items: { [key: string]: string };
+          }
+          interface Result {
+            x: string;
+            y: string;
+          }
 
-        const state: State = { a: 'foo', items: { id1: 'bar' } };
-        // Both call signatures must be valid (this is the actual bug repro).
-        expectTypeOf(selector3(state)).toEqualTypeOf<Result>();
-        expectTypeOf(selector3(state, 'id1')).toEqualTypeOf<Result>();
+          // See https://github.com/toomuchdesign/re-reselect/issues/155
+          // The resulting selector must accept the props argument as optional:
+          // both `selector3(state)` and `selector3(state, id)` must type-check.
+          const mySelectorE = (state: State) => state.a;
+          const mySelectorF = (state: State, id?: string) =>
+            id ? state.items[id] : state.a;
+          const selector3 = createStructuredCachedSelector({
+            x: mySelectorE,
+            y: mySelectorF,
+          })((state, id?: string) => id ?? '');
 
-        expectTypeOf(selector3).parameters.toEqualTypeOf<
-          [State, (string | undefined)?]
-        >();
-        expectTypeOf(selector3).returns.toEqualTypeOf<Result>();
+          const state: State = { a: 'foo', items: { id1: 'bar' } };
+          // Both call signatures must be valid (this is the actual bug repro).
+          expectTypeOf(selector3(state)).toEqualTypeOf<Result>();
+          expectTypeOf(selector3(state, 'id1')).toEqualTypeOf<Result>();
 
-        // 2. Explicitly set State and Parameter types for all selector functions
-        // => not supported
+          expectTypeOf(selector3).parameters.toEqualTypeOf<
+            [State, (string | undefined)?]
+          >();
+          expectTypeOf(selector3).returns.toEqualTypeOf<Result>();
+
+          // 2. Explicitly set State and Parameter types for all selector functions
+          // => not supported
+        });
       });
 
       it('keeps the second argument optional when every selector accepts it optionally', () => {

@@ -3,10 +3,23 @@
   "version": "5.1.1",
   "description": "Enhance Reselect selectors with deeper memoization and cache management",
   "main": "dist/cjs/index.js",
-  "module": "dist/es/index.js",
-  "jsnext:main": "dist/es/index.js",
+  "module": "dist/es/index.mjs",
+  "jsnext:main": "dist/es/index.mjs",
   "browser": "dist/umd/index.umd.js",
-  "types": "dist/es/index.d.ts",
+  "types": "dist/cjs/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/es/index.d.mts",
+        "default": "./dist/es/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
   "sideEffects": false,
   "files": [
     "dist"

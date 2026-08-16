@@ -74,9 +74,10 @@ exports[`UMD bundle > is unchanged 1`] = `
 				inputSelectors,
 				resultFunc
 			});
+			if (!isFunction(options.keySelector)) throw new Error("[re-reselect] Missing \\"keySelector\\": provide a \`keySelector\` function or a \`keySelectorCreator\` that returns one.");
+			const keySelector = options.keySelector;
 			function selector(...args) {
-				const [state, ...rest] = args;
-				const cacheKey = options.keySelector(state, ...rest);
+				const cacheKey = keySelector(...args);
 				if (!isValidCacheKey(cacheKey)) {
 					console.warn(\`[re-reselect] Invalid cache key "\${String(cacheKey)}" has been returned by keySelector function.\`);
 					return;
@@ -90,13 +91,11 @@ exports[`UMD bundle > is unchanged 1`] = `
 			}
 			return Object.assign(selector, {
 				getMatchingSelector: (...args) => {
-					const [state, ...rest] = args;
-					const cacheKey = options.keySelector(state, ...rest);
+					const cacheKey = keySelector(...args);
 					return cache.get(cacheKey);
 				},
 				removeMatchingSelector: (...args) => {
-					const [state, ...rest] = args;
-					const cacheKey = options.keySelector(state, ...rest);
+					const cacheKey = keySelector(...args);
 					cache.remove(cacheKey);
 				},
 				clearCache: () => {
@@ -109,7 +108,7 @@ exports[`UMD bundle > is unchanged 1`] = `
 				resetRecomputations: () => {
 					recomputations = 0;
 				},
-				keySelector: options.keySelector
+				keySelector
 			});
 		};
 	});

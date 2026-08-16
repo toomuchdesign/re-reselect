@@ -1,6 +1,6 @@
 import type { ICacheObject } from './types';
 
-export default class FlatMapCache implements ICacheObject {
+export class FlatMapCache implements ICacheObject {
   private _cache: Map<any, any> = new Map();
 
   set(key: any, selectorFn: any): void {

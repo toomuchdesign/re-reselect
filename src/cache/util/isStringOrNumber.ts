@@ -1,5 +1,3 @@
-function isStringOrNumber(value: unknown): boolean {
+export function isStringOrNumber(value: unknown): boolean {
   return typeof value === 'string' || typeof value === 'number';
 }
-
-export default isStringOrNumber;

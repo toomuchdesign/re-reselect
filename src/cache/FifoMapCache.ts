@@ -5,9 +5,9 @@ export default class FifoMapCache implements ICacheObject {
   private _cache: Map<any, any> = new Map();
   private _cacheSize: number;
 
-  constructor({ cacheSize }: { cacheSize: number }) {
-    validateCacheSize(cacheSize);
-    this._cacheSize = cacheSize;
+  constructor(options: { cacheSize: number }) {
+    validateCacheSize(options?.cacheSize);
+    this._cacheSize = options.cacheSize;
   }
 
   set(key: any, selectorFn: any): void {

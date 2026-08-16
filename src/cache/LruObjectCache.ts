@@ -7,9 +7,9 @@ export default class LruObjectCache implements ICacheObject {
   private _cacheOrdering: ObjectCacheKey[] = [];
   private _cacheSize: number;
 
-  constructor({ cacheSize }: { cacheSize: number }) {
-    validateCacheSize(cacheSize);
-    this._cacheSize = cacheSize;
+  constructor(options: { cacheSize: number }) {
+    validateCacheSize(options?.cacheSize);
+    this._cacheSize = options.cacheSize;
   }
 
   set(key: ObjectCacheKey, selectorFn: any): void {

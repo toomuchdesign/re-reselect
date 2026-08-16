@@ -475,6 +475,54 @@ describe('createCachedSelector', () => {
       });
     });
 
+    describe('missing keySelector', () => {
+      it('throws a descriptive error', () => {
+        const create = createCachedSelector(
+          () => {},
+          () => {},
+        );
+
+        expect(() => create({})).toThrow('[re-reselect] Missing "keySelector"');
+      });
+    });
+
+    describe('keySelector argument forwarding', () => {
+      it('forwards the exact multi-arg list to keySelector', () => {
+        const keySelectorMock = vi.fn((state: string, param: string) => param);
+        const cachedSelector = createCachedSelector(
+          (state: string, param: string) => param,
+          (param) => param,
+        )(keySelectorMock);
+
+        cachedSelector('foo', 'bar');
+
+        expect(keySelectorMock).toHaveBeenLastCalledWith('foo', 'bar');
+        expect(keySelectorMock.mock.calls[0]).toHaveLength(2);
+      });
+
+      it('forwards zero arguments as zero arguments (the D1 arity guarantee)', () => {
+        const keySelectorMock = vi.fn(() => 'key');
+        const cachedSelector = createCachedSelector(
+          () => {},
+          () => {},
+        )(keySelectorMock);
+
+        // Reselect selectors are typed to require `state`; the zero-arg call is
+        // deliberately outside that contract to exercise runtime arity. The old
+        // `[state, ...rest]` destructure injected an `undefined` here, so the
+        // keySelector saw `arguments.length === 1` instead of 0.
+        // @ts-expect-error -- intentional out-of-contract zero-arg call
+        cachedSelector();
+        // @ts-expect-error -- intentional out-of-contract zero-arg call
+        cachedSelector.getMatchingSelector();
+        // @ts-expect-error -- intentional out-of-contract zero-arg call
+        cachedSelector.removeMatchingSelector();
+
+        expect(keySelectorMock.mock.calls).toHaveLength(3);
+        expect(keySelectorMock.mock.calls).toEqual([[], [], []]);
+      });
+    });
+
     describe('as object', () => {
       it('accepts keySelector, cacheObject and selectorCreator options', () => {
         const cachedSelector = createCachedSelector(

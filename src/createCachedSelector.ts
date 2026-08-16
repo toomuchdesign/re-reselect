@@ -1,6 +1,6 @@
 import type { Combiner, CreateSelectorOptions, SelectorArray } from 'reselect';
 
-import FlatObjectCache from './cache/FlatObjectCache';
+import { FlatObjectCache } from './cache/FlatObjectCache';
 import type { ICacheObject } from './cache/types';
 import { createSelector } from './reselectWrapper';
 import type {
@@ -169,9 +169,7 @@ const createCachedSelectorImpl = ((
 // copy the function's own enumerable props (none) and produce a non-callable
 // object. `withTypes` only refines the static types; at runtime it returns
 // the same creator unchanged (mirrors reselect's implementation).
-const createCachedSelector: CreateCachedSelector = Object.assign(
+export const createCachedSelector: CreateCachedSelector = Object.assign(
   createCachedSelectorImpl,
   { withTypes: () => createCachedSelector },
 );
-
-export default createCachedSelector;

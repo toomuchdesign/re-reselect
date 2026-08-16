@@ -1,7 +1,7 @@
 import type { ICacheObject } from './types';
-import validateCacheSize from './util/validateCacheSize';
+import { validateCacheSize } from './util/validateCacheSize';
 
-export default class FifoMapCache implements ICacheObject {
+export class FifoMapCache implements ICacheObject {
   private _cache: Map<any, any> = new Map();
   private _cacheSize: number;
 

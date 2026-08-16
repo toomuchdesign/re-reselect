@@ -12,7 +12,10 @@ export default defineConfig([
     entry: ['src/index.ts', 'src/reselectWrapper.ts'],
     format: 'esm',
     outDir: 'dist/es',
-    outExtensions: () => ({ js: '.js' }),
+    // Emit `.mjs` so native Node ESM loads the bundle as ES modules regardless
+    // of the package's (CommonJS) `type` — a `.js` file with `export` syntax
+    // would be parsed as CJS and throw. `dts` follows to `.d.mts`.
+    outExtensions: () => ({ js: '.mjs' }),
     sourcemap: true,
     deps,
     tsconfig,
@@ -27,7 +30,9 @@ export default defineConfig([
     sourcemap: true,
     deps,
     tsconfig,
-    dts: false,
+    // Emit CJS declarations (`dist/cjs/index.d.ts`) so the `require` condition
+    // of the `exports` map resolves CJS-shaped types.
+    dts: true,
     clean: false,
     unbundle: false,
   },

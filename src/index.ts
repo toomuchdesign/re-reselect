@@ -13,11 +13,9 @@ export { default as LruMapCache } from './cache/LruMapCache';
 export type { ICacheObject } from './cache/types';
 export type {
   CreateCachedSelector,
-  CreateCachedSelectorImpl,
   CreateCachedSelectorOptions,
   KeySelector,
   KeySelectorCreator,
   OutputCachedSelector,
-  PolymorphicCachedOptions,
   TypedKeySelector,
 } from './types';

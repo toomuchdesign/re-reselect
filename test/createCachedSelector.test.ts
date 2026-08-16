@@ -736,6 +736,78 @@ describe('createCachedSelector', () => {
           (bar: number) => bar,
         )(() => 'key');
       });
+
+      it('keeps per-selector params inferable alongside the pre-typed state', () => {
+        // Arrange: a typical app store shape, pre-typed once.
+        type State = { todos: Record<string, string> };
+        const createAppCachedSelector = createCachedSelector.withTypes<State>();
+        const state: State = { todos: { a: 'buy milk', b: 'walk dog' } };
+
+        // Act: `state` is inferred everywhere, the `id` param stays inferred.
+        const selectTodoById = createAppCachedSelector(
+          [
+            (state) => {
+              expectTypeOf(state).toEqualTypeOf<State>();
+              return state.todos;
+            },
+            (state, id: string) => {
+              expectTypeOf(state).toEqualTypeOf<State>();
+              return id;
+            },
+          ],
+          (todos, id) => todos[id],
+        )((state, id) => {
+          expectTypeOf(state).toEqualTypeOf<State>();
+          expectTypeOf(id).toBeString();
+          return id;
+        });
+
+        // Assert: runtime + selector signature.
+        expectTypeOf(selectTodoById).parameters.toEqualTypeOf<
+          [State, string]
+        >();
+        expect(selectTodoById(state, 'a')).toBe('buy milk');
+        expect(selectTodoById(state, 'b')).toBe('walk dog');
+      });
+
+      it('narrows the state further on a chained withTypes call', () => {
+        // Arrange: a base store type refined for a feature slice.
+        type RootState = { user: { name: string } };
+        type FeatureState = RootState & { feature: { count: number } };
+
+        // Act / Assert: the returned creator still exposes `withTypes`, and the
+        // override type must extend the previously pre-typed state.
+        const createFeatureCachedSelector = createCachedSelector
+          .withTypes<RootState>()
+          .withTypes<FeatureState>();
+
+        const selectCount = createFeatureCachedSelector(
+          [
+            (state) => {
+              expectTypeOf(state).toEqualTypeOf<FeatureState>();
+              return state.feature.count;
+            },
+          ],
+          (count) => count,
+        )((state) => state.user.name);
+
+        const state: FeatureState = {
+          user: { name: 'max' },
+          feature: { count: 7 },
+        };
+        expect(selectCount(state)).toBe(7);
+      });
+
+      it('rejects a chained withTypes that does not extend the current state', () => {
+        // Arrange
+        type State = { foo: string };
+
+        // Act / Assert
+        createCachedSelector
+          .withTypes<State>()
+          // @ts-expect-error `{ bar: number }` does not extend the pre-typed `State`
+          .withTypes<{ bar: number }>();
+      });
     });
   });
 });

@@ -340,6 +340,32 @@ Creates a **pre-typed** version of `createCachedSelector` with the `state` type 
 const createAppCachedSelector = createCachedSelector.withTypes<RootState>();
 ```
 
+Without `withTypes` you annotate `state` on every input selector:
+
+```ts
+const selectTodoById = createCachedSelector(
+  (state: RootState) => state.todos,
+  (state: RootState, id: string) => id,
+  (todos, id) => todos[id],
+)((state: RootState, id) => id);
+```
+
+With a pre-typed creator, `state` is inferred everywhere while per-selector params and the result stay inferred:
+
+```ts
+const selectTodoById = createAppCachedSelector(
+  [
+    (state) => state.todos, // `state` inferred as `RootState`
+    (state, id: string) => id, // `id` param still inferred
+  ],
+  (todos, id) => todos[id],
+)((state, id) => id); // `keySelector` `state` inferred too
+```
+
+> **Pass input selectors as an array.** As with reselect's `createSelector.withTypes`, state inference only works when input selectors are given as a single array argument. The variadic form (input selectors spread as separate arguments) collapses the combiner arguments to `never`.
+
+Only the `state` type is pre-typed. `withTypes` is a **type-only** helper: at runtime it returns the same `createCachedSelector` unchanged. Calls can be chained to narrow the state further (the override type must extend the current one).
+
 ### createStructuredCachedSelector
 
 <!-- prettier-ignore -->

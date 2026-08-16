@@ -104,11 +104,15 @@ const createCachedSelectorImpl = ((
       });
     }
 
+    if (!isFunction(options.keySelector)) {
+      throw new Error(
+        '[re-reselect] Missing "keySelector": provide a `keySelector` function or a `keySelectorCreator` that returns one.',
+      );
+    }
+    const keySelector: UnknownFunction = options.keySelector;
+
     function selector(...args: readonly unknown[]): unknown {
-      // Destructure to satisfy keySelector's `(state, ...rest)` shape from
-      // a fully-variadic `unknown[]` — direct spread would be rejected.
-      const [state, ...rest] = args;
-      const cacheKey = options.keySelector!(state, ...rest);
+      const cacheKey = keySelector(...args);
 
       if (!isValidCacheKey(cacheKey)) {
         console.warn(
@@ -137,14 +141,12 @@ const createCachedSelectorImpl = ((
 
     return Object.assign(selector, {
       getMatchingSelector: (...args: readonly unknown[]) => {
-        const [state, ...rest] = args;
-        const cacheKey = options.keySelector!(state, ...rest);
+        const cacheKey = keySelector(...args);
         // @NOTE It might update cache hit count in LRU-like caches
         return cache.get(cacheKey);
       },
       removeMatchingSelector: (...args: readonly unknown[]) => {
-        const [state, ...rest] = args;
-        const cacheKey = options.keySelector!(state, ...rest);
+        const cacheKey = keySelector(...args);
         cache.remove(cacheKey);
       },
       clearCache: () => {
@@ -157,7 +159,7 @@ const createCachedSelectorImpl = ((
       resetRecomputations: () => {
         recomputations = 0;
       },
-      keySelector: options.keySelector,
+      keySelector,
     });
   };
 }) as CreateCachedSelectorImpl;

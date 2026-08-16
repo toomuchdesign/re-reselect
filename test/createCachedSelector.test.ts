@@ -8,6 +8,7 @@ import {
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  type CreateCachedSelectorOptions,
   FlatObjectCache,
   type ICacheObject,
   type KeySelector,
@@ -559,6 +560,37 @@ describe('createCachedSelector', () => {
           const result = cachedSelector(state);
           expect(result).toEqual('bar');
           expectTypeOf(result).toBeString();
+        });
+
+        it('does not mutate the caller options object', () => {
+          type State = { foo: string };
+          const inputSelector = (state: State, id: number) => state.foo;
+
+          const baseKeySelector = (state: State, id: number) => id;
+          // Frozen: the factory must clone before writing the
+          // `keySelectorCreator` result onto `options.keySelector`.
+          const options: CreateCachedSelectorOptions<
+            [typeof inputSelector],
+            string
+          > = Object.freeze({
+            keySelector: baseKeySelector,
+            keySelectorCreator:
+              ({ keySelector }) =>
+              (state: State, id: number) =>
+                `generated:${keySelector!(state, id)}`,
+          });
+
+          const selector = createCachedSelector(
+            inputSelector,
+            (foo: string) => foo,
+          );
+
+          expect(() => selector(options)).not.toThrow();
+          // The frozen options object is fully honoured: the created selector
+          // still wraps the base key via `keySelectorCreator`.
+          expect(selector(options).keySelector({ foo: 'bar' }, 7)).toBe(
+            'generated:7',
+          );
         });
       });
     });

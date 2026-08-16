@@ -1,4 +1,4 @@
-function validateCacheSize(
+export function validateCacheSize(
   cacheSize: number | undefined,
 ): asserts cacheSize is number {
   if (cacheSize === undefined) {
@@ -10,5 +10,3 @@ function validateCacheSize(
     );
   }
 }
-
-export default validateCacheSize;

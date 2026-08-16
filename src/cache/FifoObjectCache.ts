@@ -1,8 +1,8 @@
 import type { ICacheObject, ObjectCacheKey } from './types';
-import isStringOrNumber from './util/isStringOrNumber';
-import validateCacheSize from './util/validateCacheSize';
+import { isStringOrNumber } from './util/isStringOrNumber';
+import { validateCacheSize } from './util/validateCacheSize';
 
-export default class FifoObjectCache implements ICacheObject {
+export class FifoObjectCache implements ICacheObject {
   private _cache: Record<string, any> = {};
   private _cacheOrdering: ObjectCacheKey[] = [];
   private _cacheSize: number;

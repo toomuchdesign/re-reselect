@@ -1,6 +1,6 @@
 import type { Selector, SelectorResultsMap, SelectorsObject } from 'reselect';
 
-import createCachedSelector from './createCachedSelector';
+import { createCachedSelector } from './createCachedSelector';
 import { createStructuredSelector } from './reselectWrapper';
 import type { OutputCachedSelector, PolymorphicCachedOptions } from './types';
 
@@ -53,7 +53,7 @@ type StructuredCachedSelector<
   SelectorResultsMap<InputSelectorsObject>
 >;
 
-function createStructuredCachedSelector<
+export function createStructuredCachedSelector<
   InputSelectorsObject extends SelectorsObject<any>,
 >(
   selectors: InputSelectorsObject,
@@ -63,5 +63,3 @@ function createStructuredCachedSelector<
     createCachedSelector as never,
   ) as unknown as StructuredCachedSelector<InputSelectorsObject>;
 }
-
-export default createStructuredCachedSelector;

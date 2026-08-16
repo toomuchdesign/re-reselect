@@ -1,7 +1,7 @@
 import type { ICacheObject, ObjectCacheKey } from './types';
-import isStringOrNumber from './util/isStringOrNumber';
+import { isStringOrNumber } from './util/isStringOrNumber';
 
-export default class FlatObjectCache implements ICacheObject {
+export class FlatObjectCache implements ICacheObject {
   private _cache: Record<string, any> = {};
 
   set(key: ObjectCacheKey, selectorFn: any): void {

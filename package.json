@@ -3,20 +3,35 @@
   "version": "5.1.1",
   "description": "Enhance Reselect selectors with deeper memoization and cache management",
   "main": "dist/cjs/index.js",
-  "module": "dist/es/index.js",
-  "jsnext:main": "dist/es/index.js",
-  "browser": "dist/umd/index.js",
-  "types": "dist/types/index.d.ts",
+  "module": "dist/es/index.mjs",
+  "jsnext:main": "dist/es/index.mjs",
+  "browser": "dist/umd/index.umd.js",
+  "types": "dist/cjs/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/es/index.d.mts",
+        "default": "./dist/es/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
   "sideEffects": false,
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rimraf ./dist && rollup -c --bundleConfigAsCjs",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsdown",
     "test": "vitest --config ./vitest.config.mts",
-    "test:bundles": "npm run test:bundles:snapshot && npm run test:bundles:unit",
+    "test:bundles": "npm run test:bundles:snapshot && npm run test:bundles:unit && npm run test:bundles:runtime",
     "test:bundles:unit": "vitest run --config ./test-bundles/cjs.vitest.config.mts && vitest run --config ./test-bundles/es.vitest.config.mts && vitest run --config ./test-bundles/umd.vitest.config.mts",
-    "test:bundles:snapshot": "vitest run --dir ./test-bundles --coverage.enabled false",
+    "test:bundles:snapshot": "vitest run bundles-snapshot.test.ts --dir ./test-bundles --coverage.enabled false",
+    "test:bundles:runtime": "vitest run umd-runtime.test.ts --dir ./test-bundles --coverage.enabled false",
     "prepare": "npx simple-git-hooks && npm run source:check && npm run test -- --run && npm run build && npm run test:bundles",
     "release": "npm run prepare && npx changeset publish",
     "prettier:check": "prettier . --check",
@@ -45,21 +60,19 @@
     "reselect": "^5.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.24.6",
     "@changesets/changelog-github": "^0.7.0",
-    "@changesets/cli": "^2.29.7",
-    "@rollup/plugin-babel": "^7.1.0",
-    "@trivago/prettier-plugin-sort-imports": "^6.0.0",
-    "@vitest/coverage-v8": "^4.1.9",
-    "expect-type": "^1.2.2",
-    "prettier": "^3.2.5",
-    "reselect": "^5.1.0",
-    "rimraf": "^6.0.1",
-    "rollup": "^4.17.2",
-    "rollup-plugin-copy": "^3.5.0",
-    "simple-git-hooks": "^2.11.1",
+    "@changesets/cli": "^2.31.1",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "@types/node": "^26.1.1",
+    "@vitest/coverage-v8": "^4.1.10",
+    "expect-type": "^1.4.0",
+    "prettier": "^3.9.6",
+    "reselect": "^5.2.0",
+    "rimraf": "^6.1.3",
+    "simple-git-hooks": "^2.13.1",
+    "tsdown": "^0.22.14",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run prepare"

@@ -8,12 +8,12 @@
 
 |                   name                    | accepted cacheKey |                 type                  |            storage             |
 | :---------------------------------------: | :---------------: | :-----------------------------------: | :----------------------------: |
-| [`FlatObjectCache`](./FlatObjectCache.js) | `number` `string` |            flat unlimited             |           JS object            |
-| [`FifoObjectCache`](./FifoObjectCache.js) | `number` `string` | [first in first out][docs-fifo-cache] |           JS object            |
-|  [`LruObjectCache`](./LruObjectCache.js)  | `number` `string` | [least recently used][docs-lru-cache] |           JS object            |
-|    [`FlatMapCache`](./FlatMapCache.js)    |        any        |            flat unlimited             | [Map object][docs-mozilla-map] |
-|    [`FifoMapCache`](./FifoMapCache.js)    |        any        | [first in first out][docs-fifo-cache] | [Map object][docs-mozilla-map] |
-|     [`LruMapCache`](./LruMapCache.js)     |        any        | [least recently used][docs-lru-cache] | [Map object][docs-mozilla-map] |
+| [`FlatObjectCache`](./FlatObjectCache.ts) | `number` `string` |            flat unlimited             |           JS object            |
+| [`FifoObjectCache`](./FifoObjectCache.ts) | `number` `string` | [first in first out][docs-fifo-cache] |           JS object            |
+|  [`LruObjectCache`](./LruObjectCache.ts)  | `number` `string` | [least recently used][docs-lru-cache] |           JS object            |
+|    [`FlatMapCache`](./FlatMapCache.ts)    |        any        |            flat unlimited             | [Map object][docs-mozilla-map] |
+|    [`FifoMapCache`](./FifoMapCache.ts)    |        any        | [first in first out][docs-fifo-cache] | [Map object][docs-mozilla-map] |
+|     [`LruMapCache`](./LruMapCache.ts)     |        any        | [least recently used][docs-lru-cache] | [Map object][docs-mozilla-map] |
 
 <!-- prettier-ignore -->
 ```js
@@ -29,9 +29,9 @@ createCachedSelector(
 });
 ```
 
-**[*]ObjectCache** strategy objects treat `cacheKey` of type `number` like strings, since they are used as arguments of JS objects.
+**[\*]ObjectCache** strategy objects treat `cacheKey` of type `number` like strings, since they are used as arguments of JS objects.
 
-**[*]MapCache** strategy objects need a **Map objects polyfill** in order to use them on non-supporting browsers.
+**[\*]MapCache** strategy objects need a **Map objects polyfill** in order to use them on non-supporting browsers.
 
 ## Write your custom cache object
 

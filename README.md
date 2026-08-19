@@ -332,6 +332,40 @@ Takes the same arguments as reselect's [`createSelector`][reselect-create-select
 
 **Returns** a [selector instance][selector-instance-docs].
 
+#### createCachedSelector.withTypes\<State\>()
+
+Creates a **pre-typed** version of `createCachedSelector` with the `state` type baked in, mirroring reselect's [`createSelector.withTypes`][reselect-with-types]. Set the `state` type once instead of annotating it on every input selector:
+
+```ts
+const createAppCachedSelector = createCachedSelector.withTypes<RootState>();
+```
+
+Without `withTypes` you annotate `state` on every input selector:
+
+```ts
+const selectTodoById = createCachedSelector(
+  (state: RootState) => state.todos,
+  (state: RootState, id: string) => id,
+  (todos, id) => todos[id],
+)((state: RootState, id) => id);
+```
+
+With a pre-typed creator, `state` is inferred everywhere while per-selector params and the result stay inferred:
+
+```ts
+const selectTodoById = createAppCachedSelector(
+  [
+    (state) => state.todos, // `state` inferred as `RootState`
+    (state, id: string) => id, // `id` param still inferred
+  ],
+  (todos, id) => todos[id],
+)((state, id) => id); // `keySelector` `state` inferred too
+```
+
+> **Pass input selectors as an array.** As with reselect's `createSelector.withTypes`, state inference only works when input selectors are given as a single array argument. The variadic form (input selectors spread as separate arguments) collapses the combiner arguments to `never`.
+
+Only the `state` type is pre-typed. `withTypes` is a **type-only** helper: at runtime it returns the same `createCachedSelector` unchanged. Calls can be chained to narrow the state further (the override type must extend the current one).
+
 ### createStructuredCachedSelector
 
 <!-- prettier-ignore -->
@@ -456,7 +490,6 @@ Get `keySelector` for utility compositions or testing.
 ## Todo's
 
 - Improve tests readability
-- Port to native TS based on reselect v5 approach
 - Find out whether `re-reselect` should be deprecated in favour of `reselect` memoization/cache options
 
 ## Contributors
@@ -520,6 +553,7 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [reselect-create-selector]: https://github.com/reactjs/reselect/tree/v4.0.0#createselectorinputselectors--inputselectors-resultfunc
 [reselect-create-structured-selector]: https://github.com/reduxjs/reselect/tree/v4.0.0#createstructuredselectorinputselectors-selectorcreator--createselector
 [reselect-create-selector-creator]: https://github.com/reactjs/reselect/tree/v4.0.0#createselectorcreatormemoize-memoizeoptions
+[reselect-with-types]: https://reselect.js.org/api/createselector#createselectorwithtypes
 [lodash-memoize]: https://lodash.com/docs/4.17.4#memoize
 [ci-badge]: https://github.com/toomuchdesign/re-reselect/actions/workflows/ci.yml/badge.svg
 [ci]: https://github.com/toomuchdesign/re-reselect/actions/workflows/ci.yml

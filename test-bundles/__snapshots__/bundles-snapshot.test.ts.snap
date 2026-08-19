@@ -1,331 +1,737 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`UMD bundle > is unchanged 1`] = `
-"(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('reselect')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'reselect'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global["Re-reselect"] = {}, global.Reselect));
-})(this, (function (exports, reselect) { 'use strict';
+exports[`published artifacts > dist/cjs/index.d.ts is unchanged 1`] = `
+"import { Combiner, CreateSelectorFunction, CreateSelectorOptions, GetParamsFromSelectors, GetStateFromSelectors, OutputSelector, Selector, SelectorArray, SelectorResultsMap, SelectorsObject } from "reselect";
+//#region src/cache/types.d.ts
+interface ICacheObject {
+  set(key: any, selectorFn: any): void;
+  get(key: any): any;
+  remove(key: any): void;
+  clear(): void;
+  isValidCacheKey?(key: any): boolean;
+}
+type ObjectCacheKey = string | number;
+//#endregion
+//#region src/types.d.ts
+/**
+ * A function which takes the same arguments as the selector and returns a cacheKey.
+ * The cacheKey is used to look up the matching reselect selector in the cache.
+ */
+type KeySelector<S> = (state: S, ...args: any[]) => any;
+/**
+ * keySelector type with parameters inferred from the parent selector's input selectors.
+ * Used to give precise types to the user-supplied keySelector callback at call sites.
+ */
+type TypedKeySelector<InputSelectors extends SelectorArray> = (state: GetStateFromSelectors<InputSelectors>, ...params: GetParamsFromSelectors<InputSelectors>) => unknown;
+/**
+ * A function which receives the selector's inputSelectors/resultFunc/keySelector
+ * and returns the keySelector to be used at runtime.
+ */
+type KeySelectorCreator<InputSelectors extends SelectorArray, Result> = (selectorInputs: {
+  inputSelectors: InputSelectors;
+  resultFunc: Combiner<InputSelectors, Result>;
+  keySelector?: TypedKeySelector<InputSelectors>;
+}) => TypedKeySelector<InputSelectors>;
+type CreateCachedSelectorOptions<InputSelectors extends SelectorArray, Result> = {
+  keySelector?: TypedKeySelector<InputSelectors>;
+  cacheObject?: ICacheObject;
+  selectorCreator?: CreateSelectorFunction<any, any, any>;
+  keySelectorCreator?: KeySelectorCreator<InputSelectors, Result>;
+};
+/**
+ * The selector instance returned by \`createCachedSelector(...)(...)\`.
+ *
+ * This type is reconstructed from a plain reselect \`Selector\` plus **only** the
+ * members re-reselect actually attaches at runtime (see
+ * \`createCachedSelector.ts\`'s \`Object.assign\`). It intentionally does **not**
+ * inherit reselect's full \`OutputSelector\`: that would advertise members which
+ * only exist on the inner, per-cache-key reselect selectors (\`memoizedResultFunc\`,
+ * \`lastResult\`, \`dependencyRecomputations\`, \`resetDependencyRecomputations\`,
+ * \`memoize\`, \`argsMemoize\`, …) — they are absent on the cached selector at
+ * runtime, so surfacing them would type-check and then crash.
+ *
+ * \`getMatchingSelector\` returns the full \`OutputSelector\` because the inner
+ * cached selector genuinely is a reselect selector.
+ *
+ * \`.keySelector\` is exposed using the loose \`KeySelector<State>\` shape rather
+ * than the precise \`TypedKeySelector<InputSelectors>\` for back-compat with
+ * consumers that test the type against \`KeySelector<State>\`.
+ */
+type OutputCachedSelector<InputSelectors extends SelectorArray, Result> = Selector<GetStateFromSelectors<InputSelectors>, Result, GetParamsFromSelectors<InputSelectors>> & Pick<OutputSelector<InputSelectors, Result>, 'resultFunc' | 'dependencies' | 'recomputations' | 'resetRecomputations'> & {
+  getMatchingSelector: (...args: Parameters<OutputSelector<InputSelectors, Result>>) => OutputSelector<InputSelectors, Result>;
+  removeMatchingSelector: (...args: Parameters<OutputSelector<InputSelectors, Result>>) => void;
+  clearCache: () => void;
+  cache: ICacheObject;
+  keySelector: KeySelector<GetStateFromSelectors<InputSelectors>>;
+};
+/**
+ * The curried second-call argument: a \`keySelector\` function or an options object.
+ */
+type PolymorphicCachedOptions<InputSelectors extends SelectorArray, Result> = TypedKeySelector<InputSelectors> | CreateCachedSelectorOptions<InputSelectors, Result>;
+/**
+ * Just the callable signatures of \`createCachedSelector\`, without \`withTypes\`.
+ * Split out so the runtime implementation can be typed against it directly
+ * (TypeScript's \`Omit\` strips call signatures, so this can't be derived from
+ * \`CreateCachedSelector\` after the fact).
+ *
+ * Three overloads (variadic, variadic+options, array+options) using tuple
+ * inference instead of per-arity overload duplication, mirroring reselect's
+ * \`CreateSelectorFunction\` pattern.
+ *
+ * \`StateType\` is the state type shared by all input selectors. It defaults to
+ * \`any\` and is narrowed via \`withTypes\` to pre-type the selector creator.
+ */
+interface CreateCachedSelectorImpl<StateType = any> {
+  <InputSelectors extends SelectorArray<StateType>, Result>(...createSelectorArgs: [...inputSelectors: InputSelectors, combiner: Combiner<InputSelectors, Result>]): (polymorphicOptions: PolymorphicCachedOptions<InputSelectors, Result>) => OutputCachedSelector<InputSelectors, Result>;
+  <InputSelectors extends SelectorArray<StateType>, Result>(...createSelectorArgs: [...inputSelectors: InputSelectors, combiner: Combiner<InputSelectors, Result>, createSelectorOptions: CreateSelectorOptions]): (polymorphicOptions: PolymorphicCachedOptions<InputSelectors, Result>) => OutputCachedSelector<InputSelectors, Result>;
+  <InputSelectors extends SelectorArray<StateType>, Result>(inputSelectors: [...InputSelectors], combiner: Combiner<InputSelectors, Result>, createSelectorOptions?: CreateSelectorOptions): (polymorphicOptions: PolymorphicCachedOptions<InputSelectors, Result>) => OutputCachedSelector<InputSelectors, Result>;
+}
+/**
+ * The full \`createCachedSelector\` surface: callable signatures plus the
+ * \`withTypes\` helper for pre-typing the state.
+ */
+interface CreateCachedSelector<StateType = any> extends CreateCachedSelectorImpl<StateType> {
+  /**
+   * Creates a "pre-typed" version of \`createCachedSelector\` where the \`state\`
+   * type is predefined.
+   *
+   * This lets you set the \`state\` type once, removing the need to specify it
+   * on every input selector across all \`createCachedSelector\` calls.
+   *
+   * @returns A pre-typed \`createCachedSelector\` with the state type baked in.
+   */
+  withTypes: <OverrideStateType extends StateType>() => CreateCachedSelector<OverrideStateType>;
+}
+//#endregion
+//#region src/createCachedSelector.d.ts
+declare const createCachedSelector: CreateCachedSelector;
+//#endregion
+//#region src/typeUtils.d.ts
+/**
+ * Distributes a union \`A | B | C\` into an intersection \`A & B & C\` by exploiting
+ * contravariance of function parameters. Building block for {@link LastOf}.
+ */
+type UnionToIntersection<Union> = (Union extends unknown ? (distributedUnion: Union) => void : never) extends ((mergedIntersection: infer Intersection) => void) ? Intersection : never;
+/**
+ * Extracts the "last" member of a union. Order is an implementation detail of
+ * the compiler's overload resolution, but it is stable, which is all
+ * {@link TuplifyUnion} needs to peel members off one at a time.
+ */
+type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> extends (() => infer R) ? R : never;
+/**
+ * Converts a union \`A | B | C\` into a tuple \`[A, B, C]\` by repeatedly pulling
+ * off {@link LastOf} and excluding it until the union is \`never\`.
+ */
+type TuplifyUnion<T, L = LastOf<T>, N = [T] extends [never] ? true : false> = true extends N ? [] : [...TuplifyUnion<Exclude<T, L>>, L];
+/**
+ * Type-level \`Object.values()\`: converts a SelectorsObject
+ * \`{ foo: Selector, bar: Selector }\` into the ordered tuple
+ * \`[Selector, Selector]\` that reselect's \`MergeParameters\` needs to infer
+ * state and params. An unordered \`Array<T[keyof T]>\` collapses the selectors
+ * to a union and loses per-position params (second args resolve to \`never\`),
+ * so a real tuple is required. Mirrors reselect's internal
+ * \`ObjectValuesToTuple\` (not exported from the package).
+ */
+type SelectorsObjectToTuple<T extends SelectorsObject<any>, KS extends any[] = TuplifyUnion<keyof T>, R extends Selector[] = []> = KS extends [infer K, ...infer KT] ? SelectorsObjectToTuple<T, KT, [...R, T[K & keyof T]]> : R;
+//#endregion
+//#region src/createStructuredCachedSelector.d.ts
+/**
+ * The returned thunk preserves the cached-selector public surface
+ * (\`getMatchingSelector\`, \`removeMatchingSelector\`, \`clearCache\`, \`cache\`,
+ * \`keySelector\`, plus reselect's \`OutputSelector\` fields) and exposes
+ * the structured shape as the selector's \`Result\`.
+ */
+type StructuredCachedSelector<InputSelectorsObject extends SelectorsObject<any>> = (polymorphicOptions: PolymorphicCachedOptions<SelectorsObjectToTuple<InputSelectorsObject>, SelectorResultsMap<InputSelectorsObject>>) => OutputCachedSelector<SelectorsObjectToTuple<InputSelectorsObject>, SelectorResultsMap<InputSelectorsObject>>;
+declare function createStructuredCachedSelector<InputSelectorsObject extends SelectorsObject<any>>(selectors: InputSelectorsObject): StructuredCachedSelector<InputSelectorsObject>;
+//#endregion
+//#region src/cache/FlatObjectCache.d.ts
+declare class FlatObjectCache implements ICacheObject {
+  private _cache;
+  set(key: ObjectCacheKey, selectorFn: any): void;
+  get(key: ObjectCacheKey): any;
+  remove(key: ObjectCacheKey): void;
+  clear(): void;
+  isValidCacheKey(cacheKey: ObjectCacheKey): boolean;
+}
+//#endregion
+//#region src/cache/FifoObjectCache.d.ts
+declare class FifoObjectCache implements ICacheObject {
+  private _cache;
+  private _cacheOrdering;
+  private _cacheSize;
+  constructor(options: {
+    cacheSize: number;
+  });
+  set(key: ObjectCacheKey, selectorFn: any): void;
+  get(key: ObjectCacheKey): any;
+  remove(key: ObjectCacheKey): void;
+  clear(): void;
+  isValidCacheKey(cacheKey: ObjectCacheKey): boolean;
+}
+//#endregion
+//#region src/cache/LruObjectCache.d.ts
+declare class LruObjectCache implements ICacheObject {
+  private _cache;
+  private _cacheOrdering;
+  private _cacheSize;
+  constructor(options: {
+    cacheSize: number;
+  });
+  set(key: ObjectCacheKey, selectorFn: any): void;
+  get(key: ObjectCacheKey): any;
+  remove(key: ObjectCacheKey): void;
+  clear(): void;
+  isValidCacheKey(cacheKey: ObjectCacheKey): boolean;
+  private _registerCacheHit;
+  private _deleteCacheHit;
+}
+//#endregion
+//#region src/cache/FlatMapCache.d.ts
+declare class FlatMapCache implements ICacheObject {
+  private _cache;
+  set(key: any, selectorFn: any): void;
+  get(key: any): any;
+  remove(key: any): void;
+  clear(): void;
+}
+//#endregion
+//#region src/cache/FifoMapCache.d.ts
+declare class FifoMapCache implements ICacheObject {
+  private _cache;
+  private _cacheSize;
+  constructor(options: {
+    cacheSize: number;
+  });
+  set(key: any, selectorFn: any): void;
+  get(key: any): any;
+  remove(key: any): void;
+  clear(): void;
+}
+//#endregion
+//#region src/cache/LruMapCache.d.ts
+declare class LruMapCache implements ICacheObject {
+  private _cache;
+  private _cacheSize;
+  constructor(options: {
+    cacheSize: number;
+  });
+  set(key: any, selectorFn: any): void;
+  get(key: any): any;
+  remove(key: any): void;
+  clear(): void;
+}
+//#endregion
+export { type CreateCachedSelector, type CreateCachedSelectorOptions, FifoMapCache, FifoObjectCache, FlatMapCache, FlatObjectCache, type ICacheObject, type KeySelector, type KeySelectorCreator, LruMapCache, LruObjectCache, type OutputCachedSelector, type TypedKeySelector, createCachedSelector, createStructuredCachedSelector };
+//# sourceMappingURL=index.d.ts.map"
+`;
 
-  function isStringOrNumber(value) {
-    return typeof value === 'string' || typeof value === 'number';
-  }
+exports[`published artifacts > dist/es/index.d.mts is unchanged 1`] = `
+"import { Combiner, CreateSelectorFunction, CreateSelectorOptions, GetParamsFromSelectors, GetStateFromSelectors, OutputSelector, Selector, SelectorArray, SelectorResultsMap, SelectorsObject } from "reselect";
+//#region src/cache/types.d.ts
+interface ICacheObject {
+  set(key: any, selectorFn: any): void;
+  get(key: any): any;
+  remove(key: any): void;
+  clear(): void;
+  isValidCacheKey?(key: any): boolean;
+}
+type ObjectCacheKey = string | number;
+//#endregion
+//#region src/types.d.ts
+/**
+ * A function which takes the same arguments as the selector and returns a cacheKey.
+ * The cacheKey is used to look up the matching reselect selector in the cache.
+ */
+type KeySelector<S> = (state: S, ...args: any[]) => any;
+/**
+ * keySelector type with parameters inferred from the parent selector's input selectors.
+ * Used to give precise types to the user-supplied keySelector callback at call sites.
+ */
+type TypedKeySelector<InputSelectors extends SelectorArray> = (state: GetStateFromSelectors<InputSelectors>, ...params: GetParamsFromSelectors<InputSelectors>) => unknown;
+/**
+ * A function which receives the selector's inputSelectors/resultFunc/keySelector
+ * and returns the keySelector to be used at runtime.
+ */
+type KeySelectorCreator<InputSelectors extends SelectorArray, Result> = (selectorInputs: {
+  inputSelectors: InputSelectors;
+  resultFunc: Combiner<InputSelectors, Result>;
+  keySelector?: TypedKeySelector<InputSelectors>;
+}) => TypedKeySelector<InputSelectors>;
+type CreateCachedSelectorOptions<InputSelectors extends SelectorArray, Result> = {
+  keySelector?: TypedKeySelector<InputSelectors>;
+  cacheObject?: ICacheObject;
+  selectorCreator?: CreateSelectorFunction<any, any, any>;
+  keySelectorCreator?: KeySelectorCreator<InputSelectors, Result>;
+};
+/**
+ * The selector instance returned by \`createCachedSelector(...)(...)\`.
+ *
+ * This type is reconstructed from a plain reselect \`Selector\` plus **only** the
+ * members re-reselect actually attaches at runtime (see
+ * \`createCachedSelector.ts\`'s \`Object.assign\`). It intentionally does **not**
+ * inherit reselect's full \`OutputSelector\`: that would advertise members which
+ * only exist on the inner, per-cache-key reselect selectors (\`memoizedResultFunc\`,
+ * \`lastResult\`, \`dependencyRecomputations\`, \`resetDependencyRecomputations\`,
+ * \`memoize\`, \`argsMemoize\`, …) — they are absent on the cached selector at
+ * runtime, so surfacing them would type-check and then crash.
+ *
+ * \`getMatchingSelector\` returns the full \`OutputSelector\` because the inner
+ * cached selector genuinely is a reselect selector.
+ *
+ * \`.keySelector\` is exposed using the loose \`KeySelector<State>\` shape rather
+ * than the precise \`TypedKeySelector<InputSelectors>\` for back-compat with
+ * consumers that test the type against \`KeySelector<State>\`.
+ */
+type OutputCachedSelector<InputSelectors extends SelectorArray, Result> = Selector<GetStateFromSelectors<InputSelectors>, Result, GetParamsFromSelectors<InputSelectors>> & Pick<OutputSelector<InputSelectors, Result>, 'resultFunc' | 'dependencies' | 'recomputations' | 'resetRecomputations'> & {
+  getMatchingSelector: (...args: Parameters<OutputSelector<InputSelectors, Result>>) => OutputSelector<InputSelectors, Result>;
+  removeMatchingSelector: (...args: Parameters<OutputSelector<InputSelectors, Result>>) => void;
+  clearCache: () => void;
+  cache: ICacheObject;
+  keySelector: KeySelector<GetStateFromSelectors<InputSelectors>>;
+};
+/**
+ * The curried second-call argument: a \`keySelector\` function or an options object.
+ */
+type PolymorphicCachedOptions<InputSelectors extends SelectorArray, Result> = TypedKeySelector<InputSelectors> | CreateCachedSelectorOptions<InputSelectors, Result>;
+/**
+ * Just the callable signatures of \`createCachedSelector\`, without \`withTypes\`.
+ * Split out so the runtime implementation can be typed against it directly
+ * (TypeScript's \`Omit\` strips call signatures, so this can't be derived from
+ * \`CreateCachedSelector\` after the fact).
+ *
+ * Three overloads (variadic, variadic+options, array+options) using tuple
+ * inference instead of per-arity overload duplication, mirroring reselect's
+ * \`CreateSelectorFunction\` pattern.
+ *
+ * \`StateType\` is the state type shared by all input selectors. It defaults to
+ * \`any\` and is narrowed via \`withTypes\` to pre-type the selector creator.
+ */
+interface CreateCachedSelectorImpl<StateType = any> {
+  <InputSelectors extends SelectorArray<StateType>, Result>(...createSelectorArgs: [...inputSelectors: InputSelectors, combiner: Combiner<InputSelectors, Result>]): (polymorphicOptions: PolymorphicCachedOptions<InputSelectors, Result>) => OutputCachedSelector<InputSelectors, Result>;
+  <InputSelectors extends SelectorArray<StateType>, Result>(...createSelectorArgs: [...inputSelectors: InputSelectors, combiner: Combiner<InputSelectors, Result>, createSelectorOptions: CreateSelectorOptions]): (polymorphicOptions: PolymorphicCachedOptions<InputSelectors, Result>) => OutputCachedSelector<InputSelectors, Result>;
+  <InputSelectors extends SelectorArray<StateType>, Result>(inputSelectors: [...InputSelectors], combiner: Combiner<InputSelectors, Result>, createSelectorOptions?: CreateSelectorOptions): (polymorphicOptions: PolymorphicCachedOptions<InputSelectors, Result>) => OutputCachedSelector<InputSelectors, Result>;
+}
+/**
+ * The full \`createCachedSelector\` surface: callable signatures plus the
+ * \`withTypes\` helper for pre-typing the state.
+ */
+interface CreateCachedSelector<StateType = any> extends CreateCachedSelectorImpl<StateType> {
+  /**
+   * Creates a "pre-typed" version of \`createCachedSelector\` where the \`state\`
+   * type is predefined.
+   *
+   * This lets you set the \`state\` type once, removing the need to specify it
+   * on every input selector across all \`createCachedSelector\` calls.
+   *
+   * @returns A pre-typed \`createCachedSelector\` with the state type baked in.
+   */
+  withTypes: <OverrideStateType extends StateType>() => CreateCachedSelector<OverrideStateType>;
+}
+//#endregion
+//#region src/createCachedSelector.d.ts
+declare const createCachedSelector: CreateCachedSelector;
+//#endregion
+//#region src/typeUtils.d.ts
+/**
+ * Distributes a union \`A | B | C\` into an intersection \`A & B & C\` by exploiting
+ * contravariance of function parameters. Building block for {@link LastOf}.
+ */
+type UnionToIntersection<Union> = (Union extends unknown ? (distributedUnion: Union) => void : never) extends ((mergedIntersection: infer Intersection) => void) ? Intersection : never;
+/**
+ * Extracts the "last" member of a union. Order is an implementation detail of
+ * the compiler's overload resolution, but it is stable, which is all
+ * {@link TuplifyUnion} needs to peel members off one at a time.
+ */
+type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> extends (() => infer R) ? R : never;
+/**
+ * Converts a union \`A | B | C\` into a tuple \`[A, B, C]\` by repeatedly pulling
+ * off {@link LastOf} and excluding it until the union is \`never\`.
+ */
+type TuplifyUnion<T, L = LastOf<T>, N = [T] extends [never] ? true : false> = true extends N ? [] : [...TuplifyUnion<Exclude<T, L>>, L];
+/**
+ * Type-level \`Object.values()\`: converts a SelectorsObject
+ * \`{ foo: Selector, bar: Selector }\` into the ordered tuple
+ * \`[Selector, Selector]\` that reselect's \`MergeParameters\` needs to infer
+ * state and params. An unordered \`Array<T[keyof T]>\` collapses the selectors
+ * to a union and loses per-position params (second args resolve to \`never\`),
+ * so a real tuple is required. Mirrors reselect's internal
+ * \`ObjectValuesToTuple\` (not exported from the package).
+ */
+type SelectorsObjectToTuple<T extends SelectorsObject<any>, KS extends any[] = TuplifyUnion<keyof T>, R extends Selector[] = []> = KS extends [infer K, ...infer KT] ? SelectorsObjectToTuple<T, KT, [...R, T[K & keyof T]]> : R;
+//#endregion
+//#region src/createStructuredCachedSelector.d.ts
+/**
+ * The returned thunk preserves the cached-selector public surface
+ * (\`getMatchingSelector\`, \`removeMatchingSelector\`, \`clearCache\`, \`cache\`,
+ * \`keySelector\`, plus reselect's \`OutputSelector\` fields) and exposes
+ * the structured shape as the selector's \`Result\`.
+ */
+type StructuredCachedSelector<InputSelectorsObject extends SelectorsObject<any>> = (polymorphicOptions: PolymorphicCachedOptions<SelectorsObjectToTuple<InputSelectorsObject>, SelectorResultsMap<InputSelectorsObject>>) => OutputCachedSelector<SelectorsObjectToTuple<InputSelectorsObject>, SelectorResultsMap<InputSelectorsObject>>;
+declare function createStructuredCachedSelector<InputSelectorsObject extends SelectorsObject<any>>(selectors: InputSelectorsObject): StructuredCachedSelector<InputSelectorsObject>;
+//#endregion
+//#region src/cache/FlatObjectCache.d.ts
+declare class FlatObjectCache implements ICacheObject {
+  private _cache;
+  set(key: ObjectCacheKey, selectorFn: any): void;
+  get(key: ObjectCacheKey): any;
+  remove(key: ObjectCacheKey): void;
+  clear(): void;
+  isValidCacheKey(cacheKey: ObjectCacheKey): boolean;
+}
+//#endregion
+//#region src/cache/FifoObjectCache.d.ts
+declare class FifoObjectCache implements ICacheObject {
+  private _cache;
+  private _cacheOrdering;
+  private _cacheSize;
+  constructor(options: {
+    cacheSize: number;
+  });
+  set(key: ObjectCacheKey, selectorFn: any): void;
+  get(key: ObjectCacheKey): any;
+  remove(key: ObjectCacheKey): void;
+  clear(): void;
+  isValidCacheKey(cacheKey: ObjectCacheKey): boolean;
+}
+//#endregion
+//#region src/cache/LruObjectCache.d.ts
+declare class LruObjectCache implements ICacheObject {
+  private _cache;
+  private _cacheOrdering;
+  private _cacheSize;
+  constructor(options: {
+    cacheSize: number;
+  });
+  set(key: ObjectCacheKey, selectorFn: any): void;
+  get(key: ObjectCacheKey): any;
+  remove(key: ObjectCacheKey): void;
+  clear(): void;
+  isValidCacheKey(cacheKey: ObjectCacheKey): boolean;
+  private _registerCacheHit;
+  private _deleteCacheHit;
+}
+//#endregion
+//#region src/cache/FlatMapCache.d.ts
+declare class FlatMapCache implements ICacheObject {
+  private _cache;
+  set(key: any, selectorFn: any): void;
+  get(key: any): any;
+  remove(key: any): void;
+  clear(): void;
+}
+//#endregion
+//#region src/cache/FifoMapCache.d.ts
+declare class FifoMapCache implements ICacheObject {
+  private _cache;
+  private _cacheSize;
+  constructor(options: {
+    cacheSize: number;
+  });
+  set(key: any, selectorFn: any): void;
+  get(key: any): any;
+  remove(key: any): void;
+  clear(): void;
+}
+//#endregion
+//#region src/cache/LruMapCache.d.ts
+declare class LruMapCache implements ICacheObject {
+  private _cache;
+  private _cacheSize;
+  constructor(options: {
+    cacheSize: number;
+  });
+  set(key: any, selectorFn: any): void;
+  get(key: any): any;
+  remove(key: any): void;
+  clear(): void;
+}
+//#endregion
+export { type CreateCachedSelector, type CreateCachedSelectorOptions, FifoMapCache, FifoObjectCache, FlatMapCache, FlatObjectCache, type ICacheObject, type KeySelector, type KeySelectorCreator, LruMapCache, LruObjectCache, type OutputCachedSelector, type TypedKeySelector, createCachedSelector, createStructuredCachedSelector };
+//# sourceMappingURL=index.d.mts.map"
+`;
 
-  var FlatObjectCache = /*#__PURE__*/function () {
-    function FlatObjectCache() {
-      this._cache = {};
-    }
-    var _proto = FlatObjectCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache[key] = selectorFn;
-    };
-    _proto.get = function get(key) {
-      return this._cache[key];
-    };
-    _proto.remove = function remove(key) {
-      delete this._cache[key];
-    };
-    _proto.clear = function clear() {
-      this._cache = {};
-    };
-    _proto.isValidCacheKey = function isValidCacheKey(cacheKey) {
-      return isStringOrNumber(cacheKey);
-    };
-    return FlatObjectCache;
-  }();
+exports[`published artifacts > dist/umd/index.umd.js is unchanged 1`] = `
+"(function(global, factory) {
+	typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("reselect")) : typeof define === "function" && define.amd ? define(["exports", "reselect"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global["Re-reselect"] = {}, global.Reselect));
+})(this, function(exports, reselect) {
+	Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+	//#region src/cache/util/isStringOrNumber.ts
+	function isStringOrNumber(value) {
+		return typeof value === "string" || typeof value === "number";
+	}
+	//#endregion
+	//#region src/cache/FlatObjectCache.ts
+	var FlatObjectCache = class {
+		constructor() {
+			this._cache = {};
+		}
+		set(key, selectorFn) {
+			this._cache[key] = selectorFn;
+		}
+		get(key) {
+			return this._cache[key];
+		}
+		remove(key) {
+			delete this._cache[key];
+		}
+		clear() {
+			this._cache = {};
+		}
+		isValidCacheKey(cacheKey) {
+			return isStringOrNumber(cacheKey);
+		}
+	};
+	//#endregion
+	//#region src/createCachedSelector.ts
+	const defaultCacheKeyValidator = () => true;
+	function isFunction(value) {
+		return typeof value === "function";
+	}
+	function parseReselectArgs(reselectArgs) {
+		const args = [...reselectArgs];
+		const last = args.pop();
+		let resultFunc;
+		let createSelectorOptions;
+		if (isFunction(last)) {
+			resultFunc = last;
+			createSelectorOptions = void 0;
+		} else {
+			resultFunc = args.pop();
+			createSelectorOptions = last;
+		}
+		return {
+			inputSelectors: Array.isArray(args[0]) ? args[0] : args,
+			resultFunc,
+			createSelectorOptions
+		};
+	}
+	const createCachedSelectorImpl = ((...reselectArgs) => {
+		const { inputSelectors, resultFunc, createSelectorOptions } = parseReselectArgs(reselectArgs);
+		return (polymorphicOptions) => {
+			const options = isFunction(polymorphicOptions) ? { keySelector: polymorphicOptions } : { ...polymorphicOptions };
+			let recomputations = 0;
+			const resultFuncWithRecomputations = (...args) => {
+				recomputations++;
+				return resultFunc(...args);
+			};
+			const patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
+			if (createSelectorOptions) patchedReselectArgs.push(createSelectorOptions);
+			const cache = options.cacheObject ?? new FlatObjectCache();
+			const selectorCreator = options.selectorCreator ?? reselect.createSelector;
+			const isValidCacheKey = cache.isValidCacheKey ?? defaultCacheKeyValidator;
+			if (options.keySelectorCreator) options.keySelector = options.keySelectorCreator({
+				keySelector: options.keySelector,
+				inputSelectors,
+				resultFunc
+			});
+			if (!isFunction(options.keySelector)) throw new Error("[re-reselect] Missing \\"keySelector\\": provide a \`keySelector\` function or a \`keySelectorCreator\` that returns one.");
+			const keySelector = options.keySelector;
+			function selector(...args) {
+				const cacheKey = keySelector(...args);
+				if (!isValidCacheKey(cacheKey)) {
+					console.warn(\`[re-reselect] Invalid cache key "\${String(cacheKey)}" has been returned by keySelector function.\`);
+					return;
+				}
+				let cacheResponse = cache.get(cacheKey);
+				if (!cacheResponse) {
+					cacheResponse = selectorCreator(...patchedReselectArgs);
+					cache.set(cacheKey, cacheResponse);
+				}
+				return cacheResponse(...args);
+			}
+			return Object.assign(selector, {
+				getMatchingSelector: (...args) => {
+					const cacheKey = keySelector(...args);
+					return cache.get(cacheKey);
+				},
+				removeMatchingSelector: (...args) => {
+					const cacheKey = keySelector(...args);
+					cache.remove(cacheKey);
+				},
+				clearCache: () => {
+					cache.clear();
+				},
+				resultFunc,
+				dependencies: inputSelectors,
+				cache,
+				recomputations: () => recomputations,
+				resetRecomputations: () => {
+					recomputations = 0;
+				},
+				keySelector
+			});
+		};
+	});
+	const createCachedSelector = Object.assign(createCachedSelectorImpl, { withTypes: () => createCachedSelector });
+	//#endregion
+	//#region src/createStructuredCachedSelector.ts
+	function createStructuredCachedSelector(selectors) {
+		return (0, reselect.createStructuredSelector)(selectors, createCachedSelector);
+	}
+	//#endregion
+	//#region src/cache/util/validateCacheSize.ts
+	function validateCacheSize(cacheSize) {
+		if (cacheSize === void 0) throw new Error("Missing the required property \\"cacheSize\\".");
+		if (!Number.isInteger(cacheSize) || cacheSize <= 0) throw new Error("The \\"cacheSize\\" property must be a positive integer value.");
+	}
+	//#endregion
+	//#region src/cache/FifoObjectCache.ts
+	var FifoObjectCache = class {
+		constructor(options) {
+			this._cache = {};
+			this._cacheOrdering = [];
+			validateCacheSize(options?.cacheSize);
+			this._cacheSize = options.cacheSize;
+		}
+		set(key, selectorFn) {
+			this._cache[key] = selectorFn;
+			this._cacheOrdering.push(key);
+			if (this._cacheOrdering.length > this._cacheSize) {
+				const earliest = this._cacheOrdering[0];
+				this.remove(earliest);
+			}
+		}
+		get(key) {
+			return this._cache[key];
+		}
+		remove(key) {
+			const index = this._cacheOrdering.indexOf(key);
+			if (index > -1) this._cacheOrdering.splice(index, 1);
+			delete this._cache[key];
+		}
+		clear() {
+			this._cache = {};
+			this._cacheOrdering = [];
+		}
+		isValidCacheKey(cacheKey) {
+			return isStringOrNumber(cacheKey);
+		}
+	};
+	//#endregion
+	//#region src/cache/LruObjectCache.ts
+	var LruObjectCache = class {
+		constructor(options) {
+			this._cache = {};
+			this._cacheOrdering = [];
+			validateCacheSize(options?.cacheSize);
+			this._cacheSize = options.cacheSize;
+		}
+		set(key, selectorFn) {
+			this._cache[key] = selectorFn;
+			this._registerCacheHit(key);
+			if (this._cacheOrdering.length > this._cacheSize) {
+				const earliest = this._cacheOrdering[0];
+				this.remove(earliest);
+			}
+		}
+		get(key) {
+			this._registerCacheHit(key);
+			return this._cache[key];
+		}
+		remove(key) {
+			this._deleteCacheHit(key);
+			delete this._cache[key];
+		}
+		clear() {
+			this._cache = {};
+			this._cacheOrdering = [];
+		}
+		isValidCacheKey(cacheKey) {
+			return isStringOrNumber(cacheKey);
+		}
+		_registerCacheHit(key) {
+			this._deleteCacheHit(key);
+			this._cacheOrdering.push(key);
+		}
+		_deleteCacheHit(key) {
+			const index = this._cacheOrdering.indexOf(key);
+			if (index > -1) this._cacheOrdering.splice(index, 1);
+		}
+	};
+	//#endregion
+	//#region src/cache/FlatMapCache.ts
+	var FlatMapCache = class {
+		constructor() {
+			this._cache = /* @__PURE__ */ new Map();
+		}
+		set(key, selectorFn) {
+			this._cache.set(key, selectorFn);
+		}
+		get(key) {
+			return this._cache.get(key);
+		}
+		remove(key) {
+			this._cache.delete(key);
+		}
+		clear() {
+			this._cache.clear();
+		}
+	};
+	//#endregion
+	//#region src/cache/FifoMapCache.ts
+	var FifoMapCache = class {
+		constructor(options) {
+			this._cache = /* @__PURE__ */ new Map();
+			validateCacheSize(options?.cacheSize);
+			this._cacheSize = options.cacheSize;
+		}
+		set(key, selectorFn) {
+			this._cache.set(key, selectorFn);
+			if (this._cache.size > this._cacheSize) {
+				const earliest = this._cache.keys().next().value;
+				this.remove(earliest);
+			}
+		}
+		get(key) {
+			return this._cache.get(key);
+		}
+		remove(key) {
+			this._cache.delete(key);
+		}
+		clear() {
+			this._cache.clear();
+		}
+	};
+	//#endregion
+	//#region src/cache/LruMapCache.ts
+	var LruMapCache = class {
+		constructor(options) {
+			this._cache = /* @__PURE__ */ new Map();
+			validateCacheSize(options?.cacheSize);
+			this._cacheSize = options.cacheSize;
+		}
+		set(key, selectorFn) {
+			this._cache.set(key, selectorFn);
+			if (this._cache.size > this._cacheSize) {
+				const earliest = this._cache.keys().next().value;
+				this.remove(earliest);
+			}
+		}
+		get(key) {
+			const value = this._cache.get(key);
+			if (this._cache.has(key)) {
+				this.remove(key);
+				this._cache.set(key, value);
+			}
+			return value;
+		}
+		remove(key) {
+			this._cache.delete(key);
+		}
+		clear() {
+			this._cache.clear();
+		}
+	};
+	//#endregion
+	exports.FifoMapCache = FifoMapCache;
+	exports.FifoObjectCache = FifoObjectCache;
+	exports.FlatMapCache = FlatMapCache;
+	exports.FlatObjectCache = FlatObjectCache;
+	exports.LruMapCache = LruMapCache;
+	exports.LruObjectCache = LruObjectCache;
+	exports.createCachedSelector = createCachedSelector;
+	exports.createStructuredCachedSelector = createStructuredCachedSelector;
+});
 
-  var defaultCacheCreator = FlatObjectCache;
-  var defaultCacheKeyValidator = function defaultCacheKeyValidator() {
-    return true;
-  };
-  function parseReselectArgs(reselectArgs) {
-    var args = [].concat(reselectArgs);
-    var lastArgument = args[args.length - 1];
-    var resultFunc;
-    var createSelectorOptions = undefined;
-
-    // Last argument is resultFunc
-    if (typeof lastArgument === 'function') {
-      resultFunc = args.pop();
-    } else {
-      // Last argument is createSelectorOptions object
-      createSelectorOptions = args.pop();
-      resultFunc = args.pop();
-    }
-    return {
-      inputSelectors: Array.isArray(args[0]) ? args[0] : [].concat(args),
-      resultFunc: resultFunc,
-      createSelectorOptions: createSelectorOptions
-    };
-  }
-  function createCachedSelector() {
-    for (var _len = arguments.length, reselectArgs = new Array(_len), _key = 0; _key < _len; _key++) {
-      reselectArgs[_key] = arguments[_key];
-    }
-    var _parseReselectArgs = parseReselectArgs(reselectArgs),
-      inputSelectors = _parseReselectArgs.inputSelectors,
-      resultFunc = _parseReselectArgs.resultFunc,
-      createSelectorOptions = _parseReselectArgs.createSelectorOptions;
-    return function (polymorphicOptions) {
-      var options = typeof polymorphicOptions === 'function' ? {
-        keySelector: polymorphicOptions
-      } : Object.assign({}, polymorphicOptions);
-
-      // https://github.com/reduxjs/reselect/blob/v4.0.0/src/index.js#L54
-      var recomputations = 0;
-      var resultFuncWithRecomputations = function resultFuncWithRecomputations() {
-        recomputations++;
-        return resultFunc.apply(void 0, arguments);
-      };
-
-      // Patch reselect call arguments with a custom resultFunc
-      var patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
-      if (createSelectorOptions) {
-        patchedReselectArgs.push(createSelectorOptions);
-      }
-      var cache = options.cacheObject || new defaultCacheCreator();
-      var selectorCreator = options.selectorCreator || reselect.createSelector;
-      var isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
-      if (options.keySelectorCreator) {
-        options.keySelector = options.keySelectorCreator({
-          keySelector: options.keySelector,
-          inputSelectors: inputSelectors,
-          resultFunc: resultFunc
-        });
-      }
-
-      // User receives this function
-      var selector = function selector() {
-        var cacheKey = options.keySelector.apply(options, arguments);
-        if (isValidCacheKey(cacheKey)) {
-          var cacheResponse = cache.get(cacheKey);
-          if (cacheResponse === undefined) {
-            cacheResponse = selectorCreator.apply(void 0, patchedReselectArgs);
-            cache.set(cacheKey, cacheResponse);
-          }
-          return cacheResponse.apply(void 0, arguments);
-        }
-        console.warn("[re-reselect] Invalid cache key \\"" + cacheKey + "\\" has been returned by keySelector function.");
-        return undefined;
-      };
-
-      // Further selector methods
-      selector.getMatchingSelector = function () {
-        var cacheKey = options.keySelector.apply(options, arguments);
-        // @NOTE It might update cache hit count in LRU-like caches
-        return cache.get(cacheKey);
-      };
-      selector.removeMatchingSelector = function () {
-        var cacheKey = options.keySelector.apply(options, arguments);
-        cache.remove(cacheKey);
-      };
-      selector.clearCache = function () {
-        cache.clear();
-      };
-      selector.resultFunc = resultFunc;
-      selector.dependencies = inputSelectors;
-      selector.cache = cache;
-      selector.recomputations = function () {
-        return recomputations;
-      };
-      selector.resetRecomputations = function () {
-        return recomputations = 0;
-      };
-      selector.keySelector = options.keySelector;
-      return selector;
-    };
-  }
-
-  function createStructuredCachedSelector(selectors) {
-    return reselect.createStructuredSelector(selectors, createCachedSelector);
-  }
-
-  function validateCacheSize(cacheSize) {
-    if (cacheSize === undefined) {
-      throw new Error('Missing the required property "cacheSize".');
-    }
-    if (!Number.isInteger(cacheSize) || cacheSize <= 0) {
-      throw new Error('The "cacheSize" property must be a positive integer value.');
-    }
-  }
-
-  var FifoObjectCache = /*#__PURE__*/function () {
-    function FifoObjectCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
-      this._cache = {};
-      this._cacheOrdering = [];
-      this._cacheSize = cacheSize;
-    }
-    var _proto = FifoObjectCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache[key] = selectorFn;
-      this._cacheOrdering.push(key);
-      if (this._cacheOrdering.length > this._cacheSize) {
-        var earliest = this._cacheOrdering[0];
-        this.remove(earliest);
-      }
-    };
-    _proto.get = function get(key) {
-      return this._cache[key];
-    };
-    _proto.remove = function remove(key) {
-      var index = this._cacheOrdering.indexOf(key);
-      if (index > -1) {
-        this._cacheOrdering.splice(index, 1);
-      }
-      delete this._cache[key];
-    };
-    _proto.clear = function clear() {
-      this._cache = {};
-      this._cacheOrdering = [];
-    };
-    _proto.isValidCacheKey = function isValidCacheKey(cacheKey) {
-      return isStringOrNumber(cacheKey);
-    };
-    return FifoObjectCache;
-  }();
-
-  var LruObjectCache = /*#__PURE__*/function () {
-    function LruObjectCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
-      this._cache = {};
-      this._cacheOrdering = [];
-      this._cacheSize = cacheSize;
-    }
-    var _proto = LruObjectCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache[key] = selectorFn;
-      this._registerCacheHit(key);
-      if (this._cacheOrdering.length > this._cacheSize) {
-        var earliest = this._cacheOrdering[0];
-        this.remove(earliest);
-      }
-    };
-    _proto.get = function get(key) {
-      this._registerCacheHit(key);
-      return this._cache[key];
-    };
-    _proto.remove = function remove(key) {
-      this._deleteCacheHit(key);
-      delete this._cache[key];
-    };
-    _proto.clear = function clear() {
-      this._cache = {};
-      this._cacheOrdering = [];
-    };
-    _proto._registerCacheHit = function _registerCacheHit(key) {
-      this._deleteCacheHit(key);
-      this._cacheOrdering.push(key);
-    };
-    _proto._deleteCacheHit = function _deleteCacheHit(key) {
-      var index = this._cacheOrdering.indexOf(key);
-      if (index > -1) {
-        this._cacheOrdering.splice(index, 1);
-      }
-    };
-    _proto.isValidCacheKey = function isValidCacheKey(cacheKey) {
-      return isStringOrNumber(cacheKey);
-    };
-    return LruObjectCache;
-  }();
-
-  var FlatMapCache = /*#__PURE__*/function () {
-    function FlatMapCache() {
-      this._cache = new Map();
-    }
-    var _proto = FlatMapCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache.set(key, selectorFn);
-    };
-    _proto.get = function get(key) {
-      return this._cache.get(key);
-    };
-    _proto.remove = function remove(key) {
-      this._cache["delete"](key);
-    };
-    _proto.clear = function clear() {
-      this._cache.clear();
-    };
-    return FlatMapCache;
-  }();
-
-  var FifoMapCache = /*#__PURE__*/function () {
-    function FifoMapCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
-      this._cache = new Map();
-      this._cacheSize = cacheSize;
-    }
-    var _proto = FifoMapCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache.set(key, selectorFn);
-      if (this._cache.size > this._cacheSize) {
-        var earliest = this._cache.keys().next().value;
-        this.remove(earliest);
-      }
-    };
-    _proto.get = function get(key) {
-      return this._cache.get(key);
-    };
-    _proto.remove = function remove(key) {
-      this._cache["delete"](key);
-    };
-    _proto.clear = function clear() {
-      this._cache.clear();
-    };
-    return FifoMapCache;
-  }();
-
-  var LruMapCache = /*#__PURE__*/function () {
-    function LruMapCache(_temp) {
-      var _ref = _temp === void 0 ? {} : _temp,
-        cacheSize = _ref.cacheSize;
-      validateCacheSize(cacheSize);
-      this._cache = new Map();
-      this._cacheSize = cacheSize;
-    }
-    var _proto = LruMapCache.prototype;
-    _proto.set = function set(key, selectorFn) {
-      this._cache.set(key, selectorFn);
-      if (this._cache.size > this._cacheSize) {
-        var earliest = this._cache.keys().next().value;
-        this.remove(earliest);
-      }
-    };
-    _proto.get = function get(key) {
-      var value = this._cache.get(key);
-
-      // Register cache hit
-      if (this._cache.has(key)) {
-        this.remove(key);
-        this._cache.set(key, value);
-      }
-      return value;
-    };
-    _proto.remove = function remove(key) {
-      this._cache["delete"](key);
-    };
-    _proto.clear = function clear() {
-      this._cache.clear();
-    };
-    return LruMapCache;
-  }();
-
-  exports.FifoMapCache = FifoMapCache;
-  exports.FifoObjectCache = FifoObjectCache;
-  exports.FlatMapCache = FlatMapCache;
-  exports.FlatObjectCache = FlatObjectCache;
-  exports.LruMapCache = LruMapCache;
-  exports.LruObjectCache = LruObjectCache;
-  exports.createCachedSelector = createCachedSelector;
-  exports.createStructuredCachedSelector = createStructuredCachedSelector;
-
-}));
-//# sourceMappingURL=index.js.map
-"
+//# sourceMappingURL=index.umd.js.map"
 `;

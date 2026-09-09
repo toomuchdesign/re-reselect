@@ -1,8 +1,12 @@
-import type { Combiner, CreateSelectorOptions, SelectorArray } from 'reselect';
+import {
+  type Combiner,
+  type CreateSelectorOptions,
+  type SelectorArray,
+  createSelector,
+} from 'reselect';
 
 import { FlatObjectCache } from './cache/FlatObjectCache';
 import type { ICacheObject } from './cache/types';
-import { createSelector } from './reselectWrapper';
 import type {
   CreateCachedSelector,
   CreateCachedSelectorImpl,

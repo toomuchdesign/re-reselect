@@ -16,7 +16,7 @@ const tsconfig = './tsconfig.build.json';
 
 export default defineConfig([
   {
-    entry: ['src/index.ts', 'src/reselectWrapper.ts'],
+    entry: ['src/index.ts'],
     format: 'esm',
     outDir: 'dist/es',
     // Emit `.mjs` so native Node ESM loads the bundle as ES modules regardless
@@ -31,7 +31,7 @@ export default defineConfig([
     unbundle: false,
   },
   {
-    entry: ['src/index.ts', 'src/reselectWrapper.ts'],
+    entry: ['src/index.ts'],
     format: 'cjs',
     outDir: 'dist/cjs',
     outExtensions: () => ({ js: '.js' }),

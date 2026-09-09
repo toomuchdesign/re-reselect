@@ -418,7 +418,8 @@ An optional function with the following signature returning the [`keySelector`](
 type keySelectorCreator = (selectorInputs: {
   inputSelectors: InputSelector[];
   resultFunc: ResultFunc;
-  keySelector: KeySelector;
+  // Absent unless a `keySelector` was also supplied
+  keySelector?: KeySelector;
 }) => KeySelector;
 ```
 

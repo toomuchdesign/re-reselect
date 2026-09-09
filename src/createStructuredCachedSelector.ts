@@ -1,7 +1,10 @@
-import type { SelectorResultsMap, SelectorsObject } from 'reselect';
+import {
+  type SelectorResultsMap,
+  type SelectorsObject,
+  createStructuredSelector,
+} from 'reselect';
 
 import { createCachedSelector } from './createCachedSelector';
-import { createStructuredSelector } from './reselectWrapper';
 import type { SelectorsObjectToTuple } from './typeUtils';
 import type { OutputCachedSelector, PolymorphicCachedOptions } from './types';
 

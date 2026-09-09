@@ -9,6 +9,7 @@ import { describe, expect, it } from 'vitest';
 describe('published artifacts', () => {
   it.each([
     'dist/umd/index.umd.js',
+    'dist/es/index.legacy-esm.js',
     'dist/es/index.d.mts',
     'dist/cjs/index.d.ts',
   ])('%s is unchanged', (artifactPath) => {

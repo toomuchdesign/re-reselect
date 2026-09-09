@@ -3,10 +3,8 @@ import { createSelector } from 'reselect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createCachedSelector } from '../src/index';
-import * as reselect from '../src/reselectWrapper';
 
 beforeEach(() => {
-  vi.spyOn(reselect, 'createSelector');
   vi.spyOn(global.console, 'warn').mockImplementation(() => {});
 });
 

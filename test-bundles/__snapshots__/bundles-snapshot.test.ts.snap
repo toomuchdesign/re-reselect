@@ -450,6 +450,282 @@ export { type CreateCachedSelector, type CreateCachedSelectorOptions, FifoMapCac
 //# sourceMappingURL=index.d.mts.map"
 `;
 
+exports[`published artifacts > dist/es/index.legacy-esm.js is unchanged 1`] = `
+"import { createSelector, createStructuredSelector } from "reselect";
+//#region src/cache/util/isStringOrNumber.ts
+function isStringOrNumber(value) {
+	return typeof value === "string" || typeof value === "number";
+}
+//#endregion
+//#region src/cache/FlatObjectCache.ts
+var FlatObjectCache = class {
+	constructor() {
+		this._cache = {};
+	}
+	set(key, selectorFn) {
+		this._cache[key] = selectorFn;
+	}
+	get(key) {
+		return this._cache[key];
+	}
+	remove(key) {
+		delete this._cache[key];
+	}
+	clear() {
+		this._cache = {};
+	}
+	isValidCacheKey(cacheKey) {
+		return isStringOrNumber(cacheKey);
+	}
+};
+//#endregion
+//#region src/createCachedSelector.ts
+const defaultCacheKeyValidator = () => true;
+function isFunction(value) {
+	return typeof value === "function";
+}
+function parseReselectArgs(reselectArgs) {
+	const args = [...reselectArgs];
+	const last = args.pop();
+	let resultFunc;
+	let createSelectorOptions;
+	if (isFunction(last)) {
+		resultFunc = last;
+		createSelectorOptions = void 0;
+	} else {
+		resultFunc = args.pop();
+		createSelectorOptions = last;
+	}
+	return {
+		inputSelectors: Array.isArray(args[0]) ? args[0] : args,
+		resultFunc,
+		createSelectorOptions
+	};
+}
+const createCachedSelectorImpl = ((...reselectArgs) => {
+	const { inputSelectors, resultFunc, createSelectorOptions } = parseReselectArgs(reselectArgs);
+	return (polymorphicOptions) => {
+		var _options$cacheObject, _options$selectorCrea, _cache$isValidCacheKe;
+		const options = isFunction(polymorphicOptions) ? { keySelector: polymorphicOptions } : { ...polymorphicOptions };
+		let recomputations = 0;
+		const resultFuncWithRecomputations = (...args) => {
+			recomputations++;
+			return resultFunc(...args);
+		};
+		const patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
+		if (createSelectorOptions) patchedReselectArgs.push(createSelectorOptions);
+		const cache = (_options$cacheObject = options.cacheObject) !== null && _options$cacheObject !== void 0 ? _options$cacheObject : new FlatObjectCache();
+		const selectorCreator = (_options$selectorCrea = options.selectorCreator) !== null && _options$selectorCrea !== void 0 ? _options$selectorCrea : createSelector;
+		const isValidCacheKey = (_cache$isValidCacheKe = cache.isValidCacheKey) !== null && _cache$isValidCacheKe !== void 0 ? _cache$isValidCacheKe : defaultCacheKeyValidator;
+		if (options.keySelectorCreator) options.keySelector = options.keySelectorCreator({
+			keySelector: options.keySelector,
+			inputSelectors,
+			resultFunc
+		});
+		if (!isFunction(options.keySelector)) throw new Error("[re-reselect] Missing \\"keySelector\\": provide a \`keySelector\` function or a \`keySelectorCreator\` that returns one.");
+		const keySelector = options.keySelector;
+		function selector(...args) {
+			const cacheKey = keySelector(...args);
+			if (!isValidCacheKey(cacheKey)) {
+				console.warn(\`[re-reselect] Invalid cache key "\${String(cacheKey)}" has been returned by keySelector function.\`);
+				return;
+			}
+			let cacheResponse = cache.get(cacheKey);
+			if (!cacheResponse) {
+				cacheResponse = selectorCreator(...patchedReselectArgs);
+				cache.set(cacheKey, cacheResponse);
+			}
+			return cacheResponse(...args);
+		}
+		return Object.assign(selector, {
+			getMatchingSelector: (...args) => {
+				const cacheKey = keySelector(...args);
+				return cache.get(cacheKey);
+			},
+			removeMatchingSelector: (...args) => {
+				const cacheKey = keySelector(...args);
+				cache.remove(cacheKey);
+			},
+			clearCache: () => {
+				cache.clear();
+			},
+			resultFunc,
+			dependencies: inputSelectors,
+			cache,
+			recomputations: () => recomputations,
+			resetRecomputations: () => {
+				recomputations = 0;
+			},
+			keySelector
+		});
+	};
+});
+const createCachedSelector = Object.assign(createCachedSelectorImpl, { withTypes: () => createCachedSelector });
+//#endregion
+//#region src/createStructuredCachedSelector.ts
+function createStructuredCachedSelector(selectors) {
+	return createStructuredSelector(selectors, createCachedSelector);
+}
+//#endregion
+//#region src/cache/util/validateCacheSize.ts
+function validateCacheSize(cacheSize) {
+	if (cacheSize === void 0) throw new Error("Missing the required property \\"cacheSize\\".");
+	if (!Number.isInteger(cacheSize) || cacheSize <= 0) throw new Error("The \\"cacheSize\\" property must be a positive integer value.");
+}
+//#endregion
+//#region src/cache/FifoObjectCache.ts
+var FifoObjectCache = class {
+	constructor(options) {
+		this._cache = {};
+		this._cacheOrdering = [];
+		validateCacheSize(options === null || options === void 0 ? void 0 : options.cacheSize);
+		this._cacheSize = options.cacheSize;
+	}
+	set(key, selectorFn) {
+		this._cache[key] = selectorFn;
+		this._cacheOrdering.push(key);
+		if (this._cacheOrdering.length > this._cacheSize) {
+			const earliest = this._cacheOrdering[0];
+			this.remove(earliest);
+		}
+	}
+	get(key) {
+		return this._cache[key];
+	}
+	remove(key) {
+		const index = this._cacheOrdering.indexOf(key);
+		if (index > -1) this._cacheOrdering.splice(index, 1);
+		delete this._cache[key];
+	}
+	clear() {
+		this._cache = {};
+		this._cacheOrdering = [];
+	}
+	isValidCacheKey(cacheKey) {
+		return isStringOrNumber(cacheKey);
+	}
+};
+//#endregion
+//#region src/cache/LruObjectCache.ts
+var LruObjectCache = class {
+	constructor(options) {
+		this._cache = {};
+		this._cacheOrdering = [];
+		validateCacheSize(options === null || options === void 0 ? void 0 : options.cacheSize);
+		this._cacheSize = options.cacheSize;
+	}
+	set(key, selectorFn) {
+		this._cache[key] = selectorFn;
+		this._registerCacheHit(key);
+		if (this._cacheOrdering.length > this._cacheSize) {
+			const earliest = this._cacheOrdering[0];
+			this.remove(earliest);
+		}
+	}
+	get(key) {
+		this._registerCacheHit(key);
+		return this._cache[key];
+	}
+	remove(key) {
+		this._deleteCacheHit(key);
+		delete this._cache[key];
+	}
+	clear() {
+		this._cache = {};
+		this._cacheOrdering = [];
+	}
+	isValidCacheKey(cacheKey) {
+		return isStringOrNumber(cacheKey);
+	}
+	_registerCacheHit(key) {
+		this._deleteCacheHit(key);
+		this._cacheOrdering.push(key);
+	}
+	_deleteCacheHit(key) {
+		const index = this._cacheOrdering.indexOf(key);
+		if (index > -1) this._cacheOrdering.splice(index, 1);
+	}
+};
+//#endregion
+//#region src/cache/FlatMapCache.ts
+var FlatMapCache = class {
+	constructor() {
+		this._cache = /* @__PURE__ */ new Map();
+	}
+	set(key, selectorFn) {
+		this._cache.set(key, selectorFn);
+	}
+	get(key) {
+		return this._cache.get(key);
+	}
+	remove(key) {
+		this._cache.delete(key);
+	}
+	clear() {
+		this._cache.clear();
+	}
+};
+//#endregion
+//#region src/cache/FifoMapCache.ts
+var FifoMapCache = class {
+	constructor(options) {
+		this._cache = /* @__PURE__ */ new Map();
+		validateCacheSize(options === null || options === void 0 ? void 0 : options.cacheSize);
+		this._cacheSize = options.cacheSize;
+	}
+	set(key, selectorFn) {
+		this._cache.set(key, selectorFn);
+		if (this._cache.size > this._cacheSize) {
+			const earliest = this._cache.keys().next().value;
+			this.remove(earliest);
+		}
+	}
+	get(key) {
+		return this._cache.get(key);
+	}
+	remove(key) {
+		this._cache.delete(key);
+	}
+	clear() {
+		this._cache.clear();
+	}
+};
+//#endregion
+//#region src/cache/LruMapCache.ts
+var LruMapCache = class {
+	constructor(options) {
+		this._cache = /* @__PURE__ */ new Map();
+		validateCacheSize(options === null || options === void 0 ? void 0 : options.cacheSize);
+		this._cacheSize = options.cacheSize;
+	}
+	set(key, selectorFn) {
+		this._cache.set(key, selectorFn);
+		if (this._cache.size > this._cacheSize) {
+			const earliest = this._cache.keys().next().value;
+			this.remove(earliest);
+		}
+	}
+	get(key) {
+		const value = this._cache.get(key);
+		if (this._cache.has(key)) {
+			this.remove(key);
+			this._cache.set(key, value);
+		}
+		return value;
+	}
+	remove(key) {
+		this._cache.delete(key);
+	}
+	clear() {
+		this._cache.clear();
+	}
+};
+//#endregion
+export { FifoMapCache, FifoObjectCache, FlatMapCache, FlatObjectCache, LruMapCache, LruObjectCache, createCachedSelector, createStructuredCachedSelector };
+
+//# sourceMappingURL=index.legacy-esm.js.map"
+`;
+
 exports[`published artifacts > dist/umd/index.umd.js is unchanged 1`] = `
 "(function(global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("reselect")) : typeof define === "function" && define.amd ? define(["exports", "reselect"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global["Re-reselect"] = {}, global.Reselect));
@@ -508,6 +784,7 @@ exports[`published artifacts > dist/umd/index.umd.js is unchanged 1`] = `
 	const createCachedSelectorImpl = ((...reselectArgs) => {
 		const { inputSelectors, resultFunc, createSelectorOptions } = parseReselectArgs(reselectArgs);
 		return (polymorphicOptions) => {
+			var _options$cacheObject, _options$selectorCrea, _cache$isValidCacheKe;
 			const options = isFunction(polymorphicOptions) ? { keySelector: polymorphicOptions } : { ...polymorphicOptions };
 			let recomputations = 0;
 			const resultFuncWithRecomputations = (...args) => {
@@ -516,9 +793,9 @@ exports[`published artifacts > dist/umd/index.umd.js is unchanged 1`] = `
 			};
 			const patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
 			if (createSelectorOptions) patchedReselectArgs.push(createSelectorOptions);
-			const cache = options.cacheObject ?? new FlatObjectCache();
-			const selectorCreator = options.selectorCreator ?? reselect.createSelector;
-			const isValidCacheKey = cache.isValidCacheKey ?? defaultCacheKeyValidator;
+			const cache = (_options$cacheObject = options.cacheObject) !== null && _options$cacheObject !== void 0 ? _options$cacheObject : new FlatObjectCache();
+			const selectorCreator = (_options$selectorCrea = options.selectorCreator) !== null && _options$selectorCrea !== void 0 ? _options$selectorCrea : reselect.createSelector;
+			const isValidCacheKey = (_cache$isValidCacheKe = cache.isValidCacheKey) !== null && _cache$isValidCacheKe !== void 0 ? _cache$isValidCacheKe : defaultCacheKeyValidator;
 			if (options.keySelectorCreator) options.keySelector = options.keySelectorCreator({
 				keySelector: options.keySelector,
 				inputSelectors,
@@ -580,7 +857,7 @@ exports[`published artifacts > dist/umd/index.umd.js is unchanged 1`] = `
 		constructor(options) {
 			this._cache = {};
 			this._cacheOrdering = [];
-			validateCacheSize(options?.cacheSize);
+			validateCacheSize(options === null || options === void 0 ? void 0 : options.cacheSize);
 			this._cacheSize = options.cacheSize;
 		}
 		set(key, selectorFn) {
@@ -613,7 +890,7 @@ exports[`published artifacts > dist/umd/index.umd.js is unchanged 1`] = `
 		constructor(options) {
 			this._cache = {};
 			this._cacheOrdering = [];
-			validateCacheSize(options?.cacheSize);
+			validateCacheSize(options === null || options === void 0 ? void 0 : options.cacheSize);
 			this._cacheSize = options.cacheSize;
 		}
 		set(key, selectorFn) {
@@ -672,7 +949,7 @@ exports[`published artifacts > dist/umd/index.umd.js is unchanged 1`] = `
 	var FifoMapCache = class {
 		constructor(options) {
 			this._cache = /* @__PURE__ */ new Map();
-			validateCacheSize(options?.cacheSize);
+			validateCacheSize(options === null || options === void 0 ? void 0 : options.cacheSize);
 			this._cacheSize = options.cacheSize;
 		}
 		set(key, selectorFn) {
@@ -697,7 +974,7 @@ exports[`published artifacts > dist/umd/index.umd.js is unchanged 1`] = `
 	var LruMapCache = class {
 		constructor(options) {
 			this._cache = /* @__PURE__ */ new Map();
-			validateCacheSize(options?.cacheSize);
+			validateCacheSize(options === null || options === void 0 ? void 0 : options.cacheSize);
 			this._cacheSize = options.cacheSize;
 		}
 		set(key, selectorFn) {

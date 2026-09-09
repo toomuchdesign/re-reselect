@@ -5,11 +5,10 @@ import { vi } from 'vitest';
  * Observes "a new reselect selector was instantiated" through the public
  * `selectorCreator` option.
  *
- * The obvious alternative — `vi.spyOn(reselectWrapper, 'createSelector')` —
- * only works against the sources. The published CJS and UMD bundles inline the
- * wrapper and read `createSelector` off reselect's own module namespace, which
- * is frozen in ESM ("Cannot spy on export ... Module namespace is not
- * configurable"), so those assertions could never run against a real bundle.
+ * The obvious alternative — spying on reselect's `createSelector` export —
+ * cannot work against a published bundle: the bundle reads it off reselect's
+ * own module namespace, which is frozen in ESM ("Cannot spy on export ...
+ * Module namespace is not configurable").
  * Going through the documented option asserts the same thing while keeping one
  * suite runnable against the sources and all three bundles alike.
  */

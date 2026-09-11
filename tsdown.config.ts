@@ -2,12 +2,20 @@ import { defineConfig } from 'tsdown';
 
 const deps = { neverBundle: ['reselect'] };
 
-// Highest target webpack 4's parser still accepts. It only downlevels the
-// ES2020 operators (`?.`, `??`); classes and arrows stay, exactly like every
-// reselect build. reselect pins its legacy build to `es2017`, but that also
-// downlevels object spread — which re-reselect uses and reselect does not —
-// for +693 bytes gzip instead of +82, with no extra compatibility.
-const target = 'es2019';
+// Old bundlers (webpack 4) resolve only the `main`, `module` and `browser`
+// fields, never the `exports` map, so just the bundles those fields point at
+// have to stay parsable by webpack 4's ES2019-era acorn. `es2019` is the
+// highest target that clears it: it downlevels only the ES2020 operators
+// (`?.`, `??`), keeping classes, arrows and object spread, for +82 bytes gzip.
+// (reselect pins its own legacy build to `es2017`, but that also downlevels
+// object spread — which re-reselect uses and reselect does not — for +693
+// bytes with no extra compatibility.)
+//
+// This is NOT applied to the modern `dist/es/index.mjs` (the `import`
+// condition): only modern toolchains (native Node ESM, webpack 5+, Vite) ever
+// reach it, and they parse the ES2020 operators fine. reselect leaves its own
+// `.mjs`/browser builds un-downleveled for the same reason.
+const legacyTarget = 'es2019';
 
 // The root `tsconfig.json` spans the whole repo (sources, tests, tooling
 // configs) so `npm run type:check` covers everything. The bundler needs the
@@ -26,7 +34,8 @@ export default defineConfig([
     sourcemap: true,
     deps,
     tsconfig,
-    target,
+    // No `target`: this is the modern ESM build, left at the toolchain default
+    // so the `import`-condition consumers get untranspiled output.
     clean: true,
     unbundle: false,
   },
@@ -38,7 +47,7 @@ export default defineConfig([
     sourcemap: true,
     deps,
     tsconfig,
-    target,
+    target: legacyTarget,
     // Emit CJS declarations (`dist/cjs/index.d.ts`) so the `require` condition
     // of the `exports` map resolves CJS-shaped types.
     dts: true,
@@ -52,7 +61,7 @@ export default defineConfig([
     sourcemap: true,
     deps,
     tsconfig,
-    target,
+    target: legacyTarget,
     globalName: 'Re-reselect',
     dts: false,
     clean: false,
@@ -95,7 +104,7 @@ export default defineConfig([
     sourcemap: true,
     deps,
     tsconfig,
-    target,
+    target: legacyTarget,
     dts: false,
     clean: false,
     unbundle: false,

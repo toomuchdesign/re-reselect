@@ -14,8 +14,8 @@ import { describe, expect, it } from 'vitest';
  *    `target: 'node'`, i.e. any webpack 4 SSR build),
  *  - `main`    -> `dist/cjs/index.js` for plain `require`.
  *
- * `dist/es/index.mjs` is only ever reached through `exports.import`, so it is
- * covered here for consistency rather than necessity.
+ * `dist/es/index.mjs` (the `exports.import` entry) is deliberately NOT listed:
+ * only modern toolchains reach it, so it keeps the ES2020 operators on purpose.
  *
  * Guarding on the emitted text keeps this honest even if the `target` in
  * `tsdown.config.ts` is loosened by accident.
@@ -25,7 +25,6 @@ describe('published bundles stay parsable by webpack 4', () => {
     'dist/umd/index.umd.js',
     'dist/es/index.legacy-esm.js',
     'dist/cjs/index.js',
-    'dist/es/index.mjs',
   ])('%s contains no ES2020 operators', (artifactPath) => {
     const source = readFileSync(join(__dirname, '..', artifactPath), 'utf8');
 

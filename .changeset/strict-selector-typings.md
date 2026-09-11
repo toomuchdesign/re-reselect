@@ -6,7 +6,7 @@ Rewrite re-reselect in native TypeScript.
 
 The internals moved from JavaScript with a hand-maintained `index.d.ts` (~4500 lines of manual per-arity type overloads) to native `.ts` sources whose type declarations are generated at build time. Build tooling moved from Rollup + Babel to `tsdown` (rolldown), and the type layer now derives everything from reselect v5-style variadic-tuple inference instead of hand-written overloads.
 
-The runtime value API is unchanged: the same two factories (`createCachedSelector`, `createStructuredCachedSelector`) and six cache classes are exported, with working CJS, ESM and UMD bundles, and `reselect` still resolved as a `^5.0.0` peer dependency.
+The runtime value API is unchanged: the same two factories (`createCachedSelector`, `createStructuredCachedSelector`) and six cache classes are exported, with working CJS and ESM bundles, and `reselect` still resolved as a `^5.0.0` peer dependency.
 
 ### Runtime behavior changes
 
@@ -72,9 +72,9 @@ import type { OutputSelector, Selector } from 'reselect';
 The package now ships a standard `exports` map with separate `import` (ESM) and `require` (CJS) conditions, each pointing at its own type declarations. Consequences:
 
 - **Deep imports into `dist` are no longer resolvable.** Only the package root (`re-reselect`) and `re-reselect/package.json` are exposed. Import from the package root instead of paths like `re-reselect/dist/...`.
-- **The UMD build moved to `dist/umd/index.umd.js`** (was `dist/umd/index.js`), and the `browser` field points at the new path. Direct CDN links that hard-code the old path (`unpkg.com/re-reselect/dist/umd/index.js`, jsDelivr, a `<script src>` copied from older docs) will 404 and must be updated.
+- **The UMD build and the `browser` field have been removed.** re-reselect no longer ships a `dist/umd/` bundle (reselect v5 dropped its own UMD build too). Any consumer loading re-reselect straight from a CDN via a `<script>` tag (`unpkg`, jsDelivr) or resolving the old `browser` field must switch to the ESM or CJS build — e.g. an ESM CDN such as `https://esm.sh/re-reselect`, or bundle it as part of an app build.
 - **The ESM build is now `dist/es/index.mjs`** (was `dist/es/index.js`), reached through the `import` condition, so native Node ESM loads it as a real ES module.
 - **The `module` field points at a separate `dist/es/index.legacy-esm.js`.** Old bundlers (e.g. webpack 4) read `module`, not `exports`, and treat a `.mjs` file as strict ESM that cannot re-export reselect's named bindings; the `.js` legacy-ESM entry avoids that, mirroring reselect's own `reselect.legacy-esm.js`. Node never resolves it (it uses the `import` condition).
 - **Type declarations moved.** The `import` condition resolves to `dist/es/index.d.mts` and the `require` condition to `dist/cjs/index.d.ts`; the top-level `types` field points at the latter. Consumers resolving types through the package name are unaffected.
 
-The importable value API (`re-reselect` root, CJS/ESM/UMD) is unchanged.
+The importable value API (`re-reselect` root, CJS/ESM) is unchanged.

@@ -2,19 +2,21 @@ import { defineConfig } from 'tsdown';
 
 const deps = { neverBundle: ['reselect'] };
 
-// Old bundlers (webpack 4) resolve only the `main`, `module` and `browser`
-// fields, never the `exports` map, so just the bundles those fields point at
-// have to stay parsable by webpack 4's ES2019-era acorn. `es2019` is the
-// highest target that clears it: it downlevels only the ES2020 operators
-// (`?.`, `??`), keeping classes, arrows and object spread, for +82 bytes gzip.
-// (reselect pins its own legacy build to `es2017`, but that also downlevels
-// object spread — which re-reselect uses and reselect does not — for +693
-// bytes with no extra compatibility.)
+// webpack 4 resolves the `module` field before `main` (default `mainFields`
+// are `['module', 'main']`, or `['browser', 'module', 'main']` for the web
+// target — and there is no `browser` field) and never reads the `exports` map.
+// So the only published bundle it can reach is the legacy-ESM `module` entry,
+// and it is the only one that has to stay parsable by webpack 4's ES2019-era
+// acorn. `es2019` is the highest target that clears it: it downlevels only the
+// ES2020 operators (`?.`, `??`), keeping classes, arrows and object spread, for
+// +82 bytes gzip. (reselect pins its own legacy build to `es2017`, but that
+// also downlevels object spread — which re-reselect uses and reselect does not
+// — for +693 bytes with no extra compatibility.)
 //
-// This is NOT applied to the modern `dist/es/index.mjs` (the `import`
-// condition): only modern toolchains (native Node ESM, webpack 5+, Vite) ever
-// reach it, and they parse the ES2020 operators fine. reselect leaves its own
-// `.mjs`/browser builds un-downleveled for the same reason.
+// The CJS (`main` / `require`) and modern ESM (`import` -> `.mjs`) builds are
+// left at the toolchain default: only native `require()`, native Node ESM and
+// modern bundlers reach them, and all parse the ES2020 operators fine. reselect
+// likewise downlevels only its legacy-ESM build and ships CJS/`.mjs` as esnext.
 const legacyTarget = 'es2019';
 
 // The root `tsconfig.json` spans the whole repo (sources, tests, tooling
@@ -47,7 +49,9 @@ export default defineConfig([
     sourcemap: true,
     deps,
     tsconfig,
-    target: legacyTarget,
+    // No `target`: webpack 4 never resolves `main` (the `module` field wins),
+    // so the CJS build is reached only by native `require()` and modern
+    // bundlers, which parse the ES2020 operators fine — same as reselect's CJS.
     // Emit CJS declarations (`dist/cjs/index.d.ts`) so the `require` condition
     // of the `exports` map resolves CJS-shaped types.
     dts: true,

@@ -16,7 +16,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
  * three "bundle" runs simply re-ran the sources. They passed with `dist/`
  * deleted.
  */
-export function createBundleConfig(entry: string) {
+export function createBundleVitestConfig(entry: string) {
   return mergeConfig(
     config,
     defineConfig({
@@ -27,6 +27,11 @@ export function createBundleConfig(entry: string) {
       resolve: {
         alias: [
           {
+            // Redirect the package entry only: `../src`, `../src/` or
+            // `../src/index`, at any `../` depth. The optional `/index` and
+            // trailing slash are what keep internal submodules such as
+            // `../src/typeUtils` pointing at source, since they have no
+            // single-file bundle to resolve to.
             find: /^(?:\.\.\/)+src(?:\/index)?\/?$/,
             replacement: root + entry,
           },

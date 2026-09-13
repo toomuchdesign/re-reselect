@@ -1,3 +1,3 @@
-import { createBundleConfig } from './createBundleConfig.mjs';
+import { createBundleVitestConfig } from './createBundleVitestConfig.mjs';
 
-export default createBundleConfig('dist/es/index.mjs');
+export default createBundleVitestConfig('dist/es/index.mjs');

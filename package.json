@@ -50,7 +50,7 @@
     "@changesets/cli": "^2.29.7",
     "@rollup/plugin-babel": "^7.1.0",
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/coverage-v8": "^5.0.0",
     "expect-type": "^1.2.2",
     "prettier": "^3.2.5",
     "reselect": "^5.1.0",

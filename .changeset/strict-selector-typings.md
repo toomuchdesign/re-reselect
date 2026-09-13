@@ -11,7 +11,7 @@ The runtime value API is unchanged: the same two factories (`createCachedSelecto
 ### Runtime behavior changes
 
 - `resetRecomputations()` now returns `undefined` instead of `0` (aligned with reselect v5). Use `recomputations()` to read the count.
-- **A missing `keySelector` now throws when the selector is created**, not on the first call. `createCachedSelector(...)({ cacheObject })` used to build a selector that only failed with a `TypeError` once it was invoked; it now throws `[re-reselect] Missing "keySelector"` from the factory itself. Because selectors are usually declared at module scope, a selector that was already broken this way now fails at import time rather than at first use.
+- A missing `keySelector` now throws when the selector is created, not on the first call. `createCachedSelector(...)({ cacheObject })` used to build a selector that only failed with a `TypeError` once it was invoked; it now throws `[re-reselect] Missing "keySelector"` from the factory itself. Because selectors are usually declared at module scope, a selector that was already broken this way now fails at import time rather than at first use.
 - An invalid `cacheKey` is stringified with `String()` before going into the warning message. A `symbol` cacheKey previously made the warning path itself throw a `TypeError`.
 - The cache lookup treats any falsy value returned by a custom `cacheObject.get()` as a miss, rather than only `undefined`. A cache object that returns `null` for a miss now works instead of crashing.
 - The returned selector function is named `selector` (`fn.name` was previously `''`).
@@ -22,7 +22,7 @@ The stricter, inferred type layer introduces the following type-level breaking c
 - The cached selector's parameters must match the union of all input selectors' parameters. Under-supplying arguments declared by an input selector is no longer accepted.
 - `resetRecomputations()` is now typed as `() => void` (aligned with reselect v5) instead of `() => number`.
 - The `keySelector` parameter list is now inferred from the input selectors (`(state, ...params)`) instead of the permissive `(state, ...args: any[])`. A `keySelector` that reads an extra argument not declared by any input selector no longer type-checks. This is the "cache dimension supplied via `keySelector` only" pattern. Express the dimension as a parametric input selector (`(state, id) => id`) so it flows into both the call signature and the `keySelector`. Runtime behavior is unchanged.
-- `keySelectorCreator` now receives `keySelector` as an **optional** property (`keySelector?: TypedKeySelector<InputSelectors>`), because it genuinely is absent when `keySelectorCreator` is used on its own. Existing creators that call it directly need a guard or a non-null assertion:
+- `keySelectorCreator` now receives `keySelector` as an optional property (`keySelector?: TypedKeySelector<InputSelectors>`), because it is genuinely absent when `keySelectorCreator` is used on its own. Existing creators that call it directly need a guard or a non-null assertion:
 
   ```ts
   // before
@@ -72,7 +72,7 @@ import type { OutputSelector, Selector } from 'reselect';
 The package now ships a standard `exports` map with separate `import` (ESM) and `require` (CJS) conditions, each pointing at its own type declarations. Consequences:
 
 - **Deep imports into `dist` are no longer resolvable.** Only the package root (`re-reselect`) and `re-reselect/package.json` are exposed. Import from the package root instead of paths like `re-reselect/dist/...`.
-- **The UMD build and the `browser` field have been removed.** re-reselect no longer ships a `dist/umd/` bundle (reselect v5 dropped its own UMD build too). Any consumer loading re-reselect straight from a CDN via a `<script>` tag (`unpkg`, jsDelivr) or resolving the old `browser` field must switch to the ESM or CJS build — e.g. an ESM CDN such as `https://esm.sh/re-reselect`, or bundle it as part of an app build.
+- **The UMD build and the `browser` field have been removed.** re-reselect no longer ships a `dist/umd/` bundle (reselect v5 dropped its own UMD build too). Any consumer loading re-reselect straight from a CDN via a `<script>` tag (`unpkg`, jsDelivr) or resolving the old `browser` field must switch to the ESM or CJS build. Use an ESM CDN such as `https://esm.sh/re-reselect`, or bundle re-reselect as part of an app build.
 - **The ESM build is now `dist/es/index.mjs`** (was `dist/es/index.js`), reached through the `import` condition, so native Node ESM loads it as a real ES module.
 - **The `module` field points at a separate `dist/es/index.legacy-esm.js`.** Old bundlers (e.g. webpack 4) read `module`, not `exports`, and treat a `.mjs` file as strict ESM that cannot re-export reselect's named bindings; the `.js` legacy-ESM entry avoids that, mirroring reselect's own `reselect.legacy-esm.js`. Node never resolves it (it uses the `import` condition).
 - **Type declarations moved.** The `import` condition resolves to `dist/es/index.d.mts` and the `require` condition to `dist/cjs/index.d.ts`; the top-level `types` field points at the latter. Consumers resolving types through the package name are unaffected.

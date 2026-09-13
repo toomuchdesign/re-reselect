@@ -1,3 +1,3 @@
 import { createBundleVitestConfig } from './createBundleVitestConfig.mjs';
 
-export default createBundleVitestConfig('dist/cjs/index.js');
+export default createBundleVitestConfig('dist/es/index.legacy-esm.js');

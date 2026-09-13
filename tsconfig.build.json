@@ -1,0 +1,6 @@
+{
+  // Bundler-facing config (see `tsdown.config.ts`): publishable sources only,
+  // so tests and tooling configs can never leak into the emitted declarations.
+  "extends": "./tsconfig.json",
+  "include": ["src"]
+}

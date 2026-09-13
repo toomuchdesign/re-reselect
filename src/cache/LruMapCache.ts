@@ -1,0 +1,40 @@
+import type { ICacheObject } from './types';
+import { validateCacheSize } from './util/validateCacheSize';
+
+export class LruMapCache implements ICacheObject {
+  private _cache: Map<any, any> = new Map();
+  private _cacheSize: number;
+
+  constructor(options: { cacheSize: number }) {
+    validateCacheSize(options?.cacheSize);
+    this._cacheSize = options.cacheSize;
+  }
+
+  set(key: any, selectorFn: any): void {
+    this._cache.set(key, selectorFn);
+
+    if (this._cache.size > this._cacheSize) {
+      const earliest = this._cache.keys().next().value;
+      this.remove(earliest);
+    }
+  }
+
+  get(key: any): any {
+    const value = this._cache.get(key);
+
+    // Register cache hit
+    if (this._cache.has(key)) {
+      this.remove(key);
+      this._cache.set(key, value);
+    }
+    return value;
+  }
+
+  remove(key: any): void {
+    this._cache.delete(key);
+  }
+
+  clear(): void {
+    this._cache.clear();
+  }
+}

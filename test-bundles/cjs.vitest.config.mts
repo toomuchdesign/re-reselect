@@ -1,3 +1,3 @@
-import { createBundleConfig } from './createBundleConfig.mjs';
+import { createBundleVitestConfig } from './createBundleVitestConfig.mjs';
 
-export default createBundleConfig('dist/cjs/index.js');
+export default createBundleVitestConfig('dist/cjs/index.js');

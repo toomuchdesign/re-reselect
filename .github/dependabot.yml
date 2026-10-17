@@ -7,20 +7,10 @@ updates:
     cooldown:
       default-days: 5
     groups:
-      jest:
+      vitest:
         patterns:
-          - 'jest'
-          - 'babel-jest'
-          - 'ts-jest'
-          - '@types/jest'
-      rollup:
-        patterns:
-          - 'rollup'
-          - 'rollup-*'
-          - '@rollup/*'
-      babel:
-        patterns:
-          - '@babel/*'
+          - 'vitest'
+          - '@vitest/*'
 
   - package-ecosystem: 'github-actions'
     directory: '/'

@@ -20,6 +20,9 @@ export type KeySelector<S> = (state: S, ...args: any[]) => any;
 /**
  * keySelector type with parameters inferred from the parent selector's input selectors.
  * Used to give precise types to the user-supplied keySelector callback at call sites.
+ *
+ * Since v6 a keySelector can't read an argument no input selector declares.
+ * Add a parametric input selector such as `(state, id) => id` for it.
  */
 export type TypedKeySelector<InputSelectors extends SelectorArray> = (
   state: GetStateFromSelectors<InputSelectors>,
@@ -29,6 +32,9 @@ export type TypedKeySelector<InputSelectors extends SelectorArray> = (
 /**
  * A function which receives the selector's inputSelectors/resultFunc/keySelector
  * and returns the keySelector to be used at runtime.
+ *
+ * Since v6 it's keyed on the input selectors (`KeySelectorCreator<InputSelectors, Result>`)
+ * instead of the state type.
  */
 export type KeySelectorCreator<
   InputSelectors extends SelectorArray,
@@ -36,6 +42,7 @@ export type KeySelectorCreator<
 > = (selectorInputs: {
   inputSelectors: InputSelectors;
   resultFunc: Combiner<InputSelectors, Result>;
+  /** Undefined unless a `keySelector` option is also passed. Optional since v6. */
   keySelector?: TypedKeySelector<InputSelectors>;
 }) => TypedKeySelector<InputSelectors>;
 
@@ -51,6 +58,9 @@ export type CreateCachedSelectorOptions<
 
 /**
  * The selector instance returned by `createCachedSelector(...)(...)`.
+ *
+ * Before v6 this typed the factory returned by `createCachedSelector(...)`.
+ * Annotate the selector instead.
  *
  * This type is reconstructed from a plain reselect `Selector` plus **only** the
  * members re-reselect actually attaches at runtime (see

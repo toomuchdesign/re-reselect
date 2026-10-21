@@ -59,15 +59,33 @@ import type { OutputSelector, Selector } from 'reselect';
 | `ParametricSelector<S, P, R>`               | `Selector<S, R, [P]>`                                  |
 | `OptionalParametricSelector<S, P, R>`       | `Selector<S, R, [P?]>`                                 |
 | `OutputParametricSelector<…>`               | let inference produce `OutputSelector<[...inputs], R>` |
-| `OutputParametricCachedSelector<…>`         | `OutputCachedSelector<[...inputs], R>`                 |
-| `OutputOptionalParametricCachedSelector<…>` | `OutputCachedSelector<[...inputs], R>`                 |
+| `OutputParametricCachedSelector<…>`         | see `OutputCachedSelector` below                       |
+| `OutputOptionalParametricCachedSelector<…>` | see `OutputCachedSelector` below                       |
 | `ParametricKeySelector<S, P>`               | `KeySelector<S>` / `TypedKeySelector<Inputs>`          |
 | `ParametricKeySelectorCreator<…>`           | `KeySelectorCreator<Inputs, Result>`                   |
 
 **Changed arity** (aligned with reselect v5, which keys these on the input-selector array instead of `State`):
 
-- `OutputCachedSelector<S, R, C, D>` → `OutputCachedSelector<InputSelectors, Result>`
 - `KeySelectorCreator<S, C, D>` → `KeySelectorCreator<InputSelectors, Result>`
+
+**`OutputCachedSelector` now types the selector, not the factory.** It used to type what `createCachedSelector(...)` returns: the function that takes a `keySelector` or options object. It now types what that function returns: the cached selector, the same way reselect's `OutputSelector` types what `createSelector` returns. Its arguments change to match reselect v5: `OutputCachedSelector<S, R, C, D>` → `OutputCachedSelector<InputSelectors, Result>`. Move the annotation from the factory to the selector:
+
+```ts
+// before
+const makeSelectUser: OutputCachedSelector<State, User, Combiner, Deps> =
+  createCachedSelector(selectUsers, selectId, (users, id) => users[id]);
+const selectUser = makeSelectUser((state, id) => id);
+
+// after
+const selectUser: OutputCachedSelector<
+  [typeof selectUsers, typeof selectId],
+  User
+> = createCachedSelector(
+  selectUsers,
+  selectId,
+  (users, id) => users[id],
+)((state, id) => id);
+```
 
 ### Packaging changes
 

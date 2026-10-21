@@ -35,6 +35,8 @@ The stricter, inferred type layer introduces the following type-level breaking c
       keySelector?.(state, id) ?? id;
   ```
 
+- The keySelector returned by `keySelectorCreator` is now typed `TypedKeySelector<InputSelectors>` instead of `(state, ...args: any[]) => any`, so it follows the same rule as `keySelector`: it can't read an argument no input selector declares. With input selectors taking `(state, id)`, a creator returning `(state, id, page) => …` no longer type-checks. Move `page` into a parametric input selector.
+
 - `createStructuredCachedSelector` with a very large selectors object (roughly 50+ keys) may fail to type-check with `TS2589` "Type instantiation is excessively deep". This is inherited from reselect v5's own `createStructuredSelector`, which uses the same object-to-tuple type derivation; the previous hand-written `.d.ts` avoided it via non-recursive mapped types. Runtime behavior is unchanged. Workaround: split into smaller structured selectors, or compose plain `createCachedSelector` calls.
 
 ### Removed and changed type exports

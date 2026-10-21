@@ -71,6 +71,7 @@ const reactUsersAgain = getUsersByLibrary(state, 'react');
   - [keySelector](#keyselector)
   - [options](#options)
   - [selector instance][selector-instance-docs]
+- [Migrating from v5](#migrating-from-v5)
 - [About re-reselect](#about-re-reselect)
 - [Todo's](#todos)
 - [Contributors](#contributors)
@@ -476,6 +477,26 @@ Reset `recomputations` count.
 
 Get `keySelector` for utility compositions or testing.
 
+## Migrating from v5
+
+v6 is a rewrite in TypeScript. JavaScript users only need the runtime changes. The [changelog][changelog] has the full migration table.
+
+Runtime and packaging:
+
+- `resetRecomputations()` returns `undefined`. Read the count with `recomputations()`.
+- A missing `keySelector` throws when the selector is created, not on its first call.
+- Any falsy value returned by a custom `cacheObject.get()` counts as a cache miss.
+- The UMD bundle is gone: use an ESM CDN such as `https://esm.sh/re-reselect`, or bundle re-reselect. Deep imports like `re-reselect/dist/...` no longer resolve.
+
+TypeScript:
+
+- Selector arguments are inferred from the input selectors. Extra or missing arguments are rejected, and so is a `keySelector` reading an argument no input selector declares. Add a parametric input selector such as `(state, id) => id` for that argument.
+- `keySelectorCreator` receives `keySelector` as optional. Check it before calling it.
+- `Selector` and `OutputSelector` are no longer exported: import them from `reselect`. `CreateSelectorInstance` is gone too: use reselect's `CreateSelectorFunction`. The `Parametric*` types are gone: write `ParametricSelector<S, P, R>` as `Selector<S, R, [P]>`.
+- `OutputCachedSelector<InputSelectors, Result>` now types the cached selector, not the factory returned by `createCachedSelector(...)`. Annotate the selector instead.
+- `KeySelectorCreator<InputSelectors, Result>` takes the input selectors instead of the state type.
+- A `createStructuredCachedSelector` call with a very large selectors object (roughly 50+ keys) can fail with `TS2589`. Split it into smaller ones.
+
 ## About re-reselect
 
 - [re-reselect your whole redux state](https://patrickdesjardins.com/blog/re-reselect-your-whole-redux-state)
@@ -571,4 +592,5 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [example-5]: examples/5-selectorator.md
 [selector-instance-docs]: #re-reselect-selector-instance
 [cache-objects-docs]: src/cache#readme
+[changelog]: CHANGELOG.md
 [docs-all-contributors]: https://allcontributors.org/docs/en/emoji-key

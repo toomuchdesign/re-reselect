@@ -71,6 +71,7 @@ const reactUsersAgain = getUsersByLibrary(state, 'react');
   - [keySelector](#keyselector)
   - [options](#options)
   - [selector instance][selector-instance-docs]
+- [Migrating from v5](#migrating-from-v5)
 - [About re-reselect](#about-re-reselect)
 - [Todo's](#todos)
 - [Contributors](#contributors)
@@ -332,6 +333,40 @@ Takes the same arguments as reselect's [`createSelector`][reselect-create-select
 
 **Returns** a [selector instance][selector-instance-docs].
 
+#### createCachedSelector.withTypes\<State\>()
+
+Creates a **pre-typed** version of `createCachedSelector` with the `state` type baked in, mirroring reselect's [`createSelector.withTypes`][reselect-with-types]. Set the `state` type once instead of annotating it on every input selector:
+
+```ts
+const createAppCachedSelector = createCachedSelector.withTypes<RootState>();
+```
+
+Without `withTypes` you annotate `state` on every input selector:
+
+```ts
+const selectTodoById = createCachedSelector(
+  (state: RootState) => state.todos,
+  (state: RootState, id: string) => id,
+  (todos, id) => todos[id],
+)((state: RootState, id) => id);
+```
+
+With a pre-typed creator, `state` is inferred everywhere while per-selector params and the result stay inferred:
+
+```ts
+const selectTodoById = createAppCachedSelector(
+  [
+    (state) => state.todos, // `state` inferred as `RootState`
+    (state, id: string) => id, // `id` param still inferred
+  ],
+  (todos, id) => todos[id],
+)((state, id) => id); // `keySelector` `state` inferred too
+```
+
+> **Pass input selectors as an array.** As with reselect's `createSelector.withTypes`, state inference only works when input selectors are given as a single array argument. The variadic form (input selectors spread as separate arguments) collapses the combiner arguments to `never`.
+
+Only the `state` type is pre-typed. `withTypes` is a **type-only** helper: at runtime it returns the same `createCachedSelector` unchanged. Calls can be chained to narrow the state further (the override type must extend the current one).
+
 ### createStructuredCachedSelector
 
 <!-- prettier-ignore -->
@@ -384,7 +419,8 @@ An optional function with the following signature returning the [`keySelector`](
 type keySelectorCreator = (selectorInputs: {
   inputSelectors: InputSelector[];
   resultFunc: ResultFunc;
-  keySelector: KeySelector;
+  // Absent unless a `keySelector` was also supplied
+  keySelector?: KeySelector;
 }) => KeySelector;
 ```
 
@@ -441,6 +477,26 @@ Reset `recomputations` count.
 
 Get `keySelector` for utility compositions or testing.
 
+## Migrating from v5
+
+v6 is a rewrite in TypeScript. JavaScript users only need the runtime changes. The [changelog][changelog] has the full migration table.
+
+Runtime and packaging:
+
+- `resetRecomputations()` returns `undefined`. Read the count with `recomputations()`.
+- A missing `keySelector` throws when the selector is created, not on its first call.
+- Any falsy value returned by a custom `cacheObject.get()` counts as a cache miss.
+- The UMD bundle is gone: use an ESM CDN such as `https://esm.sh/re-reselect`, or bundle re-reselect. Deep imports like `re-reselect/dist/...` no longer resolve.
+
+TypeScript:
+
+- Selector arguments are inferred from the input selectors. Extra or missing arguments are rejected, and so is a `keySelector` reading an argument no input selector declares. Add a parametric input selector such as `(state, id) => id` for that argument.
+- `keySelectorCreator` receives `keySelector` as optional. Check it before calling it.
+- `Selector` and `OutputSelector` are no longer exported: import them from `reselect`. `CreateSelectorInstance` is gone too: use reselect's `CreateSelectorFunction`. The `Parametric*` types are gone: write `ParametricSelector<S, P, R>` as `Selector<S, R, [P]>`.
+- `OutputCachedSelector<InputSelectors, Result>` now types the cached selector, not the factory returned by `createCachedSelector(...)`. Annotate the selector instead.
+- `KeySelectorCreator<InputSelectors, Result>` takes the input selectors instead of the state type.
+- A `createStructuredCachedSelector` call with a very large selectors object (roughly 50+ keys) can fail with `TS2589`. Split it into smaller ones.
+
 ## About re-reselect
 
 - [re-reselect your whole redux state](https://patrickdesjardins.com/blog/re-reselect-your-whole-redux-state)
@@ -456,7 +512,6 @@ Get `keySelector` for utility compositions or testing.
 ## Todo's
 
 - Improve tests readability
-- Port to native TS based on reselect v5 approach
 - Find out whether `re-reselect` should be deprecated in favour of `reselect` memoization/cache options
 
 ## Contributors
@@ -520,6 +575,7 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [reselect-create-selector]: https://github.com/reactjs/reselect/tree/v4.0.0#createselectorinputselectors--inputselectors-resultfunc
 [reselect-create-structured-selector]: https://github.com/reduxjs/reselect/tree/v4.0.0#createstructuredselectorinputselectors-selectorcreator--createselector
 [reselect-create-selector-creator]: https://github.com/reactjs/reselect/tree/v4.0.0#createselectorcreatormemoize-memoizeoptions
+[reselect-with-types]: https://reselect.js.org/api/createselector#createselectorwithtypes
 [lodash-memoize]: https://lodash.com/docs/4.17.4#memoize
 [ci-badge]: https://github.com/toomuchdesign/re-reselect/actions/workflows/ci.yml/badge.svg
 [ci]: https://github.com/toomuchdesign/re-reselect/actions/workflows/ci.yml
@@ -536,4 +592,5 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [example-5]: examples/5-selectorator.md
 [selector-instance-docs]: #re-reselect-selector-instance
 [cache-objects-docs]: src/cache#readme
+[changelog]: CHANGELOG.md
 [docs-all-contributors]: https://allcontributors.org/docs/en/emoji-key

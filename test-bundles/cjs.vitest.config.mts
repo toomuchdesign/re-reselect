@@ -1,29 +1,3 @@
-import { defineConfig, mergeConfig } from 'vitest/config';
+import { createBundleVitestConfig } from './createBundleVitestConfig.mjs';
 
-import config from '../vitest.config.mjs';
-
-export default mergeConfig(
-  config,
-  defineConfig({
-    test: {
-      coverage: {
-        enabled: false,
-      },
-      typecheck: {
-        enabled: false,
-      },
-    },
-    resolve: {
-      alias: [
-        {
-          find: '/src/index',
-          replacement: '/dist/cjs/index',
-        },
-        {
-          find: '/src/reselectWrapper',
-          replacement: '/dist/cjs/reselectWrapper',
-        },
-      ],
-    },
-  }),
-);
+export default createBundleVitestConfig('dist/cjs/index.js');

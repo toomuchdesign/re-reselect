@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
     "module": "preserve",
+    "moduleResolution": "Bundler",
     "strict": true,
-    "allowJs": true,
     "esModuleInterop": true,
     "lib": ["es6"],
-    "moduleResolution": "Bundler",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noEmit": true
   },
-  "exclude": ["./dist"]
+  // Every hand-written TS file in the repo: library sources, test suites and
+  // the root-level tooling configs. `tsconfig.build.json` narrows this down to
+  // `src` for the bundler.
+  "include": ["."],
+  "exclude": ["dist", "coverage"]
 }

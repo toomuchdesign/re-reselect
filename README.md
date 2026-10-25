@@ -66,11 +66,9 @@ const reactUsersAgain = getUsersByLibrary(state, 'react');
 - [Examples](#examples)
 - [FAQ](#faq)
 - [API](#api)
-  - [`createCachedSelector`](#createCachedSelector)
-  - [`createStructuredCachedSelector`](#createStructuredCachedSelector)
-  - [keySelector](#keyselector)
-  - [options](#options)
-  - [selector instance][selector-instance-docs]
+  - [Functions](#functions)
+  - [Arguments](#arguments)
+  - [Returned selector][selector-instance-docs]
 - [Migrating from v5](#migrating-from-v5)
 - [About re-reselect](#about-re-reselect)
 
@@ -245,7 +243,7 @@ createCachedSelector(
   </summary>
   <br/>
 
-Use a [`cacheObject`][cache-objects-docs] which provides that feature by supplying a [`cacheObject` option](#cacheobject).
+Use a [`cacheObject`][cache-objects-docs] which provides that feature by supplying a [`cacheObject` option](#options).
 
 You can also write **your own cache strategy**!
 
@@ -314,7 +312,9 @@ myFooDataSelector.resetRecomputations();
 
 ## API
 
-### createCachedSelector
+### Functions
+
+#### createCachedSelector
 
 <!-- prettier-ignore -->
 ```js
@@ -365,7 +365,7 @@ const selectTodoById = createAppCachedSelector(
 
 Only the `state` type is pre-typed. `withTypes` is a **type-only** helper: at runtime it returns the same `createCachedSelector` unchanged. Calls can be chained to narrow the state further (the override type must extend the current one).
 
-### createStructuredCachedSelector
+#### createStructuredCachedSelector
 
 <!-- prettier-ignore -->
 ```js
@@ -382,36 +382,28 @@ Takes the same arguments as reselect's [`createStructuredSelector`][reselect-cre
 
 **Returns** a [selector instance][selector-instance-docs].
 
-### keySelector
+---
 
-A custom function receiving the same arguments as your selectors (and `inputSelectors`) and **returning a `cacheKey`**.
-
-`cacheKey` is **by default a `string` or `number`** but can be anything depending on the chosen cache strategy (see [`cacheObject` option](#optionscacheobject)).
-
-The `keySelector` idea comes from [Lodash's .memoize resolver][lodash-memoize].
-
-### options
+### Arguments
 
 #### keySelector
 
-Type: `function`<br />
-Default: `undefined`
+A custom function receiving the same arguments as your selectors (and `inputSelectors`) and **returning a `cacheKey`**.
 
-The [`keySelector`](#keyselector) used by the cached selector.
+`cacheKey` is **by default a `string` or `number`** but can be anything depending on the chosen cache strategy (see [`cacheObject` option](#options)).
 
-#### cacheObject
+The `keySelector` idea comes from [Lodash's .memoize resolver][lodash-memoize].
 
-Type: `object`<br />
-Default: [`FlatObjectCache`][cache-objects-docs]
+#### options
 
-An optional custom **cache strategy object** to handle the caching behaviour. Read more about [re-reselect's custom cache here][cache-objects-docs].
+| Option                                             | Type       | Default                                                   | Description                                                                                                                                          |
+| -------------------------------------------------- | ---------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `keySelector`                                      | `function` | `undefined`                                               | The [`keySelector`](#keyselector) used by the cached selector.                                                                                       |
+| `cacheObject`                                      | `object`   | [`FlatObjectCache`][cache-objects-docs]                   | An optional custom **cache strategy object** to handle the caching behaviour. Read more about [re-reselect's custom cache here][cache-objects-docs]. |
+| [`keySelectorCreator`](#optionskeyselectorcreator) | `function` | `undefined`                                               | An optional function returning the [`keySelector`](#keyselector) used by the cached selector. Overrides any provided `keySelector`.                  |
+| `selectorCreator`                                  | `function` | `reselect`'s [`createSelector`][reselect-create-selector] | An optional function describing a [custom version of createSelector][reselect-create-selector-creator].                                              |
 
-#### keySelectorCreator
-
-Type: `function`<br />
-Default: `undefined`
-
-An optional function with the following signature returning the [`keySelector`](#keyselector) used by the cached selector.
+#### options.keySelectorCreator
 
 ```typescript
 type keySelectorCreator = (selectorInputs: {
@@ -426,54 +418,32 @@ This allows the ability to dynamically **generate `keySelectors` on runtime** ba
 
 See [programmatic keySelector composition][example-4] example.
 
-#### selectorCreator
+---
 
-Type: `function`<br />
-Default: `reselect`'s [`createSelector`][reselect-create-selector]
-
-An optional function describing a [custom version of createSelector][reselect-create-selector-creator].
-
-### re-reselect selector instance
+### Returned selector
 
 `createCachedSelector` and `createStructuredCachedSelector` return a **selector instance** which extends the API of a **standard reselect selector**.
 
-> The followings are advanced methods and you won't need them for basic usage!
+> The following are advanced methods and you won't need them for basic usage!
 
-#### selector`.getMatchingSelector(selectorArguments)`
+#### Cache
 
-Retrieve the selector responding to the given arguments, or `undefined` if none is cached.
+| Member                                               | Description                                                                                                                                                    |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `selector.getMatchingSelector(selectorArguments)`    | Retrieve the selector responding to the given arguments, or `undefined` if none is cached.                                                                     |
+| `selector.removeMatchingSelector(selectorArguments)` | Remove from the cache the selector responding to the given arguments.                                                                                          |
+| `selector.cache`                                     | Get the cacheObject instance being used by the selector (for advanced caching operations like [this](https://github.com/toomuchdesign/re-reselect/issues/40)). |
+| `selector.clearCache()`                              | Clear whole `selector` cache.                                                                                                                                  |
+| `selector.keySelector`                               | Get `keySelector` for utility compositions or testing.                                                                                                         |
 
-#### selector`.removeMatchingSelector(selectorArguments)`
+#### Inherited from reselect
 
-Remove from the cache the selector responding to the given arguments.
-
-#### selector`.cache`
-
-Get the cacheObject instance being used by the selector (for advanced caching operations like [this](https://github.com/toomuchdesign/re-reselect/issues/40)).
-
-#### selector`.clearCache()`
-
-Clear whole `selector` cache.
-
-#### selector`.dependencies`
-
-Get an array containing the provided `inputSelectors`. Refer to relevant discussion on [Reselect repo][reselect-test-selectors-dependencies].
-
-#### selector`.resultFunc`
-
-Get `resultFunc` for easily [testing composed selectors][reselect-test-selectors].
-
-#### selector`.recomputations()`
-
-Return the number of times the selector's result function has been recomputed.
-
-#### selector`.resetRecomputations()`
-
-Reset `recomputations` count.
-
-#### selector`.keySelector`
-
-Get `keySelector` for utility compositions or testing.
+| Member                           | Description                                                                                                                                   |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `selector.dependencies`          | Get an array containing the provided `inputSelectors`. Refer to relevant discussion on [Reselect repo][reselect-test-selectors-dependencies]. |
+| `selector.resultFunc`            | Get `resultFunc` for easily [testing composed selectors][reselect-test-selectors].                                                            |
+| `selector.recomputations()`      | Return the number of times the selector's result function has been recomputed.                                                                |
+| `selector.resetRecomputations()` | Reset `recomputations` count.                                                                                                                 |
 
 ## Migrating from v5
 
@@ -534,6 +504,6 @@ TypeScript:
 [example-3]: examples/3-cache-api-calls.md
 [example-4]: examples/4-programmatic-keyselector-composition.md
 [example-5]: examples/5-selectorator.md
-[selector-instance-docs]: #re-reselect-selector-instance
+[selector-instance-docs]: #returned-selector
 [cache-objects-docs]: src/cache#readme
 [changelog]: CHANGELOG.md

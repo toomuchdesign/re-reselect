@@ -73,8 +73,6 @@ const reactUsersAgain = getUsersByLibrary(state, 'react');
   - [selector instance][selector-instance-docs]
 - [Migrating from v5](#migrating-from-v5)
 - [About re-reselect](#about-re-reselect)
-- [Todo's](#todos)
-- [Contributors](#contributors)
 
 ## Installation
 
@@ -504,73 +502,14 @@ TypeScript:
 
 ## About re-reselect
 
+- [Redux docs: Deriving Data with Selectors](https://redux.js.org/usage/deriving-data-selectors#re-reselect)
 - [re-reselect your whole redux state](https://patrickdesjardins.com/blog/re-reselect-your-whole-redux-state)
-- [Understanding reselect and re-reselect](http://alexnitta.com/understanding-reselect-and-re-reselect/)
 - [React re-reselect: Better memoization and cache management](https://blog.logrocket.com/react-re-reselect-better-memoization-cache-management/)
-- [Advanced Redux patterns: selectors](https://blog.brainsandbeards.com/advanced-redux-patterns-selectors-cb9f88381d74)
+- [Advanced Redux patterns: selectors](https://brainsandbeards.com/blog/advanced-redux-patterns-selectors/)
 - [Be selective with your state](https://medium.com/riipen-engineering/be-selective-with-your-state-8f1be76cb9f4)
-- [A swift developer’s React Native experience](https://swiftwithjustin.co/2018/06/24/a-swift-developers-react-native-experience)
 - [5 key Redux libraries to improve code reuse](https://blog.logrocket.com/5-redux-libraries-to-improve-code-reuse-9f93eaceaa83)
 - [Rematch's docs](https://github.com/rematch/rematch/blob/1.1.0/plugins/select/README.md#re-reselect)
 - [Redux re-reselect playground](https://codesandbox.io/s/135rwqj2jj)
-
-## Todo's
-
-- Improve tests readability
-- Find out whether `re-reselect` should be deprecated in favour of `reselect` memoization/cache options
-
-## Contributors
-
-Thanks to you all ([emoji key][docs-all-contributors]):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="http://www.andreacarraro.it"><img src="https://avatars3.githubusercontent.com/u/4573549?v=4?s=100" width="100px;" alt="Andrea Carraro"/><br /><sub><b>Andrea Carraro</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign" title="Documentation">📖</a> <a href="#infra-toomuchdesign" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=toomuchdesign" title="Tests">⚠️</a> <a href="https://github.com/toomuchdesign/re-reselect/pulls?q=is%3Apr+reviewed-by%3Atoomuchdesign" title="Reviewed Pull Requests">👀</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/xsburg"><img src="https://avatars2.githubusercontent.com/u/830824?v=4?s=100" width="100px;" alt="Stepan Burguchev"/><br /><sub><b>Stepan Burguchev</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=xsburg" title="Code">💻</a> <a href="#ideas-xsburg" title="Ideas, Planning, & Feedback">🤔</a> <a href="#question-xsburg" title="Answering Questions">💬</a> <a href="https://github.com/toomuchdesign/re-reselect/pulls?q=is%3Apr+reviewed-by%3Axsburg" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=xsburg" title="Tests">⚠️</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/sgrishchenko"><img src="https://avatars3.githubusercontent.com/u/15995890?v=4?s=100" width="100px;" alt="Sergei Grishchenko"/><br /><sub><b>Sergei Grishchenko</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=sgrishchenko" title="Code">💻</a> <a href="#ideas-sgrishchenko" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=sgrishchenko" title="Tests">⚠️</a> <a href="#tool-sgrishchenko" title="Tools">🔧</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Andarist"><img src="https://avatars2.githubusercontent.com/u/9800850?v=4?s=100" width="100px;" alt="Mateusz Burzyński"/><br /><sub><b>Mateusz Burzyński</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=Andarist" title="Code">💻</a> <a href="#infra-Andarist" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://olslash.github.io/"><img src="https://avatars3.githubusercontent.com/u/693493?v=4?s=100" width="100px;" alt="Mitch Robb"/><br /><sub><b>Mitch Robb</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=olslash" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=olslash" title="Tests">⚠️</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/rufman"><img src="https://avatars3.githubusercontent.com/u/1128559?v=4?s=100" width="100px;" alt="Stephane Rufer"/><br /><sub><b>Stephane Rufer</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=rufman" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=rufman" title="Tests">⚠️</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/spiffysparrow"><img src="https://avatars0.githubusercontent.com/u/2788860?v=4?s=100" width="100px;" alt="Tracy Mullen"/><br /><sub><b>Tracy Mullen</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow" title="Code">💻</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=spiffysparrow" title="Tests">⚠️</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://www.skc.name"><img src="https://avatars1.githubusercontent.com/u/4211838?v=4?s=100" width="100px;" alt="Sushain Cherivirala"/><br /><sub><b>Sushain Cherivirala</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=sushain97" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://twitter.com/MaoStevemao"><img src="https://avatars0.githubusercontent.com/u/6316590?v=4?s=100" width="100px;" alt="Steve Mao"/><br /><sub><b>Steve Mao</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=stevemao" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Dante-101"><img src="https://avatars2.githubusercontent.com/u/1428826?v=4?s=100" width="100px;" alt="Gaurav Lahoti"/><br /><sub><b>Gaurav Lahoti</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3ADante-101" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://lon.im"><img src="https://avatars3.githubusercontent.com/u/13602053?v=4?s=100" width="100px;" alt="Lon"/><br /><sub><b>Lon</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Acnlon" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/bratushka"><img src="https://avatars2.githubusercontent.com/u/5492495?v=4?s=100" width="100px;" alt="bratushka"/><br /><sub><b>bratushka</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=bratushka" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://andrz.me"><img src="https://avatars3.githubusercontent.com/u/615381?v=4?s=100" width="100px;" alt="Anders D. Johnson"/><br /><sub><b>Anders D. Johnson</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=AndersDJohnson" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/wormyy"><img src="https://avatars3.githubusercontent.com/u/8556724?v=4?s=100" width="100px;" alt="Július Retzer"/><br /><sub><b>Július Retzer</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=wormyy" title="Documentation">📖</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/maartenschumacher"><img src="https://avatars3.githubusercontent.com/u/10407025?v=4?s=100" width="100px;" alt="Maarten Schumacher"/><br /><sub><b>Maarten Schumacher</b></sub></a><br /><a href="#ideas-maartenschumacher" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/alexanderjarvis"><img src="https://avatars2.githubusercontent.com/u/664238?v=4?s=100" width="100px;" alt="Alexander Jarvis"/><br /><sub><b>Alexander Jarvis</b></sub></a><br /><a href="#ideas-alexanderjarvis" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/greggb"><img src="https://avatars1.githubusercontent.com/u/514026?v=4?s=100" width="100px;" alt="Gregg B"/><br /><sub><b>Gregg B</b></sub></a><br /><a href="#example-greggb" title="Examples">💡</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://ianobermiller.com"><img src="https://avatars0.githubusercontent.com/u/897931?v=4?s=100" width="100px;" alt="Ian Obermiller"/><br /><sub><b>Ian Obermiller</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/pulls?q=is%3Apr+reviewed-by%3Aianobermiller" title="Reviewed Pull Requests">👀</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lukyth"><img src="https://avatars3.githubusercontent.com/u/7040242?v=4?s=100" width="100px;" alt="Kanitkorn Sujautra"/><br /><sub><b>Kanitkorn Sujautra</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=lukyth" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/suark"><img src="https://avatars2.githubusercontent.com/u/6233440?v=4?s=100" width="100px;" alt="Brian Kraus"/><br /><sub><b>Brian Kraus</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=suark" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/el-dav"><img src="https://avatars1.githubusercontent.com/u/7252227?v=4?s=100" width="100px;" alt="el-dav"/><br /><sub><b>el-dav</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Ael-dav" title="Bug reports">🐛</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://augustin-riedinger.fr"><img src="https://avatars3.githubusercontent.com/u/1970156?v=4?s=100" width="100px;" alt="Augustin Riedinger"/><br /><sub><b>Augustin Riedinger</b></sub></a><br /><a href="#ideas-augnustin" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/RichardForrester"><img src="https://avatars0.githubusercontent.com/u/12902182?v=4?s=100" width="100px;" alt="RichardForrester"/><br /><sub><b>RichardForrester</b></sub></a><br /><a href="#ideas-RichardForrester" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://alfonsomillan.com/"><img src="https://avatars3.githubusercontent.com/u/25711137?v=4?s=100" width="100px;" alt="Alfonso Millan"/><br /><sub><b>Alfonso Millan</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=mechmillan" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/parkerault"><img src="https://avatars2.githubusercontent.com/u/78856?v=4?s=100" width="100px;" alt="parkerault"/><br /><sub><b>parkerault</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Aparkerault" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/dahannes"><img src="https://avatars0.githubusercontent.com/u/2493211?v=4?s=100" width="100px;" alt="johannes"/><br /><sub><b>johannes</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Adahannes" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/alexdlm"><img src="https://avatars.githubusercontent.com/u/1270606?v=4?s=100" width="100px;" alt="Alex de la Mare"/><br /><sub><b>Alex de la Mare</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/issues?q=author%3Aalexdlm" title="Bug reports">🐛</a> <a href="https://github.com/toomuchdesign/re-reselect/commits?author=alexdlm" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://devblog.pro/"><img src="https://avatars.githubusercontent.com/u/6467881?v=4?s=100" width="100px;" alt="Alex Khizhnyi"/><br /><sub><b>Alex Khizhnyi</b></sub></a><br /><a href="https://github.com/toomuchdesign/re-reselect/commits?author=veksa" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 [reselect]: https://github.com/reactjs/reselect
 [reselect-sharing-selectors]: https://github.com/reduxjs/reselect/tree/v4.0.0#sharing-selectors-with-props-across-multiple-component-instances
@@ -598,4 +537,3 @@ Thanks to you all ([emoji key][docs-all-contributors]):
 [selector-instance-docs]: #re-reselect-selector-instance
 [cache-objects-docs]: src/cache#readme
 [changelog]: CHANGELOG.md
-[docs-all-contributors]: https://allcontributors.org/docs/en/emoji-key

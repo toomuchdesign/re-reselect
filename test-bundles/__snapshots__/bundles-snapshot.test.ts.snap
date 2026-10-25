@@ -291,7 +291,6 @@ function parseReselectArgs(reselectArgs) {
 const createCachedSelectorImpl = ((...reselectArgs) => {
 	const { inputSelectors, resultFunc, createSelectorOptions } = parseReselectArgs(reselectArgs);
 	return (polymorphicOptions) => {
-		var _options$cacheObject, _options$selectorCrea, _cache$isValidCacheKe;
 		const options = isFunction(polymorphicOptions) ? { keySelector: polymorphicOptions } : { ...polymorphicOptions };
 		let recomputations = 0;
 		const resultFuncWithRecomputations = (...args) => {
@@ -300,9 +299,9 @@ const createCachedSelectorImpl = ((...reselectArgs) => {
 		};
 		const patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
 		if (createSelectorOptions) patchedReselectArgs.push(createSelectorOptions);
-		const cache = (_options$cacheObject = options.cacheObject) !== null && _options$cacheObject !== void 0 ? _options$cacheObject : new FlatObjectCache();
-		const selectorCreator = (_options$selectorCrea = options.selectorCreator) !== null && _options$selectorCrea !== void 0 ? _options$selectorCrea : createSelector;
-		const isValidCacheKey = (_cache$isValidCacheKe = cache.isValidCacheKey) !== null && _cache$isValidCacheKe !== void 0 ? _cache$isValidCacheKe : defaultCacheKeyValidator;
+		const cache = options.cacheObject || new FlatObjectCache();
+		const selectorCreator = options.selectorCreator || createSelector;
+		const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
 		if (options.keySelectorCreator) options.keySelector = options.keySelectorCreator({
 			keySelector: options.keySelector,
 			inputSelectors,
@@ -575,9 +574,9 @@ const createCachedSelectorImpl = ((...reselectArgs) => {
 		};
 		const patchedReselectArgs = [inputSelectors, resultFuncWithRecomputations];
 		if (createSelectorOptions) patchedReselectArgs.push(createSelectorOptions);
-		const cache = options.cacheObject ?? new FlatObjectCache();
-		const selectorCreator = options.selectorCreator ?? createSelector;
-		const isValidCacheKey = cache.isValidCacheKey ?? defaultCacheKeyValidator;
+		const cache = options.cacheObject || new FlatObjectCache();
+		const selectorCreator = options.selectorCreator || createSelector;
+		const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
 		if (options.keySelectorCreator) options.keySelector = options.keySelectorCreator({
 			keySelector: options.keySelector,
 			inputSelectors,

@@ -97,9 +97,9 @@ const createCachedSelectorImpl = ((
       patchedReselectArgs.push(createSelectorOptions);
     }
 
-    const cache: ICacheObject = options.cacheObject ?? new FlatObjectCache();
-    const selectorCreator = options.selectorCreator ?? createSelector;
-    const isValidCacheKey = cache.isValidCacheKey ?? defaultCacheKeyValidator;
+    const cache: ICacheObject = options.cacheObject || new FlatObjectCache();
+    const selectorCreator = options.selectorCreator || createSelector;
+    const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
 
     if (options.keySelectorCreator) {
       options.keySelector = options.keySelectorCreator({

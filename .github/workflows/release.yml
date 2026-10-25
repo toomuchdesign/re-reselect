@@ -31,18 +31,23 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      # Ensure npm 11.5.1 or later is installed
+      - run: npm install -g npm@11
       - run: npm ci --ignore-scripts
 
       - name: Create Release PR or Publish to npm
-        uses: changesets/action@v1.9.0
+        uses: changesets/action@v2.1.2
         with:
-          publish: npm run release
-          commit: 'chore: update version for release'
-          title: 'chore: update version for release'
-        env:
+          publish-script: npm run release
+          commit-message: 'chore: update version for release'
+          pr-title: 'chore: update version for release'
+          # changesets/action v2 requires a custom token to be passed as an
+          # input rather than via the GITHUB_TOKEN env var.
           # Ephemeral GITHUB_TOKEN won't be able to trigger actions on release PR
           # RELEASE_TOKEN can trigger actions on new PR's but seems not to be able to do so on force-pushed PR's.
           # To publish the PR created by Changesets, the action must first be closed and then
           # manually retriggered by running the "Release / Version or Publish" action on the master branch.
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          github-token: ${{ secrets.RELEASE_TOKEN }}
+        env:
+          # Enables npm publish provenance for OIDC trusted publishing
           NPM_CONFIG_PROVENANCE: true

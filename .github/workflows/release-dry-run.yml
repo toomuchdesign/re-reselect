@@ -1,0 +1,41 @@
+# Dry-run of the release/publish step, without releasing anything.
+# Trigger it manually from the Actions tab ("Run workflow") to validate that
+# a real release would succeed:
+#   - `changeset publish-plan` shows which packages/versions would be published
+#   - `npm publish --dry-run` builds the tarball and validates its contents
+# Neither command authenticates or uploads anything to npm.
+
+name: Release (dry run)
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish-dry-run:
+    name: Publish (dry run)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+
+      - run: npm ci --ignore-scripts
+
+      # Same build/test/checks a real release runs before publishing
+      - run: npm run prepare
+
+      - name: Show changesets publish plan
+        run: npx changeset publish-plan
+
+      - name: Dry-run npm publish
+        run: npm publish --dry-run

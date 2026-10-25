@@ -14,7 +14,6 @@ The runtime value API is unchanged: the same two factories (`createCachedSelecto
 - A missing `keySelector` now throws when the selector is created, not on the first call. `createCachedSelector(...)({ cacheObject })` used to build a selector that only failed with a `TypeError` once it was invoked; it now throws `[re-reselect] Missing "keySelector"` from the factory itself. Because selectors are usually declared at module scope, a selector that was already broken this way now fails at import time rather than at first use.
 - An invalid `cacheKey` is stringified with `String()` before going into the warning message. A `symbol` cacheKey previously made the warning path itself throw a `TypeError`.
 - The cache lookup treats any falsy value returned by a custom `cacheObject.get()` as a miss, rather than only `undefined`. A cache object that returns `null` for a miss now works instead of crashing.
-- The returned selector function is named `selector` (`fn.name` was previously `''`).
 
 The stricter, inferred type layer introduces the following type-level breaking changes, which may appear as compile errors for strict-mode TypeScript consumers:
 

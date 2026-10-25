@@ -10,4 +10,6 @@ Set the `state` type once and reuse it across every `createCachedSelector` call,
 const createAppCachedSelector = createCachedSelector.withTypes<RootState>();
 ```
 
-Types only. `withTypes` refines the static types and returns the same creator, so runtime behavior does not change.
+Pass the input selectors as an array. As with reselect, the variadic form infers `state` as `any`.
+
+`withTypes` only changes types. At runtime it returns the same `createCachedSelector`.

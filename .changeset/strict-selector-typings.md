@@ -18,6 +18,7 @@ The runtime value API is unchanged: the same two factories (`createCachedSelecto
 The stricter, inferred type layer introduces the following type-level breaking changes, which may appear as compile errors for strict-mode TypeScript consumers:
 
 - The `reselect` peer dependency is now `^5.1.0`. The generated types import `SelectorsObject`, `SelectorResultsMap` and the generic `SelectorArray<State>` / `CreateSelectorFunction<..., StateType>`, which reselect 5.0.x doesn't export. Runtime still works with 5.0.x.
+- Explicit type arguments no longer match. The per-arity generics (`createCachedSelector<S, R1, T>`, `createCachedSelector<S, P, R1, R2, T>`, `createStructuredCachedSelector<M, S, P>`, …) are gone: `createCachedSelector` now takes `<InputSelectors, Result>` and `createStructuredCachedSelector` takes `<InputSelectorsObject>`, so old calls fail with `TS2558`. Drop the type arguments and let inference work, annotating `state` and params on the input selectors, or pass the new ones (`createCachedSelector<[typeof selectA, typeof selectB], Result>(…)`).
 - The cached selector's call signature is now a precise tuple inferred from the input selectors, instead of `(state, props, ...args: any[])`. Passing excess positional arguments is no longer accepted.
 - The cached selector's parameters must match the union of all input selectors' parameters. Under-supplying arguments declared by an input selector is no longer accepted.
 - `resetRecomputations()` is now typed as `() => void` (aligned with reselect v5) instead of `() => number`.

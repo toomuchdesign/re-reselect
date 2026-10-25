@@ -56,7 +56,7 @@
   "author": "Andrea Carraro <me@andreacarraro.it>",
   "license": "MIT",
   "peerDependencies": {
-    "reselect": "^5.0.0"
+    "reselect": "^5.1.0"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",

@@ -6,7 +6,7 @@ Rewrite re-reselect in native TypeScript.
 
 The internals moved from JavaScript with a hand-maintained `index.d.ts` (~4500 lines of manual per-arity type overloads) to native `.ts` sources whose type declarations are generated at build time. Build tooling moved from Rollup + Babel to `tsdown` (rolldown), and the type layer now derives everything from reselect v5-style variadic-tuple inference instead of hand-written overloads.
 
-The runtime value API is unchanged: the same two factories (`createCachedSelector`, `createStructuredCachedSelector`) and six cache classes are exported, with working CJS and ESM bundles, and `reselect` still resolved as a `^5.0.0` peer dependency.
+The runtime value API is unchanged: the same two factories (`createCachedSelector`, `createStructuredCachedSelector`) and six cache classes are exported, with working CJS and ESM bundles.
 
 ### Runtime behavior changes
 
@@ -17,6 +17,7 @@ The runtime value API is unchanged: the same two factories (`createCachedSelecto
 
 The stricter, inferred type layer introduces the following type-level breaking changes, which may appear as compile errors for strict-mode TypeScript consumers:
 
+- The `reselect` peer dependency is now `^5.1.0`. The generated types import `SelectorsObject`, `SelectorResultsMap` and the generic `SelectorArray<State>` / `CreateSelectorFunction<..., StateType>`, which reselect 5.0.x doesn't export. Runtime still works with 5.0.x.
 - The cached selector's call signature is now a precise tuple inferred from the input selectors, instead of `(state, props, ...args: any[])`. Passing excess positional arguments is no longer accepted.
 - The cached selector's parameters must match the union of all input selectors' parameters. Under-supplying arguments declared by an input selector is no longer accepted.
 - `resetRecomputations()` is now typed as `() => void` (aligned with reselect v5) instead of `() => number`.

@@ -363,7 +363,7 @@ const selectTodoById = createAppCachedSelector(
 )((state, id) => id); // `keySelector` `state` inferred too
 ```
 
-> **Pass input selectors as an array.** As with reselect's `createSelector.withTypes`, state inference only works when input selectors are given as a single array argument. The variadic form (input selectors spread as separate arguments) collapses the combiner arguments to `never`.
+> **Pass input selectors as an array.** As with reselect's `createSelector.withTypes`, state inference only works when input selectors are given as a single array argument. With the variadic form (input selectors spread as separate arguments), `state` and the combiner arguments are inferred as `any`.
 
 Only the `state` type is pre-typed. `withTypes` is a **type-only** helper: at runtime it returns the same `createCachedSelector` unchanged. Calls can be chained to narrow the state further (the override type must extend the current one).
 
@@ -487,11 +487,14 @@ Runtime and packaging:
 - A missing `keySelector` throws when the selector is created, not on its first call.
 - Any falsy value returned by a custom `cacheObject.get()` counts as a cache miss.
 - The UMD bundle is gone: use an ESM CDN such as `https://esm.sh/re-reselect`, or bundle re-reselect. Deep imports like `re-reselect/dist/...` no longer resolve.
+- In native Node ESM, `import reReselect from 're-reselect'` fails: use named imports or `import * as`.
+- The bundles use ES2020 syntax (ES2019 for the `module` entry). Transpile `node_modules` if you target older engines.
 
 TypeScript:
 
 - Explicit type arguments like `createCachedSelector<S, R1, T>(…)` fail with `TS2558`. Drop them and annotate the input selectors, or pass `<[typeof selectA, typeof selectB], Result>`.
 - Selector arguments are inferred from the input selectors. Extra or missing arguments are rejected, and so is a `keySelector` reading an argument no input selector declares. Add a parametric input selector such as `(state, id) => id` for that argument.
+- An inline input selector without a `state` annotation infers `state` as `any`, as in reselect v5. Annotate it, or use `withTypes` with an array of input selectors.
 - `getMatchingSelector` is typed as returning `OutputSelector | undefined`, as it already did at runtime on a cache miss. Check the result or use `?.`.
 - `keySelectorCreator` receives `keySelector` as optional. Check it before calling it.
 - `Selector` and `OutputSelector` are no longer exported: import them from `reselect`. `CreateSelectorInstance` is gone too: use reselect's `CreateSelectorFunction`. The `Parametric*` types are gone: write `ParametricSelector<S, P, R>` as `Selector<S, R, [P]>`.

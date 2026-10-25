@@ -443,7 +443,7 @@ An optional function describing a [custom version of createSelector][reselect-cr
 
 #### selector`.getMatchingSelector(selectorArguments)`
 
-Retrieve the selector responding to the given arguments.
+Retrieve the selector responding to the given arguments, or `undefined` if none is cached.
 
 #### selector`.removeMatchingSelector(selectorArguments)`
 
@@ -492,6 +492,7 @@ TypeScript:
 
 - Explicit type arguments like `createCachedSelector<S, R1, T>(…)` fail with `TS2558`. Drop them and annotate the input selectors, or pass `<[typeof selectA, typeof selectB], Result>`.
 - Selector arguments are inferred from the input selectors. Extra or missing arguments are rejected, and so is a `keySelector` reading an argument no input selector declares. Add a parametric input selector such as `(state, id) => id` for that argument.
+- `getMatchingSelector` is typed as returning `OutputSelector | undefined`, as it already did at runtime on a cache miss. Check the result or use `?.`.
 - `keySelectorCreator` receives `keySelector` as optional. Check it before calling it.
 - `Selector` and `OutputSelector` are no longer exported: import them from `reselect`. `CreateSelectorInstance` is gone too: use reselect's `CreateSelectorFunction`. The `Parametric*` types are gone: write `ParametricSelector<S, P, R>` as `Selector<S, R, [P]>`.
 - `OutputCachedSelector<InputSelectors, Result>` now types the cached selector, not the factory returned by `createCachedSelector(...)`. Annotate the selector instead.

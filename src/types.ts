@@ -72,7 +72,8 @@ export type CreateCachedSelectorOptions<
  * runtime, so surfacing them would type-check and then crash.
  *
  * `getMatchingSelector` returns the full `OutputSelector` because the inner
- * cached selector genuinely is a reselect selector.
+ * cached selector genuinely is a reselect selector, or `undefined` when no
+ * selector is cached for the given arguments.
  *
  * `.keySelector` is exposed using the loose `KeySelector<State>` shape rather
  * than the precise `TypedKeySelector<InputSelectors>` for back-compat with
@@ -95,7 +96,7 @@ export type OutputCachedSelector<
   > & {
     getMatchingSelector: (
       ...args: Parameters<OutputSelector<InputSelectors, Result>>
-    ) => OutputSelector<InputSelectors, Result>;
+    ) => OutputSelector<InputSelectors, Result> | undefined;
     removeMatchingSelector: (
       ...args: Parameters<OutputSelector<InputSelectors, Result>>
     ) => void;

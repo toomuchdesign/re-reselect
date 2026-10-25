@@ -277,7 +277,7 @@ describe('createCachedSelector', () => {
 
           // Retrieve result directly calling underlying reselect selector
           const reselectSelector = cachedSelector.getMatchingSelector('foo', 1);
-          const expectedResultFromSelector = reselectSelector('foo', 1);
+          const expectedResultFromSelector = reselectSelector?.('foo', 1);
 
           expect(actualResult).toBe(expectedResultFromSelector);
 
@@ -298,6 +298,7 @@ describe('createCachedSelector', () => {
           const expected = undefined;
 
           expect(actual).toEqual(expected);
+          expectTypeOf(actual).toBeNullable();
         });
       });
 
@@ -464,7 +465,9 @@ describe('createCachedSelector', () => {
           // ...whereas `getMatchingSelector` returns a genuine reselect
           // selector, which *does* carry those members (type-level only —
           // no matching selector exists in the cache here).
-          type Inner = ReturnType<typeof cachedSelector.getMatchingSelector>;
+          type Inner = NonNullable<
+            ReturnType<typeof cachedSelector.getMatchingSelector>
+          >;
           expectTypeOf<Inner>().toHaveProperty('lastResult');
           expectTypeOf<Inner>().toHaveProperty('memoizedResultFunc');
         });

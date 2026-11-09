@@ -2,7 +2,6 @@
 
 exports[`published artifacts > dist/es/index.d.mts is unchanged 1`] = `
 "import { Combiner, CreateSelectorFunction, CreateSelectorOptions, GetParamsFromSelectors, GetStateFromSelectors, OutputSelector, Selector, SelectorArray, SelectorResultsMap, SelectorsObject } from "reselect";
-//#region src/cache/types.d.ts
 interface ICacheObject {
   set(key: any, selectorFn: any): void;
   get(key: any): any;
@@ -11,8 +10,6 @@ interface ICacheObject {
   isValidCacheKey?(key: any): boolean;
 }
 type ObjectCacheKey = string | number;
-//#endregion
-//#region src/types.d.ts
 /**
  * A function which takes the same arguments as the selector and returns a cacheKey.
  * The cacheKey is used to look up the matching reselect selector in the cache.
@@ -113,11 +110,7 @@ interface CreateCachedSelector<StateType = any> extends CreateCachedSelectorImpl
    */
   withTypes: <OverrideStateType extends StateType>() => CreateCachedSelector<OverrideStateType>;
 }
-//#endregion
-//#region src/createCachedSelector.d.ts
-declare const createCachedSelector: CreateCachedSelector;
-//#endregion
-//#region src/typeUtils.d.ts
+export declare const createCachedSelector: CreateCachedSelector;
 /**
  * Distributes a union \`A | B | C\` into an intersection \`A & B & C\` by exploiting
  * contravariance of function parameters. Building block for {@link LastOf}.
@@ -144,8 +137,6 @@ type TuplifyUnion<T, L = LastOf<T>, N = [T] extends [never] ? true : false> = tr
  * \`ObjectValuesToTuple\` (not exported from the package).
  */
 type SelectorsObjectToTuple<T extends SelectorsObject<any>, KS extends any[] = TuplifyUnion<keyof T>, R extends Selector[] = []> = KS extends [infer K, ...infer KT] ? SelectorsObjectToTuple<T, KT, [...R, T[K & keyof T]]> : R;
-//#endregion
-//#region src/createStructuredCachedSelector.d.ts
 /**
  * The returned thunk preserves the cached-selector public surface
  * (\`getMatchingSelector\`, \`removeMatchingSelector\`, \`clearCache\`, \`cache\`,
@@ -153,10 +144,8 @@ type SelectorsObjectToTuple<T extends SelectorsObject<any>, KS extends any[] = T
  * the structured shape as the selector's \`Result\`.
  */
 type StructuredCachedSelector<InputSelectorsObject extends SelectorsObject<any>> = (polymorphicOptions: PolymorphicCachedOptions<SelectorsObjectToTuple<InputSelectorsObject>, SelectorResultsMap<InputSelectorsObject>>) => OutputCachedSelector<SelectorsObjectToTuple<InputSelectorsObject>, SelectorResultsMap<InputSelectorsObject>>;
-declare function createStructuredCachedSelector<InputSelectorsObject extends SelectorsObject<any>>(selectors: InputSelectorsObject): StructuredCachedSelector<InputSelectorsObject>;
-//#endregion
-//#region src/cache/FlatObjectCache.d.ts
-declare class FlatObjectCache implements ICacheObject {
+export declare function createStructuredCachedSelector<InputSelectorsObject extends SelectorsObject<any>>(selectors: InputSelectorsObject): StructuredCachedSelector<InputSelectorsObject>;
+export declare class FlatObjectCache implements ICacheObject {
   private _cache;
   set(key: ObjectCacheKey, selectorFn: any): void;
   get(key: ObjectCacheKey): any;
@@ -164,9 +153,7 @@ declare class FlatObjectCache implements ICacheObject {
   clear(): void;
   isValidCacheKey(cacheKey: ObjectCacheKey): boolean;
 }
-//#endregion
-//#region src/cache/FifoObjectCache.d.ts
-declare class FifoObjectCache implements ICacheObject {
+export declare class FifoObjectCache implements ICacheObject {
   private _cache;
   private _cacheOrdering;
   private _cacheSize;
@@ -179,9 +166,7 @@ declare class FifoObjectCache implements ICacheObject {
   clear(): void;
   isValidCacheKey(cacheKey: ObjectCacheKey): boolean;
 }
-//#endregion
-//#region src/cache/LruObjectCache.d.ts
-declare class LruObjectCache implements ICacheObject {
+export declare class LruObjectCache implements ICacheObject {
   private _cache;
   private _cacheOrdering;
   private _cacheSize;
@@ -196,18 +181,14 @@ declare class LruObjectCache implements ICacheObject {
   private _registerCacheHit;
   private _deleteCacheHit;
 }
-//#endregion
-//#region src/cache/FlatMapCache.d.ts
-declare class FlatMapCache implements ICacheObject {
+export declare class FlatMapCache implements ICacheObject {
   private _cache;
   set(key: any, selectorFn: any): void;
   get(key: any): any;
   remove(key: any): void;
   clear(): void;
 }
-//#endregion
-//#region src/cache/FifoMapCache.d.ts
-declare class FifoMapCache implements ICacheObject {
+export declare class FifoMapCache implements ICacheObject {
   private _cache;
   private _cacheSize;
   constructor(options: {
@@ -218,9 +199,7 @@ declare class FifoMapCache implements ICacheObject {
   remove(key: any): void;
   clear(): void;
 }
-//#endregion
-//#region src/cache/LruMapCache.d.ts
-declare class LruMapCache implements ICacheObject {
+export declare class LruMapCache implements ICacheObject {
   private _cache;
   private _cacheSize;
   constructor(options: {
@@ -231,19 +210,17 @@ declare class LruMapCache implements ICacheObject {
   remove(key: any): void;
   clear(): void;
 }
-//#endregion
-export { type CreateCachedSelector, type CreateCachedSelectorOptions, FifoMapCache, FifoObjectCache, FlatMapCache, FlatObjectCache, type ICacheObject, type KeySelector, type KeySelectorCreator, LruMapCache, LruObjectCache, type OutputCachedSelector, type TypedKeySelector, createCachedSelector, createStructuredCachedSelector };
+export type { CreateCachedSelector, CreateCachedSelectorOptions, ICacheObject, KeySelector, KeySelectorCreator, OutputCachedSelector, TypedKeySelector };
 //# sourceMappingURL=index.d.mts.map"
 `;
 
 exports[`published artifacts > dist/es/index.legacy-esm.js is unchanged 1`] = `
 "import { createSelector, createStructuredSelector } from "reselect";
-//#region src/cache/util/isStringOrNumber.ts
+// src/cache/util/isStringOrNumber.ts
 function isStringOrNumber(value) {
 	return typeof value === "string" || typeof value === "number";
 }
-//#endregion
-//#region src/cache/FlatObjectCache.ts
+// src/cache/FlatObjectCache.ts
 var FlatObjectCache = class {
 	constructor() {
 		this._cache = {};
@@ -264,8 +241,7 @@ var FlatObjectCache = class {
 		return isStringOrNumber(cacheKey);
 	}
 };
-//#endregion
-//#region src/createCachedSelector.ts
+// src/createCachedSelector.ts
 const defaultCacheKeyValidator = () => true;
 function isFunction(value) {
 	return typeof value === "function";
@@ -346,19 +322,16 @@ const createCachedSelectorImpl = ((...reselectArgs) => {
 	};
 });
 const createCachedSelector = Object.assign(createCachedSelectorImpl, { withTypes: () => createCachedSelector });
-//#endregion
-//#region src/createStructuredCachedSelector.ts
+// src/createStructuredCachedSelector.ts
 function createStructuredCachedSelector(selectors) {
 	return createStructuredSelector(selectors, createCachedSelector);
 }
-//#endregion
-//#region src/cache/util/validateCacheSize.ts
+// src/cache/util/validateCacheSize.ts
 function validateCacheSize(cacheSize) {
 	if (cacheSize === void 0) throw new Error("Missing the required property \\"cacheSize\\".");
 	if (!Number.isInteger(cacheSize) || cacheSize <= 0) throw new Error("The \\"cacheSize\\" property must be a positive integer value.");
 }
-//#endregion
-//#region src/cache/FifoObjectCache.ts
+// src/cache/FifoObjectCache.ts
 var FifoObjectCache = class {
 	constructor(options) {
 		this._cache = {};
@@ -390,8 +363,7 @@ var FifoObjectCache = class {
 		return isStringOrNumber(cacheKey);
 	}
 };
-//#endregion
-//#region src/cache/LruObjectCache.ts
+// src/cache/LruObjectCache.ts
 var LruObjectCache = class {
 	constructor(options) {
 		this._cache = {};
@@ -431,8 +403,7 @@ var LruObjectCache = class {
 		if (index > -1) this._cacheOrdering.splice(index, 1);
 	}
 };
-//#endregion
-//#region src/cache/FlatMapCache.ts
+// src/cache/FlatMapCache.ts
 var FlatMapCache = class {
 	constructor() {
 		this._cache = /* @__PURE__ */ new Map();
@@ -450,8 +421,7 @@ var FlatMapCache = class {
 		this._cache.clear();
 	}
 };
-//#endregion
-//#region src/cache/FifoMapCache.ts
+// src/cache/FifoMapCache.ts
 var FifoMapCache = class {
 	constructor(options) {
 		this._cache = /* @__PURE__ */ new Map();
@@ -475,8 +445,7 @@ var FifoMapCache = class {
 		this._cache.clear();
 	}
 };
-//#endregion
-//#region src/cache/LruMapCache.ts
+// src/cache/LruMapCache.ts
 var LruMapCache = class {
 	constructor(options) {
 		this._cache = /* @__PURE__ */ new Map();
@@ -505,7 +474,6 @@ var LruMapCache = class {
 		this._cache.clear();
 	}
 };
-//#endregion
 export { FifoMapCache, FifoObjectCache, FlatMapCache, FlatObjectCache, LruMapCache, LruObjectCache, createCachedSelector, createStructuredCachedSelector };
 
 //# sourceMappingURL=index.legacy-esm.js.map"
@@ -513,12 +481,11 @@ export { FifoMapCache, FifoObjectCache, FlatMapCache, FlatObjectCache, LruMapCac
 
 exports[`published artifacts > dist/es/index.mjs is unchanged 1`] = `
 "import { createSelector, createStructuredSelector } from "reselect";
-//#region src/cache/util/isStringOrNumber.ts
+// src/cache/util/isStringOrNumber.ts
 function isStringOrNumber(value) {
 	return typeof value === "string" || typeof value === "number";
 }
-//#endregion
-//#region src/cache/FlatObjectCache.ts
+// src/cache/FlatObjectCache.ts
 var FlatObjectCache = class {
 	constructor() {
 		this._cache = {};
@@ -539,8 +506,7 @@ var FlatObjectCache = class {
 		return isStringOrNumber(cacheKey);
 	}
 };
-//#endregion
-//#region src/createCachedSelector.ts
+// src/createCachedSelector.ts
 const defaultCacheKeyValidator = () => true;
 function isFunction(value) {
 	return typeof value === "function";
@@ -621,19 +587,16 @@ const createCachedSelectorImpl = ((...reselectArgs) => {
 	};
 });
 const createCachedSelector = Object.assign(createCachedSelectorImpl, { withTypes: () => createCachedSelector });
-//#endregion
-//#region src/createStructuredCachedSelector.ts
+// src/createStructuredCachedSelector.ts
 function createStructuredCachedSelector(selectors) {
 	return createStructuredSelector(selectors, createCachedSelector);
 }
-//#endregion
-//#region src/cache/util/validateCacheSize.ts
+// src/cache/util/validateCacheSize.ts
 function validateCacheSize(cacheSize) {
 	if (cacheSize === void 0) throw new Error("Missing the required property \\"cacheSize\\".");
 	if (!Number.isInteger(cacheSize) || cacheSize <= 0) throw new Error("The \\"cacheSize\\" property must be a positive integer value.");
 }
-//#endregion
-//#region src/cache/FifoObjectCache.ts
+// src/cache/FifoObjectCache.ts
 var FifoObjectCache = class {
 	constructor(options) {
 		this._cache = {};
@@ -665,8 +628,7 @@ var FifoObjectCache = class {
 		return isStringOrNumber(cacheKey);
 	}
 };
-//#endregion
-//#region src/cache/LruObjectCache.ts
+// src/cache/LruObjectCache.ts
 var LruObjectCache = class {
 	constructor(options) {
 		this._cache = {};
@@ -706,8 +668,7 @@ var LruObjectCache = class {
 		if (index > -1) this._cacheOrdering.splice(index, 1);
 	}
 };
-//#endregion
-//#region src/cache/FlatMapCache.ts
+// src/cache/FlatMapCache.ts
 var FlatMapCache = class {
 	constructor() {
 		this._cache = /* @__PURE__ */ new Map();
@@ -725,8 +686,7 @@ var FlatMapCache = class {
 		this._cache.clear();
 	}
 };
-//#endregion
-//#region src/cache/FifoMapCache.ts
+// src/cache/FifoMapCache.ts
 var FifoMapCache = class {
 	constructor(options) {
 		this._cache = /* @__PURE__ */ new Map();
@@ -750,8 +710,7 @@ var FifoMapCache = class {
 		this._cache.clear();
 	}
 };
-//#endregion
-//#region src/cache/LruMapCache.ts
+// src/cache/LruMapCache.ts
 var LruMapCache = class {
 	constructor(options) {
 		this._cache = /* @__PURE__ */ new Map();
@@ -780,7 +739,6 @@ var LruMapCache = class {
 		this._cache.clear();
 	}
 };
-//#endregion
 export { FifoMapCache, FifoObjectCache, FlatMapCache, FlatObjectCache, LruMapCache, LruObjectCache, createCachedSelector, createStructuredCachedSelector };
 
 //# sourceMappingURL=index.mjs.map"

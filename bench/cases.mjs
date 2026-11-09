@@ -1,6 +1,6 @@
 import { createSelector, lruMemoize } from 'reselect';
 
-import { createCachedSelector } from '../dist/es/index.js';
+import { createCachedSelector } from '../dist/es/index.mjs';
 import { project } from './workload.mjs';
 
 /**

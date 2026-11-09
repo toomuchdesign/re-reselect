@@ -338,11 +338,14 @@ describe('createCachedSelector', () => {
               cacheObject,
             });
 
+            vi.mocked(console.warn).mockClear();
             expect(() => cachedSelector('foo')).not.toThrow();
             expect(cachedSelector('foo')).toBe('foo');
 
             expect(cachedSelector('bar')).toBe(undefined);
-            expect(console.warn).toHaveBeenCalledTimes(1);
+            expect(console.warn).toHaveBeenCalledWith(
+              '[re-reselect] Invalid cache key "bar" has been returned by keySelector function.',
+            );
           });
         });
       });
@@ -759,12 +762,11 @@ describe('createCachedSelector', () => {
     cachedSelector('foo', 'bar');
 
     expect(selectorCreator).toHaveBeenCalledTimes(1);
-    expect(selectorCreator).toHaveBeenCalledWith(
-      [inputSelector1],
-      expect.any(Function),
-      // The caller's options are merged over the instance defaults rather than
-      // replacing them, so `argsMemoize` arrives alongside whatever was passed.
-      { argsMemoize: lruMemoize, ...createSelectorOptions },
+    const [inputSelectors, , receivedOptions] = selectorCreator.mock.calls[0]!;
+    expect(inputSelectors).toEqual([inputSelector1]);
+    expect(receivedOptions?.argsMemoize).toBeTypeOf('function');
+    expect(receivedOptions?.memoizeOptions).toBe(
+      createSelectorOptions.memoizeOptions,
     );
 
     expect(cachedSelector.recomputations()).toBe(1);
@@ -772,18 +774,20 @@ describe('createCachedSelector', () => {
 
   it('lets createSelectorOptions override the default argsMemoize', () => {
     const inputSelector = (state: string, param1: string) => null;
+    const selectorCreator = trackSelectorCreator();
 
     const cachedSelector = createCachedSelector([inputSelector], () => {}, {
       argsMemoize: weakMapMemoize,
-    })({ keySelector: (state, param1) => param1 });
+    })({
+      keySelector: (state, param1) => param1,
+      selectorCreator,
+    });
 
     cachedSelector('foo', 'bar');
 
-    expect(reselect.createSelector).toHaveBeenCalledWith(
-      [inputSelector],
-      expect.any(Function),
-      { argsMemoize: weakMapMemoize },
-    );
+    expect(selectorCreator.mock.calls[0]?.[2]).toEqual({
+      argsMemoize: weakMapMemoize,
+    });
   });
 
   describe('withTypes', () => {

@@ -3,7 +3,7 @@ import { isStringOrNumber } from './util/isStringOrNumber';
 import { validateCacheSize } from './util/validateCacheSize';
 
 export class FifoObjectCache implements ICacheObject {
-  private _cache: Record<string, any> = {};
+  private _cache: Record<string, any> = Object.create(null);
   private _cacheOrdering: ObjectCacheKey[] = [];
   private _cacheSize: number;
 
@@ -36,7 +36,7 @@ export class FifoObjectCache implements ICacheObject {
   }
 
   clear(): void {
-    this._cache = {};
+    this._cache = Object.create(null);
     this._cacheOrdering = [];
   }
 

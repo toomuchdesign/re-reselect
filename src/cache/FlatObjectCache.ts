@@ -2,7 +2,7 @@ import type { ICacheObject, ObjectCacheKey } from './types';
 import { isStringOrNumber } from './util/isStringOrNumber';
 
 export class FlatObjectCache implements ICacheObject {
-  private _cache: Record<string, any> = {};
+  private _cache: Record<string, any> = Object.create(null);
 
   set(key: ObjectCacheKey, selectorFn: any): void {
     this._cache[key] = selectorFn;
@@ -17,7 +17,7 @@ export class FlatObjectCache implements ICacheObject {
   }
 
   clear(): void {
-    this._cache = {};
+    this._cache = Object.create(null);
   }
 
   isValidCacheKey(cacheKey: ObjectCacheKey): boolean {

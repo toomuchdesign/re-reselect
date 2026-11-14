@@ -223,7 +223,7 @@ function isStringOrNumber(value) {
 // src/cache/FlatObjectCache.ts
 var FlatObjectCache = class {
 	constructor() {
-		this._cache = {};
+		this._cache = Object.create(null);
 	}
 	set(key, selectorFn) {
 		this._cache[key] = selectorFn;
@@ -235,7 +235,7 @@ var FlatObjectCache = class {
 		delete this._cache[key];
 	}
 	clear() {
-		this._cache = {};
+		this._cache = Object.create(null);
 	}
 	isValidCacheKey(cacheKey) {
 		return isStringOrNumber(cacheKey);
@@ -334,7 +334,7 @@ function validateCacheSize(cacheSize) {
 // src/cache/FifoObjectCache.ts
 var FifoObjectCache = class {
 	constructor(options) {
-		this._cache = {};
+		this._cache = Object.create(null);
 		this._cacheOrdering = [];
 		validateCacheSize(options === null || options === void 0 ? void 0 : options.cacheSize);
 		this._cacheSize = options.cacheSize;
@@ -356,7 +356,7 @@ var FifoObjectCache = class {
 		delete this._cache[key];
 	}
 	clear() {
-		this._cache = {};
+		this._cache = Object.create(null);
 		this._cacheOrdering = [];
 	}
 	isValidCacheKey(cacheKey) {
@@ -366,7 +366,7 @@ var FifoObjectCache = class {
 // src/cache/LruObjectCache.ts
 var LruObjectCache = class {
 	constructor(options) {
-		this._cache = {};
+		this._cache = Object.create(null);
 		this._cacheOrdering = [];
 		validateCacheSize(options === null || options === void 0 ? void 0 : options.cacheSize);
 		this._cacheSize = options.cacheSize;
@@ -388,7 +388,7 @@ var LruObjectCache = class {
 		delete this._cache[key];
 	}
 	clear() {
-		this._cache = {};
+		this._cache = Object.create(null);
 		this._cacheOrdering = [];
 	}
 	isValidCacheKey(cacheKey) {
@@ -488,7 +488,7 @@ function isStringOrNumber(value) {
 // src/cache/FlatObjectCache.ts
 var FlatObjectCache = class {
 	constructor() {
-		this._cache = {};
+		this._cache = Object.create(null);
 	}
 	set(key, selectorFn) {
 		this._cache[key] = selectorFn;
@@ -500,7 +500,7 @@ var FlatObjectCache = class {
 		delete this._cache[key];
 	}
 	clear() {
-		this._cache = {};
+		this._cache = Object.create(null);
 	}
 	isValidCacheKey(cacheKey) {
 		return isStringOrNumber(cacheKey);
@@ -599,7 +599,7 @@ function validateCacheSize(cacheSize) {
 // src/cache/FifoObjectCache.ts
 var FifoObjectCache = class {
 	constructor(options) {
-		this._cache = {};
+		this._cache = Object.create(null);
 		this._cacheOrdering = [];
 		validateCacheSize(options?.cacheSize);
 		this._cacheSize = options.cacheSize;
@@ -621,7 +621,7 @@ var FifoObjectCache = class {
 		delete this._cache[key];
 	}
 	clear() {
-		this._cache = {};
+		this._cache = Object.create(null);
 		this._cacheOrdering = [];
 	}
 	isValidCacheKey(cacheKey) {
@@ -631,7 +631,7 @@ var FifoObjectCache = class {
 // src/cache/LruObjectCache.ts
 var LruObjectCache = class {
 	constructor(options) {
-		this._cache = {};
+		this._cache = Object.create(null);
 		this._cacheOrdering = [];
 		validateCacheSize(options?.cacheSize);
 		this._cacheSize = options.cacheSize;
@@ -653,7 +653,7 @@ var LruObjectCache = class {
 		delete this._cache[key];
 	}
 	clear() {
-		this._cache = {};
+		this._cache = Object.create(null);
 		this._cacheOrdering = [];
 	}
 	isValidCacheKey(cacheKey) {

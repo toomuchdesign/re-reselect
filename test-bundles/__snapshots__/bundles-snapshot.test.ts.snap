@@ -340,8 +340,9 @@ var FifoObjectCache = class {
 		this._cacheSize = options.cacheSize;
 	}
 	set(key, selectorFn) {
+		const normalizedKey = String(key);
+		if (!Object.prototype.hasOwnProperty.call(this._cache, normalizedKey)) this._cacheOrdering.push(normalizedKey);
 		this._cache[key] = selectorFn;
-		this._cacheOrdering.push(key);
 		if (this._cacheOrdering.length > this._cacheSize) {
 			const earliest = this._cacheOrdering[0];
 			this.remove(earliest);
@@ -351,7 +352,7 @@ var FifoObjectCache = class {
 		return this._cache[key];
 	}
 	remove(key) {
-		const index = this._cacheOrdering.indexOf(key);
+		const index = this._cacheOrdering.indexOf(String(key));
 		if (index > -1) this._cacheOrdering.splice(index, 1);
 		delete this._cache[key];
 	}
@@ -605,8 +606,9 @@ var FifoObjectCache = class {
 		this._cacheSize = options.cacheSize;
 	}
 	set(key, selectorFn) {
+		const normalizedKey = String(key);
+		if (!Object.prototype.hasOwnProperty.call(this._cache, normalizedKey)) this._cacheOrdering.push(normalizedKey);
 		this._cache[key] = selectorFn;
-		this._cacheOrdering.push(key);
 		if (this._cacheOrdering.length > this._cacheSize) {
 			const earliest = this._cacheOrdering[0];
 			this.remove(earliest);
@@ -616,7 +618,7 @@ var FifoObjectCache = class {
 		return this._cache[key];
 	}
 	remove(key) {
-		const index = this._cacheOrdering.indexOf(key);
+		const index = this._cacheOrdering.indexOf(String(key));
 		if (index > -1) this._cacheOrdering.splice(index, 1);
 		delete this._cache[key];
 	}

@@ -63,6 +63,7 @@ const reactUsersAgain = getUsersByLibrary(state, 'react');
 - [Why? + example](#why--example)
   - [re-reselect solution](#re-reselect-solution)
   - [Other viable solutions](#other-viable-solutions)
+- [Usage with React Redux hooks](#usage-with-react-redux-hooks)
 - [Examples](#examples)
 - [FAQ](#faq)
 - [API](#api)
@@ -147,6 +148,18 @@ The solution suggested in [Reselect docs][reselect-sharing-selectors] is fine, b
 
 This is what `re-reselect` actually does. 😀
 
+## Usage with React Redux hooks
+
+Pass a cached selector to `useSelector` as you would any other selector:
+
+```js
+const todos = useSelector((state) => getVisibleTodos(state, listId));
+```
+
+Every component can call the same module-level selector, so you don't need `useMemo` or a selector factory. Components with the same `listId` get the same cached result.
+
+Cached selectors stay in memory after the components that use them unmount. If there are many keys, use a cache with a size limit, such as [`LruObjectCache`][cache-objects-docs]. See the [full example][example-6].
+
 ## Examples
 
 - [Join similar selectors][example-1]
@@ -154,6 +167,7 @@ This is what `re-reselect` actually does. 😀
 - [Cache API calls][example-3]
 - [Programmatic keySelector composition][example-4]
 - [Usage with Selectorator][example-5]
+- [Usage with React Redux hooks][example-6]
 
 ## FAQ
 
@@ -504,6 +518,7 @@ TypeScript:
 [example-3]: examples/3-cache-api-calls.md
 [example-4]: examples/4-programmatic-keyselector-composition.md
 [example-5]: examples/5-selectorator.md
+[example-6]: examples/6-usage-with-react-redux-hooks.md
 [selector-instance-docs]: #returned-selector
 [cache-objects-docs]: src/cache#readme
 [changelog]: CHANGELOG.md

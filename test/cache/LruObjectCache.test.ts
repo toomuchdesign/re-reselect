@@ -6,12 +6,31 @@ import testBasicBehavior from './test-utils/testBasicBehavior';
 import testCacheSizeOptionValidation from './test-utils/testCacheSizeOptionValidation';
 import testLruBehavior from './test-utils/testLruBehavior';
 import testObjectCacheKeyBehavior from './test-utils/testObjectCacheKeyBehavior';
+import testObjectCacheKeyEvictionBehavior from './test-utils/testObjectCacheKeyEvictionBehavior';
 
 describe('LruObjectCache', () => {
   testBasicBehavior(() => new LruObjectCache({ cacheSize: 10 }));
   testLruBehavior(LruObjectCache);
   testCacheSizeOptionValidation(LruObjectCache);
   testObjectCacheKeyBehavior(() => new LruObjectCache({ cacheSize: 10 }));
+  testObjectCacheKeyEvictionBehavior(LruObjectCache);
+
+  describe.each([
+    [1, '1'],
+    ['1', 1],
+  ])('equivalent object keys %s and %s', (first, alias) => {
+    it('updates recency when an entry is read through its alias', () => {
+      const cache = new LruObjectCache({ cacheSize: 2 });
+      cache.set(first, 'one');
+      cache.set('other', 'other');
+      expect(cache.get(alias)).toBe('one');
+      cache.set('new', 'new');
+
+      expect(cache.get(first)).toBe('one');
+      expect(cache.get('other')).toBeUndefined();
+      expect(cache.get('new')).toBe('new');
+    });
+  });
 
   it('exposes expected types', () => {
     type State = { foo: string };

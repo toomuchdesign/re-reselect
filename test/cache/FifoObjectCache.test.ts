@@ -6,25 +6,14 @@ import testBasicBehavior from './test-utils/testBasicBehavior';
 import testCacheSizeOptionValidation from './test-utils/testCacheSizeOptionValidation';
 import testFifoBehavior from './test-utils/testFifoBehavior';
 import testObjectCacheKeyBehavior from './test-utils/testObjectCacheKeyBehavior';
+import testObjectCacheKeyEvictionBehavior from './test-utils/testObjectCacheKeyEvictionBehavior';
 
 describe('FifoObjectCache', () => {
   testBasicBehavior(() => new FifoObjectCache({ cacheSize: 10 }));
   testFifoBehavior(FifoObjectCache);
   testCacheSizeOptionValidation(FifoObjectCache);
   testObjectCacheKeyBehavior(() => new FifoObjectCache({ cacheSize: 10 }));
-
-  it('treats numeric and string keys as one entry when overwriting', () => {
-    const cache = new FifoObjectCache({ cacheSize: 2 });
-    cache.set(1, 'old');
-    cache.set('1', 'new');
-    cache.set(2, 'two');
-    expect(cache.get(1)).toBe('new');
-    expect(cache.get('2')).toBe('two');
-    cache.remove('1');
-    cache.set(3, 'three');
-    expect(cache.get(2)).toBe('two');
-    expect(cache.get(3)).toBe('three');
-  });
+  testObjectCacheKeyEvictionBehavior(FifoObjectCache);
 
   it('exposes expected types', () => {
     type State = { foo: string };

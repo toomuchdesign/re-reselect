@@ -396,10 +396,10 @@ var LruObjectCache = class {
 	}
 	_registerCacheHit(key) {
 		this._deleteCacheHit(key);
-		this._cacheOrdering.push(key);
+		this._cacheOrdering.push(String(key));
 	}
 	_deleteCacheHit(key) {
-		const index = this._cacheOrdering.indexOf(key);
+		const index = this._cacheOrdering.indexOf(String(key));
 		if (index > -1) this._cacheOrdering.splice(index, 1);
 	}
 };
@@ -661,10 +661,10 @@ var LruObjectCache = class {
 	}
 	_registerCacheHit(key) {
 		this._deleteCacheHit(key);
-		this._cacheOrdering.push(key);
+		this._cacheOrdering.push(String(key));
 	}
 	_deleteCacheHit(key) {
-		const index = this._cacheOrdering.indexOf(key);
+		const index = this._cacheOrdering.indexOf(String(key));
 		if (index > -1) this._cacheOrdering.splice(index, 1);
 	}
 };

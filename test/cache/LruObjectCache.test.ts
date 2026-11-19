@@ -13,6 +13,44 @@ describe('LruObjectCache', () => {
   testCacheSizeOptionValidation(LruObjectCache);
   testObjectCacheKeyBehavior(() => new LruObjectCache({ cacheSize: 10 }));
 
+  describe.each([
+    [1, '1'],
+    ['1', 1],
+  ])('equivalent object keys %s and %s', (first, alias) => {
+    it('updates an existing entry without evicting it', () => {
+      const cache = new LruObjectCache({ cacheSize: 2 });
+      cache.set(first, 'old');
+      cache.set(alias, 'updated');
+      cache.set('other', 'other');
+
+      expect(cache.get(first)).toBe('updated');
+      expect(cache.get('other')).toBe('other');
+    });
+
+    it('updates recency when an entry is read through its alias', () => {
+      const cache = new LruObjectCache({ cacheSize: 2 });
+      cache.set(first, 'one');
+      cache.set('other', 'other');
+      expect(cache.get(alias)).toBe('one');
+      cache.set('new', 'new');
+
+      expect(cache.get(first)).toBe('one');
+      expect(cache.get('other')).toBeUndefined();
+      expect(cache.get('new')).toBe('new');
+    });
+
+    it('removes the ordering entry when removed through its alias', () => {
+      const cache = new LruObjectCache({ cacheSize: 2 });
+      cache.set(first, 'one');
+      cache.set('other', 'other');
+      cache.remove(alias);
+      cache.set(alias, 'replacement');
+
+      expect(cache.get(first)).toBe('replacement');
+      expect(cache.get('other')).toBe('other');
+    });
+  });
+
   it('exposes expected types', () => {
     type State = { foo: string };
     const fooSelector = (state: State) => state.foo;

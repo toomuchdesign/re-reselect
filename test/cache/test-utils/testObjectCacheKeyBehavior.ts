@@ -3,6 +3,16 @@ import { describe, expect, it } from 'vitest';
 import { type ICacheObject, createCachedSelector } from '../../../src';
 
 function testObjectCacheKeyBehavior(makeCacheObject: () => ICacheObject) {
+  it('treats a numeric key and its string form as the same entry', () => {
+    const cache = makeCacheObject();
+    cache.set(1, 'old');
+    expect(cache.get('1')).toBe('old');
+    cache.set('1', 'new');
+    expect(cache.get(1)).toBe('new');
+    cache.remove('1');
+    expect(cache.get(1)).toBeUndefined();
+  });
+
   const prototypeKeys = [
     'constructor',
     'toString',

@@ -7,6 +7,20 @@ function testFifoBehavior(
   CacheObject: new (options: { cacheSize: number }) => ICacheObject,
 ) {
   describe('FIFO cache behavior', () => {
+    it('preserves insertion order when an existing key is overwritten', () => {
+      const cache = new CacheObject({ cacheSize: 2 });
+      cache.set('a', 1);
+      cache.set('a', 2);
+      cache.set('b', 3);
+      expect(cache.get('a')).toBe(2);
+      expect(cache.get('b')).toBe(3);
+      cache.set('a', 4);
+      cache.set('c', 5);
+      expect(cache.get('a')).toBeUndefined();
+      expect(cache.get('b')).toBe(3);
+      expect(cache.get('c')).toBe(5);
+    });
+
     it('limits cache queue by removing the first added items', () => {
       const cache = new CacheObject({ cacheSize: 5 });
       const entries = [1, 2, 3, 4];

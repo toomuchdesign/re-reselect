@@ -4,7 +4,7 @@ import { validateCacheSize } from './util/validateCacheSize';
 
 export class FifoObjectCache implements ICacheObject {
   private _cache: Record<string, any> = Object.create(null);
-  private _cacheOrdering: ObjectCacheKey[] = [];
+  private _cacheOrdering: string[] = [];
   private _cacheSize: number;
 
   constructor(options: { cacheSize: number }) {
@@ -13,8 +13,11 @@ export class FifoObjectCache implements ICacheObject {
   }
 
   set(key: ObjectCacheKey, selectorFn: any): void {
+    const normalizedKey = String(key);
+    if (!(normalizedKey in this._cache)) {
+      this._cacheOrdering.push(normalizedKey);
+    }
     this._cache[key] = selectorFn;
-    this._cacheOrdering.push(key);
 
     if (this._cacheOrdering.length > this._cacheSize) {
       const earliest = this._cacheOrdering[0];
@@ -27,7 +30,7 @@ export class FifoObjectCache implements ICacheObject {
   }
 
   remove(key: ObjectCacheKey): void {
-    const index = this._cacheOrdering.indexOf(key);
+    const index = this._cacheOrdering.indexOf(String(key));
 
     if (index > -1) {
       this._cacheOrdering.splice(index, 1);

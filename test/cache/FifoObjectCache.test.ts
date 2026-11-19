@@ -13,7 +13,7 @@ describe('FifoObjectCache', () => {
   testCacheSizeOptionValidation(FifoObjectCache);
   testObjectCacheKeyBehavior(() => new FifoObjectCache({ cacheSize: 10 }));
 
-  it('removes an entry by its string key without affecting eviction order', () => {
+  it('treats numeric and string keys as one entry when overwriting', () => {
     const cache = new FifoObjectCache({ cacheSize: 2 });
     cache.set(1, 'old');
     cache.set('1', 'new');

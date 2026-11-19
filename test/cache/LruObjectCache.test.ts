@@ -6,27 +6,19 @@ import testBasicBehavior from './test-utils/testBasicBehavior';
 import testCacheSizeOptionValidation from './test-utils/testCacheSizeOptionValidation';
 import testLruBehavior from './test-utils/testLruBehavior';
 import testObjectCacheKeyBehavior from './test-utils/testObjectCacheKeyBehavior';
+import testObjectCacheKeyEvictionBehavior from './test-utils/testObjectCacheKeyEvictionBehavior';
 
 describe('LruObjectCache', () => {
   testBasicBehavior(() => new LruObjectCache({ cacheSize: 10 }));
   testLruBehavior(LruObjectCache);
   testCacheSizeOptionValidation(LruObjectCache);
   testObjectCacheKeyBehavior(() => new LruObjectCache({ cacheSize: 10 }));
+  testObjectCacheKeyEvictionBehavior(LruObjectCache);
 
   describe.each([
     [1, '1'],
     ['1', 1],
   ])('equivalent object keys %s and %s', (first, alias) => {
-    it('updates an existing entry without evicting it', () => {
-      const cache = new LruObjectCache({ cacheSize: 2 });
-      cache.set(first, 'old');
-      cache.set(alias, 'updated');
-      cache.set('other', 'other');
-
-      expect(cache.get(first)).toBe('updated');
-      expect(cache.get('other')).toBe('other');
-    });
-
     it('updates recency when an entry is read through its alias', () => {
       const cache = new LruObjectCache({ cacheSize: 2 });
       cache.set(first, 'one');
@@ -37,17 +29,6 @@ describe('LruObjectCache', () => {
       expect(cache.get(first)).toBe('one');
       expect(cache.get('other')).toBeUndefined();
       expect(cache.get('new')).toBe('new');
-    });
-
-    it('removes the ordering entry when removed through its alias', () => {
-      const cache = new LruObjectCache({ cacheSize: 2 });
-      cache.set(first, 'one');
-      cache.set('other', 'other');
-      cache.remove(alias);
-      cache.set(alias, 'replacement');
-
-      expect(cache.get(first)).toBe('replacement');
-      expect(cache.get('other')).toBe('other');
     });
   });
 

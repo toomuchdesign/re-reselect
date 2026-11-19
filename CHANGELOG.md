@@ -1,5 +1,17 @@
 # re-reselect
 
+## 6.0.1
+
+### Patch Changes
+
+- [#571](https://github.com/toomuchdesign/re-reselect/pull/571) [`1a2d0da`](https://github.com/toomuchdesign/re-reselect/commit/1a2d0da759fa538ada9b577a13514cf915086a98) - Fix FIFO object cache eviction when existing keys are overwritten.
+
+- [#570](https://github.com/toomuchdesign/re-reselect/pull/570) [`7ffc43c`](https://github.com/toomuchdesign/re-reselect/commit/7ffc43c1250f300c177ee8ab9f47ad6129ff95d6) - Fix missing keys counting toward the LRU object cache size.
+
+- [#568](https://github.com/toomuchdesign/re-reselect/pull/568) [`bb2213e`](https://github.com/toomuchdesign/re-reselect/commit/bb2213e04bb8eccd7a4536e80dbada33ecb20872) - Fix object caches incorrectly treating Object.prototype properties as cached selectors.
+
+- [#561](https://github.com/toomuchdesign/re-reselect/pull/561) [`4515f83`](https://github.com/toomuchdesign/re-reselect/commit/4515f83b41ebfb36bf3b8334320dd7d22135f10a) - Refresh the generated bundle and declaration snapshots for tsdown 0.23.5, which removes the emitted `//#region`/`//#endregion` wrappers.
+
 ## 6.0.0
 
 ### Major Changes

@@ -14,7 +14,7 @@ export class FifoObjectCache implements ICacheObject {
 
   set(key: ObjectCacheKey, selectorFn: any): void {
     const normalizedKey = String(key);
-    if (!Object.prototype.hasOwnProperty.call(this._cache, normalizedKey)) {
+    if (!(normalizedKey in this._cache)) {
       this._cacheOrdering.push(normalizedKey);
     }
     this._cache[key] = selectorFn;

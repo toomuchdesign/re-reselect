@@ -13,6 +13,19 @@ describe('FifoObjectCache', () => {
   testCacheSizeOptionValidation(FifoObjectCache);
   testObjectCacheKeyBehavior(() => new FifoObjectCache({ cacheSize: 10 }));
 
+  it('removes an entry by its string key without affecting eviction order', () => {
+    const cache = new FifoObjectCache({ cacheSize: 2 });
+    cache.set(1, 'old');
+    cache.set('1', 'new');
+    cache.set(2, 'two');
+    expect(cache.get(1)).toBe('new');
+    expect(cache.get('2')).toBe('two');
+    cache.remove('1');
+    cache.set(3, 'three');
+    expect(cache.get(2)).toBe('two');
+    expect(cache.get(3)).toBe('three');
+  });
+
   it('exposes expected types', () => {
     type State = { foo: string };
     const fooSelector = (state: State) => state.foo;

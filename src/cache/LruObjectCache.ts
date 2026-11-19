@@ -23,7 +23,9 @@ export class LruObjectCache implements ICacheObject {
   }
 
   get(key: ObjectCacheKey): any {
-    this._registerCacheHit(key);
+    if (Object.prototype.hasOwnProperty.call(this._cache, key)) {
+      this._registerCacheHit(key);
+    }
     return this._cache[key];
   }
 

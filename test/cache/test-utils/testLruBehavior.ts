@@ -7,6 +7,19 @@ function testLruBehavior(
   CacheObject: new (options: { cacheSize: number }) => ICacheObject,
 ) {
   describe('LRU cache behavior', () => {
+    it('ignores lookups of missing keys when evicting', () => {
+      const cache = new CacheObject({ cacheSize: 2 });
+      fillCacheWith(cache, [1, 2]);
+      cache.get(3);
+      cache.get(4);
+      fillCacheWith(cache, [5, 6, 7]);
+
+      expect(cache.get(5)).toBe(undefined);
+      [6, 7].forEach((entry) => {
+        expect(cache.get(entry)).toBe(entry);
+      });
+    });
+
     it('removes an item and update cache ordering when another is added', () => {
       const cache = new CacheObject({ cacheSize: 5 });
       const entries = [1, 2, 3, 4, 5];

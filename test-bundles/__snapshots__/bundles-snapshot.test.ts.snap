@@ -381,7 +381,7 @@ var LruObjectCache = class {
 		}
 	}
 	get(key) {
-		this._registerCacheHit(key);
+		if (Object.prototype.hasOwnProperty.call(this._cache, key)) this._registerCacheHit(key);
 		return this._cache[key];
 	}
 	remove(key) {
@@ -647,7 +647,7 @@ var LruObjectCache = class {
 		}
 	}
 	get(key) {
-		this._registerCacheHit(key);
+		if (Object.prototype.hasOwnProperty.call(this._cache, key)) this._registerCacheHit(key);
 		return this._cache[key];
 	}
 	remove(key) {

@@ -4,7 +4,7 @@ import { validateCacheSize } from './util/validateCacheSize';
 
 export class LruObjectCache implements ICacheObject {
   private _cache: Record<string, any> = Object.create(null);
-  private _cacheOrdering: ObjectCacheKey[] = [];
+  private _cacheOrdering: string[] = [];
   private _cacheSize: number;
 
   constructor(options: { cacheSize: number }) {
@@ -45,11 +45,11 @@ export class LruObjectCache implements ICacheObject {
 
   private _registerCacheHit(key: ObjectCacheKey): void {
     this._deleteCacheHit(key);
-    this._cacheOrdering.push(key);
+    this._cacheOrdering.push(String(key));
   }
 
   private _deleteCacheHit(key: ObjectCacheKey): void {
-    const index = this._cacheOrdering.indexOf(key);
+    const index = this._cacheOrdering.indexOf(String(key));
     if (index > -1) {
       this._cacheOrdering.splice(index, 1);
     }

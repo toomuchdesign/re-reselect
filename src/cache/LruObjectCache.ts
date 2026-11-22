@@ -13,8 +13,9 @@ export class LruObjectCache implements ICacheObject {
   }
 
   set(key: ObjectCacheKey, selectorFn: any): void {
-    this._cache[key] = selectorFn;
-    this._registerCacheHit(key);
+    const normalizedKey = String(key);
+    this._cache[normalizedKey] = selectorFn;
+    this._registerCacheHit(normalizedKey);
 
     if (this._cacheOrdering.length > this._cacheSize) {
       const earliest = this._cacheOrdering[0];
@@ -23,15 +24,17 @@ export class LruObjectCache implements ICacheObject {
   }
 
   get(key: ObjectCacheKey): any {
-    if (Object.prototype.hasOwnProperty.call(this._cache, key)) {
-      this._registerCacheHit(key);
+    const normalizedKey = String(key);
+    if (normalizedKey in this._cache) {
+      this._registerCacheHit(normalizedKey);
     }
-    return this._cache[key];
+    return this._cache[normalizedKey];
   }
 
   remove(key: ObjectCacheKey): void {
-    this._deleteCacheHit(key);
-    delete this._cache[key];
+    const normalizedKey = String(key);
+    this._deleteCacheHit(normalizedKey);
+    delete this._cache[normalizedKey];
   }
 
   clear(): void {
@@ -43,13 +46,13 @@ export class LruObjectCache implements ICacheObject {
     return isStringOrNumber(cacheKey);
   }
 
-  private _registerCacheHit(key: ObjectCacheKey): void {
+  private _registerCacheHit(key: string): void {
     this._deleteCacheHit(key);
-    this._cacheOrdering.push(String(key));
+    this._cacheOrdering.push(key);
   }
 
-  private _deleteCacheHit(key: ObjectCacheKey): void {
-    const index = this._cacheOrdering.indexOf(String(key));
+  private _deleteCacheHit(key: string): void {
+    const index = this._cacheOrdering.indexOf(key);
     if (index > -1) {
       this._cacheOrdering.splice(index, 1);
     }

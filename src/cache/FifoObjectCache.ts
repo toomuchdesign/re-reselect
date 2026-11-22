@@ -17,7 +17,7 @@ export class FifoObjectCache implements ICacheObject {
     if (!(normalizedKey in this._cache)) {
       this._cacheOrdering.push(normalizedKey);
     }
-    this._cache[key] = selectorFn;
+    this._cache[normalizedKey] = selectorFn;
 
     if (this._cacheOrdering.length > this._cacheSize) {
       const earliest = this._cacheOrdering[0];
@@ -26,16 +26,17 @@ export class FifoObjectCache implements ICacheObject {
   }
 
   get(key: ObjectCacheKey): any {
-    return this._cache[key];
+    return this._cache[String(key)];
   }
 
   remove(key: ObjectCacheKey): void {
-    const index = this._cacheOrdering.indexOf(String(key));
+    const normalizedKey = String(key);
+    const index = this._cacheOrdering.indexOf(normalizedKey);
 
     if (index > -1) {
       this._cacheOrdering.splice(index, 1);
     }
-    delete this._cache[key];
+    delete this._cache[normalizedKey];
   }
 
   clear(): void {

@@ -3,6 +3,7 @@ import {
   type CreateSelectorOptions,
   type SelectorArray,
   createSelector,
+  lruMemoize,
 } from 'reselect';
 
 import { FlatObjectCache } from './cache/FlatObjectCache';
@@ -15,8 +16,6 @@ import type {
 } from './types';
 
 type UnknownFunction = (...args: readonly unknown[]) => unknown;
-
-const defaultCacheKeyValidator = () => true;
 
 function isFunction(value: unknown): value is UnknownFunction {
   return typeof value === 'function';
@@ -89,17 +88,29 @@ const createCachedSelectorImpl = ((
       return resultFunc(...args);
     };
 
+    /**
+     * Instances default to a size-1 argument cache rather than reselect's
+     * `weakMapMemoize`.
+     *
+     * A cached selector has already chosen the instance by key before calling it, so
+     * the instance sees one argument shape and needs no cache of its own beyond the
+     * previous call. `weakMapMemoize` instead keys on the argument list, and the
+     * first of those arguments is the state — which a store replaces on every write,
+     * so the lookup misses every time and allocates a node to record the miss. What
+     * makes the result reusable is the memoization on *input values* below it, and
+     * that is untouched: recomputation counts do not change.
+     *
+     * `createSelectorOptions` is spread last, so a caller who wants the previous
+     * behaviour passes `argsMemoize` explicitly and gets it.
+     */
     const patchedReselectArgs: unknown[] = [
       inputSelectors,
       resultFuncWithRecomputations,
+      { argsMemoize: lruMemoize, ...createSelectorOptions },
     ];
-    if (createSelectorOptions) {
-      patchedReselectArgs.push(createSelectorOptions);
-    }
 
     const cache: ICacheObject = options.cacheObject || new FlatObjectCache();
     const selectorCreator = options.selectorCreator || createSelector;
-    const isValidCacheKey = cache.isValidCacheKey || defaultCacheKeyValidator;
 
     if (options.keySelectorCreator) {
       options.keySelector = options.keySelectorCreator({
@@ -114,12 +125,40 @@ const createCachedSelectorImpl = ((
         '[re-reselect] Missing "keySelector": provide a `keySelector` function or a `keySelectorCreator` that returns one.',
       );
     }
+    // Hoisted out of the call: resolving `options.keySelector` per invocation is a
+    // property load on a shared object in the hottest path in the library.
     const keySelector: UnknownFunction = options.keySelector;
 
-    function selector(...args: readonly unknown[]): unknown {
-      const cacheKey = keySelector(...args);
+    /**
+     * Selectors are reached as `(state)` or `(state, props)` in all but exotic
+     * cases, and those two arities are dispatched directly.
+     *
+     * A rest parameter allocates an array on every call, and forwarding it costs a
+     * spread at each of the two call sites below — all of it paid on a cache hit,
+     * which is what the overwhelming majority of calls are. The arity is matched
+     * exactly rather than always forwarding two arguments, because reselect memoizes
+     * on the argument list and handing a one-argument selector a second `undefined`
+     * would change its cache key.
+     */
+    function selector(state: unknown, props?: unknown): unknown {
+      const argumentCount = arguments.length;
 
-      if (!isValidCacheKey(cacheKey)) {
+      const cacheKey =
+        argumentCount === 2
+          ? keySelector(state, props)
+          : argumentCount === 1
+            ? keySelector(state)
+            : keySelector.apply(null, arguments as unknown as unknown[]);
+
+      // Invoked as a method on the cache rather than through a detached reference,
+      // so an implementation whose validator reads `this` — a tree-shaped cache
+      // consulting its own root, say — is callable at all. Reading the property per
+      // call also lets a cache install or replace its validator after the selector
+      // has been created.
+      if (
+        cache.isValidCacheKey !== undefined &&
+        !cache.isValidCacheKey(cacheKey)
+      ) {
         console.warn(
           `[re-reselect] Invalid cache key "${String(
             cacheKey,
@@ -141,7 +180,11 @@ const createCachedSelectorImpl = ((
         cache.set(cacheKey, cacheResponse);
       }
 
-      return cacheResponse(...args);
+      return argumentCount === 2
+        ? cacheResponse(state, props)
+        : argumentCount === 1
+          ? cacheResponse(state)
+          : cacheResponse.apply(null, arguments as unknown as unknown[]);
     }
 
     return Object.assign(selector, {
